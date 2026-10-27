@@ -9,11 +9,22 @@ import { PipelineStepper } from "@/components/clinical/PipelineStepper";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/Alert";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+} from "@/components/ui/Table";
+import { Input } from "@/components/ui/Input";
+import { ClinicalTooltip } from "@/components/clinical/ClinicalTooltip";
 import { 
   Pill, 
   Check, 
   AlertTriangle, 
-  ArrowRight,
+  ArrowRight, 
   ShieldAlert,
   Search,
   Plus
@@ -81,122 +92,123 @@ export default function MedicineMatchingPage() {
             Medicine Identity & Catalogue Confirmation
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Case: <span className="font-mono font-bold text-slate-800">{caseId}</span> • Patient ID: {caseData?.patientId}
+            Case: <span className="font-mono font-bold text-slate-800 font-tabular">{caseId}</span> • Patient ID: {caseData?.patientId}
           </p>
         </div>
       </div>
 
       {/* Safety Blocker Banner */}
       {hasUnresolvedItems ? (
-        <div className="p-3.5 rounded-lg bg-rose-50 border border-rose-300 text-xs text-rose-950 flex items-start gap-2.5 shadow-xs">
-          <ShieldAlert className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
-          <div className="leading-relaxed">
-            <span className="font-bold">Safety Blocker (REQ-SAFE-002):</span> Unmapped or ambiguous
-            medicines cannot advance to rule evaluation. Confirm all ingredients and dosage forms below
+        <Alert variant="destructive">
+          <ShieldAlert className="h-4 w-4" />
+          <AlertTitle className="font-bold text-rose-950">Safety Blocker (REQ-SAFE-002): Ambiguous Item Detected</AlertTitle>
+          <AlertDescription className="text-rose-900 mt-1">
+            Unmapped or ambiguous medicines cannot advance to rule evaluation. Confirm all ingredients and dosage forms below
             to clear this gate.
-          </div>
-        </div>
+          </AlertDescription>
+        </Alert>
       ) : (
         <div className="p-3 rounded-lg bg-slate-100 border border-slate-200 text-xs text-slate-700 flex items-center gap-2">
-          <Check className="w-4 h-4 text-emerald-600" />
-          <span>All prescription items have been successfully mapped to verified catalogue ingredients.</span>
+          <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+          <span className="font-medium">All prescription items have been successfully mapped to verified catalogue ingredients. Ready for deterministic check.</span>
         </div>
       )}
 
       {loading ? (
         <Skeleton className="h-64 w-full" />
       ) : (
-        <div className="bg-white rounded-lg border border-slate-200 shadow-xs overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr className="bg-slate-100/80 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider text-[11px]">
-                  <th className="py-3 px-4">Raw Extracted Text</th>
-                  <th className="py-3 px-4">Catalogue Ingredient Mapping</th>
-                  <th className="py-3 px-4">Strength & Form</th>
-                  <th className="py-3 px-4">Frequency & Duration</th>
-                  <th className="py-3 px-4">Match Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
-                {items.map((item, idx) => (
-                  <tr key={idx} className="hover:bg-slate-50/60">
-                    <td className="py-3 px-4 font-mono text-slate-900 max-w-xs">
-                      {item.rawExtractedText}
-                    </td>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-64">Raw Extracted Text</TableHead>
+              <TableHead>Catalogue Ingredient Mapping</TableHead>
+              <TableHead className="w-44">Strength & Form</TableHead>
+              <TableHead className="w-40">Frequency & Duration</TableHead>
+              <TableHead className="w-32">
+                <ClinicalTooltip
+                  term="Match Status"
+                  explanation="Must be explicitly CONFIRMED against verified hospital catalogue before safety checking."
+                />
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {items.map((item, idx) => (
+              <TableRow key={idx}>
+                <TableCell className="font-mono text-slate-900">
+                  <div className="text-xs font-semibold">{item.rawExtractedText}</div>
+                </TableCell>
 
-                    <td className="py-3 px-4">
-                      <select
-                        value={item.catalogueItemId || ""}
-                        onChange={(e) => {
-                          const selected = catalogue.find((c) => c.id === e.target.value);
-                          if (selected) {
-                            handleUpdateItem(idx, {
-                              catalogueItemId: selected.id,
-                              canonicalIngredientIds: selected.canonicalIngredientIds,
-                              matchStatus: "CONFIRMED",
-                            });
-                          }
-                        }}
-                        className="w-full text-xs font-semibold rounded border border-slate-300 px-2 py-1 bg-white focus:outline-none focus:ring-1 focus:ring-slate-900"
-                      >
-                        <option value="">-- Select Catalogue Item --</option>
-                        {catalogue.map((cat) => (
-                          <option key={cat.id} value={cat.id}>
-                            {cat.displayName}
-                          </option>
-                        ))}
-                      </select>
-                      <div className="text-[10px] text-slate-500 font-mono mt-1">
-                        Ingredients: {item.canonicalIngredientIds.join(", ")}
-                      </div>
-                    </td>
+                <TableCell>
+                  <select
+                    value={item.catalogueItemId || ""}
+                    onChange={(e) => {
+                      const selected = catalogue.find((c) => c.id === e.target.value);
+                      if (selected) {
+                        handleUpdateItem(idx, {
+                          catalogueItemId: selected.id,
+                          canonicalIngredientIds: selected.canonicalIngredientIds,
+                          matchStatus: "CONFIRMED",
+                        });
+                      }
+                    }}
+                    className="w-full text-xs font-semibold rounded-md border border-slate-300 px-2 py-1.5 bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 shadow-2xs"
+                  >
+                    <option value="">-- Select Catalogue Item --</option>
+                    {catalogue.map((cat) => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.displayName}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="text-[10px] text-slate-500 font-mono mt-1 font-tabular">
+                    Ingredients: {item.canonicalIngredientIds.join(", ")}
+                  </div>
+                </TableCell>
 
-                    <td className="py-3 px-4">
-                      <div className="flex gap-1.5">
-                        <input
-                          type="number"
-                          value={item.strengthValue || ""}
-                          onChange={(e) =>
-                            handleUpdateItem(idx, { strengthValue: parseFloat(e.target.value) || 0 })
-                          }
-                          className="w-14 px-1.5 py-1 text-xs font-mono rounded border border-slate-300"
-                        />
-                        <span className="text-xs self-center font-mono">{item.strengthUnit || "mg"}</span>
-                        <input
-                          type="text"
-                          value={item.dosageForm || "Tablet"}
-                          onChange={(e) => handleUpdateItem(idx, { dosageForm: e.target.value })}
-                          className="w-20 px-1.5 py-1 text-xs rounded border border-slate-300"
-                        />
-                      </div>
-                    </td>
+                <TableCell>
+                  <div className="flex items-center gap-1.5">
+                    <input
+                      type="number"
+                      value={item.strengthValue || ""}
+                      onChange={(e) =>
+                        handleUpdateItem(idx, { strengthValue: parseFloat(e.target.value) || 0 })
+                      }
+                      className="w-14 px-1.5 py-1 text-xs font-mono rounded border border-slate-300 font-tabular bg-white"
+                    />
+                    <span className="text-xs font-mono text-slate-500">{item.strengthUnit || "mg"}</span>
+                    <input
+                      type="text"
+                      value={item.dosageForm || "Tablet"}
+                      onChange={(e) => handleUpdateItem(idx, { dosageForm: e.target.value })}
+                      className="w-20 px-1.5 py-1 text-xs rounded border border-slate-300 bg-white"
+                    />
+                  </div>
+                </TableCell>
 
-                    <td className="py-3 px-4">
-                      <div className="text-xs font-medium text-slate-900">{item.frequency || "Once Daily"}</div>
-                      <div className="text-[11px] text-slate-500 font-mono">{item.durationValue} {item.durationUnit}</div>
-                    </td>
+                <TableCell>
+                  <div className="text-xs font-medium text-slate-900">{item.frequency || "Once Daily"}</div>
+                  <div className="text-[11px] text-slate-500 font-mono font-tabular">{item.durationValue} {item.durationUnit}</div>
+                </TableCell>
 
-                    <td className="py-3 px-4">
-                      <Badge
-                        variant={item.matchStatus === "CONFIRMED" ? "authorized" : "incomplete"}
-                        className="text-[10px] py-0.5"
-                      >
-                        {item.matchStatus}
-                      </Badge>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+                <TableCell>
+                  <Badge
+                    variant={item.matchStatus === "CONFIRMED" ? "authorized" : "incomplete"}
+                    className="text-[10px] py-0.5"
+                  >
+                    {item.matchStatus}
+                  </Badge>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       )}
 
       {/* Action Footer */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
         <div className="text-xs text-slate-500">
-          Step 3 of 5 • Both medications mapped to canonical identifiers
+          Step 3 of 5 • All medications mapped to canonical identifiers
         </div>
 
         <Button
