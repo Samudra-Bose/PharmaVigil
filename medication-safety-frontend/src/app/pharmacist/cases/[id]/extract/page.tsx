@@ -66,6 +66,7 @@ export default function OcrExtractPage() {
   const handleProceed = async () => {
     setSaving(true);
     try {
+      await api.updateExtractedText(caseId, lines);
       router.push(`/pharmacist/cases/${caseId}/medicines`);
     } finally {
       setSaving(false);

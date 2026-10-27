@@ -129,6 +129,102 @@ export const FIXTURE_PATIENT: PatientRecord = {
   ],
 };
 
+export const FIXTURE_PATIENTS: PatientRecord[] = [
+  FIXTURE_PATIENT,
+  {
+    id: "pat_sunita_9022",
+    syntheticHospitalPatientId: "P-9022",
+    displayName: "Sunita Verma",
+    linkStatus: "LINKED",
+    version: 1,
+    dateOfBirth: "1981-08-23",
+    gender: "FEMALE",
+    contactPhone: "+91 98112 34567",
+    knownAllergies: [],
+    activeMedications: [],
+  },
+  {
+    id: "pat_amit_9023",
+    syntheticHospitalPatientId: "P-9023",
+    displayName: "Amit Kumar",
+    linkStatus: "LINKED",
+    version: 1,
+    dateOfBirth: "1964-11-05",
+    gender: "MALE",
+    contactPhone: "+91 97123 45678",
+    knownAllergies: [
+      {
+        id: "alg_003",
+        allergenName: "Aspirin",
+        severity: "CRITICAL",
+        reaction: "Bronchospasm",
+        verificationStatus: "VERIFIED_CLINICIAN",
+      },
+    ],
+    activeMedications: [],
+  },
+];
+
+export interface AppointmentRecord {
+  id: string;
+  hospitalId: string;
+  patientId: string;
+  patientDisplayName: string;
+  clinicianUserId: string;
+  clinicianDisplayName: string;
+  department: string;
+  slotStart: string;
+  slotEnd: string;
+  status: "SCHEDULED" | "COMPLETED" | "CANCELLED" | "NO_SHOW";
+  reason?: string;
+  notes?: string;
+}
+
+export const INITIAL_FIXTURE_APPOINTMENTS: AppointmentRecord[] = [
+  {
+    id: "apt_001",
+    hospitalId: "hosp_metro_general",
+    patientId: "pat_rajan_9021",
+    patientDisplayName: "Rajan Sharma (P-9021)",
+    clinicianUserId: "usr_doctor_01",
+    clinicianDisplayName: "Dr. Arvind Patel, MD",
+    department: "Cardiology",
+    slotStart: "2026-10-30T10:00:00Z",
+    slotEnd: "2026-10-30T10:30:00Z",
+    status: "SCHEDULED",
+    reason: "Anticoagulation & Antithrombotic Therapy Follow-up (Warfarin Monitoring)",
+    notes: "Review recent INR lab values and adjust warfarin dosage if indicated.",
+  },
+  {
+    id: "apt_002",
+    hospitalId: "hosp_metro_general",
+    patientId: "pat_rajan_9021",
+    patientDisplayName: "Rajan Sharma (P-9021)",
+    clinicianUserId: "usr_pharma_01",
+    clinicianDisplayName: "Priya Sharma, RPh",
+    department: "Clinical Pharmacy",
+    slotStart: "2026-10-31T14:00:00Z",
+    slotEnd: "2026-10-31T14:20:00Z",
+    status: "SCHEDULED",
+    reason: "Outpatient Medication Counseling & Regimen Review",
+    notes: "Patient education on avoiding OTC NSAIDs while on anticoagulant therapy.",
+  },
+  {
+    id: "apt_003",
+    hospitalId: "hosp_metro_general",
+    patientId: "pat_rajan_9021",
+    patientDisplayName: "Rajan Sharma (P-9021)",
+    clinicianUserId: "usr_doctor_01",
+    clinicianDisplayName: "Dr. Arvind Patel, MD",
+    department: "Cardiology",
+    slotStart: "2026-09-15T11:00:00Z",
+    slotEnd: "2026-09-15T11:30:00Z",
+    status: "COMPLETED",
+    reason: "Initial Post-Discharge Cardiac Consultation",
+    notes: "Prescribed baseline cardiovascular regimen.",
+  },
+];
+
 export const FIXTURE_CATALOGUE: MedicineCandidate[] = [
   {
     id: "cat_warfarin_5",

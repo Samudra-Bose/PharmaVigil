@@ -5,7 +5,7 @@ import type {
   PrescriptionItem,
   CheckEnvelope,
 } from "@/types";
-import type { FixtureCase, PatientRecord } from "./mock-data/fixtures";
+import type { FixtureCase, PatientRecord, AppointmentRecord } from "./mock-data/fixtures";
 
 const USE_MOCKS = process.env.NEXT_PUBLIC_ENABLE_MOCKS !== "false";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8787/api/v1";
@@ -161,6 +161,64 @@ class ApiClient {
       expectedVersion,
       acknowledgement: "WORKFLOW_REQUIREMENTS_REVIEWED",
     });
+  }
+
+  async registerApplicant(applicant: {
+    displayName: string;
+    email: string;
+    password?: string;
+    requestedRole: "PATIENT" | "DOCTOR" | "PHARMACIST" | "HOSPITAL_ADMIN";
+  }): Promise<{ id: string; status: "PENDING" }> {
+    if (this.isMockMode) {
+      return mockEngine.registerApplicant(applicant);
+    }
+    return this.post<{ id: string; status: "PENDING" }>("/auth/register", applicant);
+  }
+
+  // Prescription Captures & OCR Text API
+  async updateExtractedText(
+    caseId: string,
+    lines: Array<{ id: number; text: string; confidence: number }>
+  ): Promise<FixtureCase> {
+    if (this.isMockMode) {
+      return mockEngine.updateExtractedText(caseId, lines);
+    }
+    return this.post<FixtureCase>(`/prescription-captures/${caseId}/ocr-corrections`, { lines });
+  }
+
+  // Appointment API
+  async listAppointments(filter?: { patientId?: string; clinicianId?: string }): Promise<AppointmentRecord[]> {
+    if (this.isMockMode) {
+      return mockEngine.listAppointments(filter);
+    }
+    const params = new URLSearchParams();
+    if (filter?.patientId) params.append("patientId", filter.patientId);
+    if (filter?.clinicianId) params.append("clinicianId", filter.clinicianId);
+    const qs = params.toString() ? `?${params.toString()}` : "";
+    return this.get<AppointmentRecord[]>(`/appointments${qs}`);
+  }
+
+  async createAppointment(data: {
+    patientId: string;
+    patientDisplayName: string;
+    clinicianUserId: string;
+    clinicianDisplayName: string;
+    department: string;
+    slotStart: string;
+    slotEnd: string;
+    reason: string;
+  }): Promise<AppointmentRecord> {
+    if (this.isMockMode) {
+      return mockEngine.createAppointment(data);
+    }
+    return this.post<AppointmentRecord>("/appointments", data);
+  }
+
+  async cancelAppointment(appointmentId: string): Promise<AppointmentRecord> {
+    if (this.isMockMode) {
+      return mockEngine.cancelAppointment(appointmentId);
+    }
+    return this.post<AppointmentRecord>(`/appointments/${appointmentId}/cancel`, {});
   }
 
   // Admin API

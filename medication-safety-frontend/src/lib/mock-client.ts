@@ -2,12 +2,15 @@ import {
   FIXTURE_HOSPITAL,
   FIXTURE_USERS,
   FIXTURE_PATIENT,
+  FIXTURE_PATIENTS,
   FIXTURE_CATALOGUE,
   INITIAL_FIXTURE_CASE,
   INITIAL_PRESCRIPTION_ITEMS,
+  INITIAL_FIXTURE_APPOINTMENTS,
   type FixtureCase,
   type FixtureUser,
   type PatientRecord,
+  type AppointmentRecord,
 } from "./mock-data/fixtures";
 import type {
   CurrentUserResponse,
@@ -19,13 +22,28 @@ import type {
   Hospital,
 } from "@/types";
 
+const STORAGE_KEY = "pharmavigil_demo_state";
+
+interface PersistedState {
+  activeCases: Array<[string, FixtureCase]>;
+  memberships: Array<{
+    id: string;
+    userId: string;
+    displayName: string;
+    email: string;
+    role: "PATIENT" | "DOCTOR" | "PHARMACIST" | "HOSPITAL_ADMIN";
+    status: "ACTIVE" | "PENDING" | "SUSPENDED" | "REVOKED";
+    createdAt: string;
+  }>;
+  appointments: AppointmentRecord[];
+}
+
 class MockEngine {
   private currentUser: FixtureUser | null = FIXTURE_USERS["pharma@metro-general.invalid"];
   private hospital: Hospital = { ...FIXTURE_HOSPITAL };
   private patient: PatientRecord = { ...FIXTURE_PATIENT };
-  private activeCases: Map<string, FixtureCase> = new Map([
-    [INITIAL_FIXTURE_CASE.id, JSON.parse(JSON.stringify(INITIAL_FIXTURE_CASE))],
-  ]);
+  private patients: PatientRecord[] = [...FIXTURE_PATIENTS];
+  private activeCases: Map<string, FixtureCase>;
   private memberships: Array<{
     id: string;
     userId: string;
@@ -34,40 +52,97 @@ class MockEngine {
     role: "PATIENT" | "DOCTOR" | "PHARMACIST" | "HOSPITAL_ADMIN";
     status: "ACTIVE" | "PENDING" | "SUSPENDED" | "REVOKED";
     createdAt: string;
-  }> = [
-    {
-      id: "mem_01",
-      userId: "usr_pharma_01",
-      displayName: "Priya Sharma, RPh",
-      email: "pharma@metro-general.invalid",
-      role: "PHARMACIST",
-      status: "ACTIVE",
-      createdAt: "2026-01-10T09:00:00Z",
-    },
-    {
-      id: "mem_02",
-      userId: "usr_doctor_01",
-      displayName: "Dr. Arvind Patel, MD",
-      email: "doctor@metro-general.invalid",
-      role: "DOCTOR",
-      status: "ACTIVE",
-      createdAt: "2026-01-11T10:00:00Z",
-    },
-    {
-      id: "mem_03",
-      userId: "usr_pending_01",
-      displayName: "Dr. Neha Rao (Applicant)",
-      email: "pending@metro-general.invalid",
-      role: "DOCTOR",
-      status: "PENDING",
-      createdAt: "2026-10-27T08:00:00Z",
-    },
-  ];
+  }>;
+  private appointments: AppointmentRecord[];
+
+  constructor() {
+    const loaded = this.loadFromStorage();
+    if (loaded) {
+      this.activeCases = new Map(loaded.activeCases);
+      this.memberships = loaded.memberships;
+      this.appointments = loaded.appointments;
+    } else {
+      this.activeCases = new Map([
+        [INITIAL_FIXTURE_CASE.id, JSON.parse(JSON.stringify(INITIAL_FIXTURE_CASE))],
+      ]);
+      this.memberships = [
+        {
+          id: "mem_01",
+          userId: "usr_pharma_01",
+          displayName: "Priya Sharma, RPh",
+          email: "pharma@metro-general.invalid",
+          role: "PHARMACIST",
+          status: "ACTIVE",
+          createdAt: "2026-01-10T09:00:00Z",
+        },
+        {
+          id: "mem_02",
+          userId: "usr_doctor_01",
+          displayName: "Dr. Arvind Patel, MD",
+          email: "doctor@metro-general.invalid",
+          role: "DOCTOR",
+          status: "ACTIVE",
+          createdAt: "2026-01-11T10:00:00Z",
+        },
+        {
+          id: "mem_03",
+          userId: "usr_pending_01",
+          displayName: "Dr. Neha Rao (Applicant)",
+          email: "pending@metro-general.invalid",
+          role: "DOCTOR",
+          status: "PENDING",
+          createdAt: "2026-10-27T08:00:00Z",
+        },
+      ];
+      this.appointments = [...INITIAL_FIXTURE_APPOINTMENTS];
+    }
+  }
+
+  private loadFromStorage(): PersistedState | null {
+    if (typeof window === "undefined") return null;
+    try {
+      const serialized = sessionStorage.getItem(STORAGE_KEY);
+      if (serialized) {
+        return JSON.parse(serialized) as PersistedState;
+      }
+    } catch {
+      // storage unavailable
+    }
+    return null;
+  }
+
+  private saveToStorage(): void {
+    if (typeof window === "undefined") return;
+    try {
+      const state: PersistedState = {
+        activeCases: Array.from(this.activeCases.entries()),
+        memberships: this.memberships,
+        appointments: this.appointments,
+      };
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch {
+      // storage quota or disabled
+    }
+  }
 
   // Auth Operations
   async login(email: string): Promise<CurrentUserResponse> {
     const user = FIXTURE_USERS[email.toLowerCase()];
     if (!user) {
+      // Check if user is a dynamically registered pending applicant
+      const dynMem = this.memberships.find((m) => m.email.toLowerCase() === email.toLowerCase());
+      if (dynMem) {
+        this.currentUser = {
+          id: dynMem.userId,
+          email: dynMem.email,
+          displayName: dynMem.displayName,
+          role: dynMem.role,
+          accountStatus: dynMem.status === "ACTIVE" ? "ACTIVE" : "PENDING",
+          membershipStatus: dynMem.status === "ACTIVE" ? "ACTIVE" : "PENDING",
+        };
+        return this.getCurrentUser();
+      }
+
       const err = new Error("Invalid email or password");
       (err as unknown as { code: string; requestId: string }).code = "UNAUTHENTICATED";
       (err as unknown as { code: string; requestId: string }).requestId = "req_mock_auth_fail";
@@ -119,23 +194,44 @@ class MockEngine {
     this.currentUser = FIXTURE_USERS[emailMap[role]];
   }
 
+  async registerApplicant(applicant: {
+    displayName: string;
+    email: string;
+    password?: string;
+    requestedRole: "PATIENT" | "DOCTOR" | "PHARMACIST" | "HOSPITAL_ADMIN";
+  }): Promise<{ id: string; status: "PENDING" }> {
+    const newId = `usr_${Date.now()}`;
+    const newMem = {
+      id: `mem_${newId}`,
+      userId: newId,
+      displayName: applicant.displayName,
+      email: applicant.email.toLowerCase(),
+      role: applicant.requestedRole,
+      status: "PENDING" as const,
+      createdAt: new Date().toISOString(),
+    };
+    this.memberships.unshift(newMem);
+    this.saveToStorage();
+    return { id: newMem.id, status: "PENDING" };
+  }
+
   // Patient Operations
   async searchPatients(query: string): Promise<PatientRecord[]> {
-    if (!query) return [];
-    const q = query.toLowerCase();
-    if (
-      this.patient.syntheticHospitalPatientId.toLowerCase().includes(q) ||
-      (this.patient.displayName && this.patient.displayName.toLowerCase().includes(q))
-    ) {
-      return [this.patient];
-    }
-    return [];
+    if (!query) return this.patients;
+    const q = query.toLowerCase().trim();
+    return this.patients.filter(
+      (p) =>
+        p.syntheticHospitalPatientId.toLowerCase().includes(q) ||
+        (p.displayName && p.displayName.toLowerCase().includes(q)) ||
+        (p.contactPhone && p.contactPhone.toLowerCase().includes(q))
+    );
   }
 
   async getPatient(id: string): Promise<PatientRecord> {
-    if (id === this.patient.id || id === this.patient.syntheticHospitalPatientId) {
-      return this.patient;
-    }
+    const p = this.patients.find(
+      (pat) => pat.id === id || pat.syntheticHospitalPatientId === id
+    );
+    if (p) return p;
     const err = new Error(`Patient ${id} not found.`);
     (err as unknown as { code: string; requestId: string }).code = "NOT_FOUND";
     (err as unknown as { code: string; requestId: string }).requestId = "req_mock_pat_404";
@@ -190,7 +286,20 @@ class MockEngine {
       ],
     };
     this.activeCases.set(id, newCase);
+    this.saveToStorage();
     return newCase;
+  }
+
+  async updateExtractedText(
+    caseId: string,
+    lines: Array<{ id: number; text: string; confidence: number }>
+  ): Promise<FixtureCase> {
+    const c = await this.getCase(caseId);
+    c.extractedRawText = lines.map((l) => l.text).join("\n");
+    c.updatedAt = new Date().toISOString();
+    this.activeCases.set(caseId, c);
+    this.saveToStorage();
+    return c;
   }
 
   async confirmMedicines(caseId: string, items: PrescriptionItem[]): Promise<FixtureCase> {
@@ -199,6 +308,7 @@ class MockEngine {
     c.status = "MEDICINES_CONFIRMED";
     c.updatedAt = new Date().toISOString();
     this.activeCases.set(caseId, c);
+    this.saveToStorage();
     return c;
   }
 
@@ -223,7 +333,7 @@ class MockEngine {
         id: `alert_${Date.now()}`,
         ruleId: "ILLUSTRATIVE-DDI-001",
         ruleVersion: 1,
-        severity: "MODERATE",
+        severity: "CRITICAL",
         status: "OPEN",
         rationale:
           "Concomitant use of Warfarin (anticoagulant) and Aspirin (antiplatelet agent) significantly increases the risk of severe gastrointestinal and systemic bleeding.",
@@ -289,6 +399,7 @@ class MockEngine {
     c.alerts = alerts;
     c.updatedAt = new Date().toISOString();
     this.activeCases.set(caseId, c);
+    this.saveToStorage();
     return checkResult;
   }
 
@@ -311,6 +422,7 @@ class MockEngine {
         }
         c.updatedAt = new Date().toISOString();
         this.activeCases.set(c.id, c);
+        this.saveToStorage();
         return;
       }
     }
@@ -338,6 +450,7 @@ class MockEngine {
     c.checkResult = undefined;
     c.updatedAt = new Date().toISOString();
     this.activeCases.set(caseId, c);
+    this.saveToStorage();
     return c;
   }
 
@@ -372,6 +485,7 @@ class MockEngine {
     };
     c.updatedAt = new Date().toISOString();
     this.activeCases.set(caseId, c);
+    this.saveToStorage();
   }
 
   // Admin Operations
@@ -379,18 +493,114 @@ class MockEngine {
     return this.memberships;
   }
 
-  async updateMembershipStatus(id: string, status: "ACTIVE" | "SUSPENDED" | "REVOKED", role?: "PATIENT" | "DOCTOR" | "PHARMACIST" | "HOSPITAL_ADMIN") {
+  async updateMembershipStatus(
+    id: string,
+    status: "ACTIVE" | "SUSPENDED" | "REVOKED",
+    role?: "PATIENT" | "DOCTOR" | "PHARMACIST" | "HOSPITAL_ADMIN"
+  ) {
     const mem = this.memberships.find((m) => m.id === id);
     if (mem) {
       mem.status = status;
       if (role) mem.role = role;
+      this.saveToStorage();
     }
   }
 
+  // Appointment Operations
+  async listAppointments(filter?: { patientId?: string; clinicianId?: string }): Promise<AppointmentRecord[]> {
+    let result = [...this.appointments];
+    if (filter?.patientId) {
+      const pid = filter.patientId;
+      result = result.filter((a) => a.patientId === pid || a.patientDisplayName.includes(pid));
+    }
+    if (filter?.clinicianId) {
+      result = result.filter((a) => a.clinicianUserId === filter.clinicianId);
+    }
+    return result;
+  }
+
+  async createAppointment(data: {
+    patientId: string;
+    patientDisplayName: string;
+    clinicianUserId: string;
+    clinicianDisplayName: string;
+    department: string;
+    slotStart: string;
+    slotEnd: string;
+    reason: string;
+  }): Promise<AppointmentRecord> {
+    const newApt: AppointmentRecord = {
+      id: `apt_${Date.now()}`,
+      hospitalId: this.hospital.id,
+      patientId: data.patientId,
+      patientDisplayName: data.patientDisplayName,
+      clinicianUserId: data.clinicianUserId,
+      clinicianDisplayName: data.clinicianDisplayName,
+      department: data.department,
+      slotStart: data.slotStart,
+      slotEnd: data.slotEnd,
+      status: "SCHEDULED",
+      reason: data.reason,
+    };
+    this.appointments.unshift(newApt);
+    this.saveToStorage();
+    return newApt;
+  }
+
+  async cancelAppointment(appointmentId: string): Promise<AppointmentRecord> {
+    const target = this.appointments.find((a) => a.id === appointmentId);
+    if (!target) {
+      const err = new Error(`Appointment ${appointmentId} not found.`);
+      (err as unknown as { code: string; requestId: string }).code = "NOT_FOUND";
+      throw err;
+    }
+    target.status = "CANCELLED";
+    this.saveToStorage();
+    return target;
+  }
+
   async resetDemoWorkspace(): Promise<void> {
+    if (typeof window !== "undefined") {
+      try {
+        sessionStorage.removeItem(STORAGE_KEY);
+      } catch {
+        // ignore
+      }
+    }
     this.activeCases.clear();
     this.activeCases.set(INITIAL_FIXTURE_CASE.id, JSON.parse(JSON.stringify(INITIAL_FIXTURE_CASE)));
     this.patient = { ...FIXTURE_PATIENT };
+    this.patients = [...FIXTURE_PATIENTS];
+    this.appointments = [...INITIAL_FIXTURE_APPOINTMENTS];
+    this.memberships = [
+      {
+        id: "mem_01",
+        userId: "usr_pharma_01",
+        displayName: "Priya Sharma, RPh",
+        email: "pharma@metro-general.invalid",
+        role: "PHARMACIST",
+        status: "ACTIVE",
+        createdAt: "2026-01-10T09:00:00Z",
+      },
+      {
+        id: "mem_02",
+        userId: "usr_doctor_01",
+        displayName: "Dr. Arvind Patel, MD",
+        email: "doctor@metro-general.invalid",
+        role: "DOCTOR",
+        status: "ACTIVE",
+        createdAt: "2026-01-11T10:00:00Z",
+      },
+      {
+        id: "mem_03",
+        userId: "usr_pending_01",
+        displayName: "Dr. Neha Rao (Applicant)",
+        email: "pending@metro-general.invalid",
+        role: "DOCTOR",
+        status: "PENDING",
+        createdAt: "2026-10-27T08:00:00Z",
+      },
+    ];
     this.switchPersona("PHARMACIST");
   }
 }
