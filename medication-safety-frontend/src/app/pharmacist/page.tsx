@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/Table";
 import { Kbd } from "@/components/ui/Kbd";
 import { ClinicalTooltip } from "@/components/clinical/ClinicalTooltip";
+import { CossMetricStrip } from "@/components/coss/CossMetricStrip";
+import { SegmentedControl } from "@/components/heroui/SegmentedControl";
 import { formatDateTime } from "@/lib/utils";
 import { 
   ClipboardList, 
