@@ -57,7 +57,15 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require("daisyui"),
+  ],
+  // @ts-ignore
+  daisyui: {
+    prefix: "du-",
+    themes: ["light"],
+    logs: false,
+  },
 };
 
 export default config;
