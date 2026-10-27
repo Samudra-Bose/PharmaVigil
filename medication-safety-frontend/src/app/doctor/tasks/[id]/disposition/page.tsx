@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { api } from "@/lib/api-client";
 import { Button } from "@/components/ui/Button";
 import { ErrorDisplay } from "@/components/ui/ErrorDisplay";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { 
   Stethoscope, 
   FileEdit, 
@@ -15,7 +16,7 @@ import {
   ArrowRight 
 } from "lucide-react";
 
-export default function RecordDispositionPage() {
+function RecordDispositionContent() {
   const params = useParams();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -189,5 +190,20 @@ export default function RecordDispositionPage() {
         </div>
       </form>
     </div>
+  );
+}
+
+export default function RecordDispositionPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="max-w-3xl mx-auto space-y-6">
+          <Skeleton className="h-10 w-64" />
+          <Skeleton className="h-96 w-full" />
+        </div>
+      }
+    >
+      <RecordDispositionContent />
+    </Suspense>
   );
 }

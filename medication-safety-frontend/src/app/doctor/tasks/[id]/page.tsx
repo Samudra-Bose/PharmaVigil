@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { api } from "@/lib/api-client";
@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Stethoscope, ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 
-export default function DoctorTaskDetailPage() {
+function DoctorTaskDetailContent() {
   const params = useParams();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -112,5 +112,21 @@ export default function DoctorTaskDetailPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function DoctorTaskDetailPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="max-w-4xl mx-auto space-y-6">
+          <Skeleton className="h-10 w-64" />
+          <Skeleton className="h-44 w-full" />
+          <Skeleton className="h-64 w-full" />
+        </div>
+      }
+    >
+      <DoctorTaskDetailContent />
+    </Suspense>
   );
 }
