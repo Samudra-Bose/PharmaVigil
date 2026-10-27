@@ -66,7 +66,7 @@ export const RoleNavigation: React.FC = () => {
   }
 
   return (
-    <nav className="bg-slate-100 border-b border-slate-200 px-4 sm:px-6 lg:px-8">
+    <nav aria-label="Role Portal Navigation" className="bg-slate-100 border-b border-slate-200 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto flex items-center gap-1 overflow-x-auto py-1.5 scrollbar-none">
         {items.map((item) => {
           const Icon = item.icon;
@@ -76,6 +76,7 @@ export const RoleNavigation: React.FC = () => {
             <Link
               key={item.href}
               href={item.href}
+              aria-current={isActive ? "page" : undefined}
               className={cn(
                 "inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-semibold whitespace-nowrap transition-colors",
                 isActive
