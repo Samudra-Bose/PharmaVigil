@@ -1,5 +1,5 @@
 import React from "react";
-import { Check } from "lucide-react";
+import { Check, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface PipelineStepperProps {
@@ -16,42 +16,64 @@ const STEPS = [
 
 export const PipelineStepper: React.FC<PipelineStepperProps> = ({ currentStep }) => {
   return (
-    <div className="w-full bg-white p-3 rounded-lg border border-slate-200 shadow-xs mb-6 overflow-x-auto scrollbar-none">
-      <div className="flex items-center justify-between min-w-[550px]">
+    <div
+      role="region"
+      aria-label="Prescription Safety Progress"
+      className="w-full bg-white p-3.5 rounded-lg border border-slate-200/90 shadow-subtle mb-6 overflow-x-auto scrollbar-none"
+    >
+      <div className="flex items-center justify-between min-w-[580px] px-2">
         {STEPS.map((s, idx) => {
           const isCompleted = s.step < currentStep;
           const isCurrent = s.step === currentStep;
+          const isLocked = s.step > currentStep;
 
           return (
             <React.Fragment key={s.step}>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2.5">
                 <div
                   className={cn(
-                    "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors",
+                    "w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all",
                     isCompleted
-                      ? "bg-emerald-600 text-white"
+                      ? "bg-teal-700 text-white shadow-2xs"
                       : isCurrent
-                      ? "bg-slate-900 text-white ring-2 ring-slate-900 ring-offset-2"
+                      ? "bg-slate-900 text-white ring-2 ring-slate-900 ring-offset-2 ring-offset-white shadow-xs"
                       : "bg-slate-100 text-slate-400 border border-slate-200"
                   )}
+                  aria-current={isCurrent ? "step" : undefined}
                 >
-                  {isCompleted ? <Check className="w-3.5 h-3.5" /> : s.step}
-                </div>
-                <span
-                  className={cn(
-                    "text-xs font-medium whitespace-nowrap",
-                    isCurrent ? "text-slate-900 font-semibold" : isCompleted ? "text-slate-700" : "text-slate-400"
+                  {isCompleted ? (
+                    <Check className="w-4 h-4 stroke-[2.5]" />
+                  ) : isLocked ? (
+                    <span className="font-mono text-[11px]">{s.step}</span>
+                  ) : (
+                    s.step
                   )}
-                >
-                  {s.label}
-                </span>
+                </div>
+
+                <div className="flex flex-col">
+                  <span
+                    className={cn(
+                      "text-xs font-semibold whitespace-nowrap leading-tight tracking-tight",
+                      isCurrent
+                        ? "text-slate-900"
+                        : isCompleted
+                        ? "text-slate-700"
+                        : "text-slate-400"
+                    )}
+                  >
+                    {s.label}
+                  </span>
+                  <span className="text-[10px] font-mono text-slate-400 leading-none mt-0.5">
+                    {isCompleted ? "Completed" : isCurrent ? "Active Step" : "Gated"}
+                  </span>
+                </div>
               </div>
 
               {idx < STEPS.length - 1 && (
                 <div
                   className={cn(
-                    "flex-1 h-0.5 mx-3",
-                    s.step < currentStep ? "bg-emerald-500" : "bg-slate-200"
+                    "flex-1 h-0.5 mx-3 rounded-full transition-colors",
+                    s.step < currentStep ? "bg-teal-600" : "bg-slate-200"
                   )}
                 />
               )}

@@ -8,21 +8,28 @@ import { PipelineStepper } from "@/components/clinical/PipelineStepper";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/Alert";
 import { ClinicalTooltip } from "@/components/clinical/ClinicalTooltip";
-import { Kbd } from "@/components/ui/Kbd";
 import { 
   FileText, 
-  ZoomIn, 
   AlertTriangle, 
   Check, 
   ArrowRight,
   Plus,
   Trash2,
-  ScanText
+  ScanText,
+  CheckCircle2,
+  HelpCircle
 } from "lucide-react";
+
+interface OcrLineItem {
+  id: number;
+  text: string;
+  confidence: number;
+  verified: boolean;
+}
 
 export default function OcrExtractPage() {
   const params = useParams();
@@ -31,9 +38,9 @@ export default function OcrExtractPage() {
 
   const [caseData, setCaseData] = useState<FixtureCase | null>(null);
   const [loading, setLoading] = useState(true);
-  const [lines, setLines] = useState<Array<{ id: number; text: string; confidence: number }>>([
-    { id: 1, text: "Tab. Warfarin 5mg - 1 Tab OD x 30 days", confidence: 0.96 },
-    { id: 2, text: "Tab. Aspirin 100mg - 1 Tab OD x 15 days", confidence: 0.94 },
+  const [lines, setLines] = useState<OcrLineItem[]>([
+    { id: 1, text: "Tab. Warfarin 5mg - 1 Tab OD x 30 days", confidence: 0.96, verified: true },
+    { id: 2, text: "Tab. Aspirin 100mg - 1 Tab OD x 15 days", confidence: 0.94, verified: false },
   ]);
   const [saving, setSaving] = useState(false);
 
@@ -51,12 +58,20 @@ export default function OcrExtractPage() {
   }, [caseId]);
 
   const handleUpdateLine = (id: number, text: string) => {
-    setLines(lines.map((l) => (l.id === id ? { ...l, text } : l)));
+    setLines(lines.map((l) => (l.id === id ? { ...l, text, verified: true } : l)));
+  };
+
+  const handleToggleVerified = (id: number) => {
+    setLines(lines.map((l) => (l.id === id ? { ...l, verified: !l.verified } : l)));
+  };
+
+  const handleVerifyAll = () => {
+    setLines(lines.map((l) => ({ ...l, verified: true })));
   };
 
   const handleAddLine = () => {
     const nextId = lines.length ? Math.max(...lines.map((l) => l.id)) + 1 : 1;
-    setLines([...lines, { id: nextId, text: "", confidence: 1.0 }]);
+    setLines([...lines, { id: nextId, text: "", confidence: 1.0, verified: true }]);
   };
 
   const handleRemoveLine = (id: number) => {
@@ -66,26 +81,33 @@ export default function OcrExtractPage() {
   const handleProceed = async () => {
     setSaving(true);
     try {
-      await api.updateExtractedText(caseId, lines);
+      await api.updateExtractedText(
+        caseId,
+        lines.map((l) => ({ id: l.id, text: l.text, confidence: l.confidence }))
+      );
       router.push(`/pharmacist/cases/${caseId}/medicines`);
     } finally {
       setSaving(false);
     }
   };
 
+  const allVerified = lines.length > 0 && lines.every((l) => l.verified);
+
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       <PipelineStepper currentStep={2} />
 
       {/* Untrusted OCR Warning Alert */}
-      <Alert variant="warning">
-        <AlertTriangle className="h-4 w-4" />
+      <Alert variant="warning" className="border-amber-300 bg-amber-50/60 shadow-subtle">
+        <AlertTriangle className="h-4 w-4 text-amber-700" />
         <AlertTitle className="font-bold text-amber-950 flex items-center gap-2">
-          <span>Clinical Safety Protocol (REQ-SAFE-001): Untrusted OCR Review</span>
+          <span>Clinical Safety Gate (REQ-SAFE-001): Untrusted OCR Review</span>
+          <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-amber-200 text-amber-900 border border-amber-300 uppercase">
+            Mandatory Human Review
+          </span>
         </AlertTitle>
-        <AlertDescription className="text-amber-900 mt-1">
-          Optical character recognition outputs are classified as untrusted drafts. The pharmacist must cross-verify each extracted line
-          against the prescription scan on the left and correct any misrecognized drug names, dosages, or frequencies before medicine reconciliation.
+        <AlertDescription className="text-amber-900 mt-1 text-xs leading-relaxed">
+          Optical character recognition outputs are classified as untrusted machine drafts. Suggested values are highlighted below and must be explicitly cross-verified against the prescription scan before progressing to medicine catalogue matching.
         </AlertDescription>
       </Alert>
 
@@ -97,92 +119,154 @@ export default function OcrExtractPage() {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left Pane: Scan Image Preview */}
-          <Card className="flex flex-col shadow-2xs overflow-hidden">
-            <div className="p-3 bg-slate-100/80 border-b border-slate-200 flex items-center justify-between text-xs text-slate-700">
-              <span className="font-semibold">Prescription Source Scan</span>
-              <span className="font-mono text-[11px] text-slate-500 font-tabular">Case: {caseId}</span>
+          <Card className="flex flex-col shadow-subtle overflow-hidden border-slate-200">
+            <div className="p-3.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-xs text-slate-700">
+              <span className="font-bold flex items-center gap-1.5">
+                <FileText className="w-3.5 h-3.5 text-slate-600" />
+                Prescription Source Document
+              </span>
+              <span className="font-mono text-[11px] text-slate-500 font-tabular bg-white px-2 py-0.5 rounded border border-slate-200">
+                Case: {caseId}
+              </span>
             </div>
 
-            <div className="p-6 flex-1 flex flex-col justify-center items-center bg-slate-900/5 min-h-[350px]">
-              <div className="w-full bg-white p-6 rounded border border-slate-300 shadow-xs font-mono text-xs space-y-3 leading-relaxed">
+            <div className="p-6 flex-1 flex flex-col justify-center items-center bg-slate-100/50 min-h-[350px]">
+              <div className="w-full bg-white p-6 rounded-lg border border-slate-300 shadow-xs font-mono text-xs space-y-3 leading-relaxed">
                 <div className="border-b border-slate-200 pb-2 text-[10px] text-slate-500 flex justify-between font-tabular">
-                  <span className="font-bold text-slate-800">METRO GENERAL HOSPITAL • OUTPATIENT Rx</span>
+                  <span className="font-bold text-slate-800 tracking-wider">METRO GENERAL HOSPITAL • OUTPATIENT Rx</span>
                   <span>2026-10-27</span>
                 </div>
                 <div className="text-slate-900 font-bold text-sm">
                   Patient: Rajan Sharma (P-9021)
                 </div>
-                <div className="p-2.5 bg-slate-50 rounded border border-slate-200 text-slate-800 space-y-2">
+                <div className="p-3 bg-slate-50 rounded border border-slate-200 text-slate-800 space-y-2">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold">1.</span> Tab. Warfarin 5mg — 1 Tab OD x 30 days
+                    <span className="font-bold text-slate-600">1.</span> Tab. Warfarin 5mg — 1 Tab OD x 30 days
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="font-bold">2.</span> Tab. Aspirin 100mg — 1 Tab OD x 15 days
+                    <span className="font-bold text-slate-600">2.</span> Tab. Aspirin 100mg — 1 Tab OD x 15 days
                   </div>
                 </div>
-                <div className="text-right text-[11px] text-slate-500 pt-1">
-                  Dr. Arvind Patel, MD (Reg #MED-4091)
+                <div className="flex justify-between items-center text-[11px] text-slate-500 pt-1">
+                  <span>Department: Cardiology</span>
+                  <span className="font-semibold text-slate-700">Dr. Arvind Patel, MD (Reg #MED-4091)</span>
                 </div>
               </div>
             </div>
           </Card>
 
           {/* Right Pane: OCR Text Extraction Editor */}
-          <Card className="flex flex-col shadow-2xs overflow-hidden">
-            <div className="p-3 bg-slate-100/80 border-b border-slate-200 flex items-center justify-between text-xs text-slate-700">
-              <span className="font-semibold flex items-center gap-1.5">
-                <ScanText className="w-3.5 h-3.5 text-slate-500" />
-                Extracted Text Blocks ({lines.length} lines)
+          <Card className="flex flex-col shadow-subtle overflow-hidden border-slate-200">
+            <div className="p-3.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-xs text-slate-700">
+              <span className="font-bold flex items-center gap-1.5">
+                <ScanText className="w-3.5 h-3.5 text-slate-600" />
+                Extracted Text Lines ({lines.length})
               </span>
-              <button
-                type="button"
-                onClick={handleAddLine}
-                className="text-xs text-slate-900 hover:text-slate-700 font-semibold inline-flex items-center gap-1 px-2 py-0.5 rounded bg-white border border-slate-200 shadow-2xs transition-colors"
-              >
-                <Plus className="w-3.5 h-3.5" /> Add Line
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleVerifyAll}
+                  className="text-xs text-teal-800 hover:text-teal-950 font-semibold inline-flex items-center gap-1 px-2 py-0.5 rounded bg-teal-50 border border-teal-200 transition-colors"
+                >
+                  <CheckCircle2 className="w-3 h-3 text-teal-600" /> Verify All
+                </button>
+                <button
+                  type="button"
+                  onClick={handleAddLine}
+                  className="text-xs text-slate-800 hover:text-slate-950 font-semibold inline-flex items-center gap-1 px-2 py-0.5 rounded bg-white border border-slate-200 shadow-2xs transition-colors"
+                >
+                  <Plus className="w-3.5 h-3.5" /> Add Line
+                </button>
+              </div>
             </div>
 
             <div className="p-4 flex-1 space-y-3 overflow-y-auto max-h-[450px]">
               {lines.map((line, idx) => (
-                <div key={line.id} className="p-3 bg-slate-50 rounded-md border border-slate-200 space-y-2">
-                  <div className="flex items-center justify-between text-[11px]">
-                    <span className="font-semibold text-slate-700">Line {idx + 1}</span>
+                <div
+                  key={line.id}
+                  className={`p-3.5 rounded-lg border transition-all ${
+                    line.verified
+                      ? "bg-teal-50/30 border-teal-200 shadow-2xs"
+                      : "bg-amber-50/30 border-amber-200 shadow-2xs"
+                  }`}
+                >
+                  <div className="flex items-center justify-between text-[11px] mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-slate-800">Line {idx + 1}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleToggleVerified(line.id)}
+                        className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded border transition-colors ${
+                          line.verified
+                            ? "bg-teal-100 text-teal-900 border-teal-300"
+                            : "bg-amber-100 text-amber-900 border-amber-300"
+                        }`}
+                      >
+                        {line.verified ? (
+                          <>
+                            <CheckCircle2 className="w-3 h-3 text-teal-700" /> Pharmacist Verified
+                          </>
+                        ) : (
+                          <>
+                            <HelpCircle className="w-3 h-3 text-amber-700" /> Suggested OCR (Unchecked)
+                          </>
+                        )}
+                      </button>
+                    </div>
+
                     <div className="flex items-center gap-2">
                       <ClinicalTooltip
                         term={`${Math.round(line.confidence * 100)}% Confidence`}
-                        explanation="Optical model confidence for raw character pattern recognition. Does not indicate clinical validity."
+                        explanation="Optical model character recognition confidence. Does not indicate clinical validity."
                       >
-                        <Badge variant={line.confidence >= 0.9 ? "info" : "moderate"} className="text-[10px] py-0 font-tabular">
-                          {Math.round(line.confidence * 100)}%
+                        <Badge
+                          variant={line.confidence >= 0.9 ? "info" : "moderate"}
+                          className="text-[10px] py-0 font-tabular font-mono"
+                        >
+                          {Math.round(line.confidence * 100)}% OCR
                         </Badge>
                       </ClinicalTooltip>
                       <button
                         type="button"
                         onClick={() => handleRemoveLine(line.id)}
-                        className="text-slate-400 hover:text-rose-600 p-0.5 rounded transition-colors"
+                        className="text-slate-400 hover:text-rose-600 p-1 rounded transition-colors"
                         title="Remove line"
+                        aria-label={`Remove Line ${idx + 1}`}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
+
                   <Input
                     value={line.text}
                     onChange={(e) => handleUpdateLine(line.id, e.target.value)}
-                    className="font-mono text-xs bg-white"
+                    placeholder="Enter or correct medication line..."
+                    className="font-mono text-xs bg-white text-slate-900 border-slate-300 focus:border-slate-900"
                   />
                 </div>
               ))}
             </div>
 
-            <div className="p-3 bg-slate-50 border-t border-slate-200 flex justify-end">
+            <div className="p-3.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+              <span className="text-[11px] text-slate-500">
+                {allVerified ? (
+                  <span className="text-teal-700 font-semibold flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> All {lines.length} lines confirmed
+                  </span>
+                ) : (
+                  <span className="text-amber-800 font-medium">
+                    Review and confirm lines before proceeding
+                  </span>
+                )}
+              </span>
+
               <Button
                 size="sm"
                 variant="primary"
                 onClick={handleProceed}
                 loading={saving}
-                className="gap-2 text-xs"
+                className="gap-2 text-xs bg-slate-900 hover:bg-slate-800"
               >
                 <Check className="w-3.5 h-3.5 text-emerald-400" /> Confirm Extraction & Match Medicines <ArrowRight className="w-3.5 h-3.5" />
               </Button>
