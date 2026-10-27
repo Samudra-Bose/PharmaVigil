@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "generate:types": "openapi-typescript 04-contracts/openapi.yaml -o src/types/api.generated.ts"
+    "generate:types": "openapi-typescript docs/04-contracts/openapi.yaml -o src/types/api.generated.ts"
   },
   "dependencies": {
     "@mantine/hooks": "^7.13.5",
