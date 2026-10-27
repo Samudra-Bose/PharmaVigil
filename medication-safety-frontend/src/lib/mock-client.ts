@@ -495,7 +495,7 @@ class MockEngine {
 
   async updateMembershipStatus(
     id: string,
-    status: "ACTIVE" | "SUSPENDED" | "REVOKED",
+    status: "ACTIVE" | "PENDING" | "SUSPENDED" | "REVOKED",
     role?: "PATIENT" | "DOCTOR" | "PHARMACIST" | "HOSPITAL_ADMIN"
   ) {
     const mem = this.memberships.find((m) => m.id === id);

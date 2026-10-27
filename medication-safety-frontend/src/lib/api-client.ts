@@ -229,7 +229,7 @@ class ApiClient {
     return this.get<HospitalMemberRecord[]>("/memberships");
   }
 
-  async updateMembershipStatus(id: string, status: "ACTIVE" | "SUSPENDED" | "REVOKED", role?: "PATIENT" | "DOCTOR" | "PHARMACIST" | "HOSPITAL_ADMIN") {
+  async updateMembershipStatus(id: string, status: "ACTIVE" | "PENDING" | "SUSPENDED" | "REVOKED", role?: "PATIENT" | "DOCTOR" | "PHARMACIST" | "HOSPITAL_ADMIN") {
     if (this.isMockMode) {
       return mockEngine.updateMembershipStatus(id, status, role);
     }

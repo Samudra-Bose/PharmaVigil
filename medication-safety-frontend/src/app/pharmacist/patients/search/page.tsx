@@ -59,7 +59,7 @@ export default function PatientSearchPage() {
         </form>
 
         {/* Quick Synthetic Demo Presets */}
-        <div className="flex items-center gap-2 text-xs text-slate-500 pt-2 border-t border-slate-100">
+        <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 pt-2 border-t border-slate-100">
           <span className="font-semibold text-slate-700">Quick Test Synthetic IDs:</span>
           <button
             type="button"
@@ -73,6 +73,32 @@ export default function PatientSearchPage() {
             className="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 border border-slate-200 font-mono font-semibold text-slate-800 transition-colors"
           >
             P-9021 (Rajan Sharma)
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setQuery("P-9022");
+              api.searchPatients("P-9022").then((d) => {
+                setResults(d);
+                setSearched(true);
+              });
+            }}
+            className="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 border border-slate-200 font-mono font-semibold text-slate-800 transition-colors"
+          >
+            P-9022 (Sunita Verma)
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setQuery("P-9023");
+              api.searchPatients("P-9023").then((d) => {
+                setResults(d);
+                setSearched(true);
+              });
+            }}
+            className="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 border border-slate-200 font-mono font-semibold text-slate-800 transition-colors"
+          >
+            P-9023 (Amit Kumar)
           </button>
         </div>
       </div>

@@ -90,13 +90,13 @@ function CreateRevisionContent() {
       setItems([
         ...items,
         {
-          rawExtractedText: candidate.displayName,
+          rawExtractedText: candidate.displayName || "Prescribed Medication",
           catalogueItemId: candidate.id,
           canonicalIngredientIds: candidate.canonicalIngredientIds,
-          brandText: candidate.displayName,
-          strengthValue: candidate.strengths[0]?.value || 500,
-          strengthUnit: candidate.strengths[0]?.unit || "mg",
-          dosageForm: candidate.dosageForms[0] || "Tablet",
+          brandText: candidate.displayName || null,
+          strengthValue: candidate.strengths?.[0]?.value ?? 500,
+          strengthUnit: candidate.strengths?.[0]?.unit ?? "mg",
+          dosageForm: candidate.dosageForms?.[0] ?? "Tablet",
           doseValue: 1,
           doseUnit: "Tablet",
           route: "Oral",

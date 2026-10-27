@@ -14,24 +14,37 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/Table";
-import { UserCheck, ArrowRight, ArrowLeft } from "lucide-react";
+import { UserCheck, ArrowRight, ArrowLeft, CheckCircle2, Ban } from "lucide-react";
 
 export default function AdminMembershipsPage() {
   const [memberships, setMemberships] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const data = await api.getMemberships();
+      setMemberships(data);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function loadData() {
-      try {
-        setLoading(true);
-        const data = await api.getMemberships();
-        setMemberships(data);
-      } finally {
-        setLoading(false);
-      }
-    }
     loadData();
   }, []);
+
+  const handleQuickStatusChange = async (id: string, newStatus: "ACTIVE" | "SUSPENDED" | "PENDING", currentRole: any) => {
+    setActionLoading(id);
+    try {
+      await api.updateMembershipStatus(id, newStatus, currentRole);
+      const updated = await api.getMemberships();
+      setMemberships(updated);
+    } finally {
+      setActionLoading(null);
+    }
+  };
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
@@ -63,7 +76,7 @@ export default function AdminMembershipsPage() {
               <TableHead>Contact Email</TableHead>
               <TableHead>Assigned / Requested Role</TableHead>
               <TableHead>Credential Status</TableHead>
-              <TableHead className="w-28 text-right">Action</TableHead>
+              <TableHead className="w-56 text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -80,11 +93,49 @@ export default function AdminMembershipsPage() {
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right">
-                  <Link href={`/admin/memberships/${m.id}`}>
-                    <Button size="sm" variant="outline" className="text-xs gap-1 h-7">
-                      Manage <ArrowRight className="w-3 h-3" />
-                    </Button>
-                  </Link>
+                  <div className="flex items-center justify-end gap-1.5">
+                    {m.status === "PENDING" && (
+                      <Button
+                        size="sm"
+                        variant="primary"
+                        loading={actionLoading === m.id}
+                        onClick={() => handleQuickStatusChange(m.id, "ACTIVE", m.role)}
+                        className="text-[11px] h-7 px-2 bg-emerald-700 hover:bg-emerald-800"
+                        title="Approve applicant credentials"
+                      >
+                        <CheckCircle2 className="w-3 h-3 mr-1" /> Approve
+                      </Button>
+                    )}
+                    {m.status === "ACTIVE" && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        loading={actionLoading === m.id}
+                        onClick={() => handleQuickStatusChange(m.id, "SUSPENDED", m.role)}
+                        className="text-[11px] h-7 px-2 text-rose-700 border-rose-200 hover:bg-rose-50"
+                        title="Suspend role access"
+                      >
+                        <Ban className="w-3 h-3 mr-1" /> Suspend
+                      </Button>
+                    )}
+                    {m.status === "SUSPENDED" && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        loading={actionLoading === m.id}
+                        onClick={() => handleQuickStatusChange(m.id, "ACTIVE", m.role)}
+                        className="text-[11px] h-7 px-2 text-emerald-700 border-emerald-200 hover:bg-emerald-50"
+                        title="Reactivate membership"
+                      >
+                        <CheckCircle2 className="w-3 h-3 mr-1" /> Reactivate
+                      </Button>
+                    )}
+                    <Link href={`/admin/memberships/${m.id}`}>
+                      <Button size="sm" variant="outline" className="text-xs gap-1 h-7">
+                        Manage <ArrowRight className="w-3 h-3" />
+                      </Button>
+                    </Link>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
