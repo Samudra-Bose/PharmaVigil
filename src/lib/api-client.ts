@@ -168,6 +168,39 @@ export function normalizeAxiosError(error: unknown): ApiClientError {
   );
 }
 
+export const SESSION_TOKEN_KEY = "pharmavigil_session_token";
+export const SESSION_USER_KEY = "pharmavigil_user";
+export const SESSION_MEMBERSHIP_KEY = "pharmavigil_membership";
+
+export function getStoredSessionToken(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    return localStorage.getItem(SESSION_TOKEN_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function setStoredSessionToken(token: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(SESSION_TOKEN_KEY, token);
+  } catch {
+    // Ignore storage quota
+  }
+}
+
+export function clearStoredSession(): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.removeItem(SESSION_TOKEN_KEY);
+    localStorage.removeItem(SESSION_USER_KEY);
+    localStorage.removeItem(SESSION_MEMBERSHIP_KEY);
+  } catch {
+    // Ignore
+  }
+}
+
 export const axiosInstance: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
@@ -179,7 +212,19 @@ export const axiosInstance: AxiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // 1. Correlation tracking
+    // 1. Session Token (Dual Persistence: Bearer & x-session-token headers)
+    const storedToken = getStoredSessionToken();
+    if (storedToken) {
+      if (typeof config.headers?.set === "function") {
+        config.headers.set("Authorization", `Bearer ${storedToken}`);
+        config.headers.set("x-session-token", storedToken);
+      } else if (config.headers) {
+        config.headers["Authorization"] = `Bearer ${storedToken}`;
+        config.headers["x-session-token"] = storedToken;
+      }
+    }
+
+    // 2. Correlation tracking
     const hasRequestId =
       typeof config.headers?.get === "function"
         ? config.headers.get("x-request-id")
@@ -197,7 +242,7 @@ axiosInstance.interceptors.request.use(
       }
     }
 
-    // 2. Dynamic Idempotency-Key for mutations (POST, PUT, PATCH, DELETE)
+    // 3. Dynamic Idempotency-Key for mutations (POST, PUT, PATCH, DELETE)
     const method = config.method?.toUpperCase();
     if (method && ["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
       const hasIdempotencyKey =
@@ -236,6 +281,9 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   (error: AxiosError) => {
+    if (error.response?.status === 401) {
+      clearStoredSession();
+    }
     return Promise.reject(normalizeAxiosError(error));
   },
 );
@@ -265,21 +313,59 @@ export class ApiClient {
     if (this.isMockMode) {
       return mockEngine.login(email);
     }
-    return this.post<CurrentUserResponse>("/auth/login", { email, password });
+    const res = await this.post<
+      CurrentUserResponse & { token?: string; sessionToken?: string }
+    >("/auth/login", { email, password });
+
+    const token = res.token || res.sessionToken;
+    if (token) {
+      setStoredSessionToken(token);
+    }
+    if (typeof window !== "undefined" && res.user) {
+      try {
+        localStorage.setItem(SESSION_USER_KEY, JSON.stringify(res.user));
+        const mem =
+          res.memberships?.[0] || (res as any).membership;
+        if (mem) {
+          localStorage.setItem(SESSION_MEMBERSHIP_KEY, JSON.stringify(mem));
+        }
+      } catch {
+        // Ignore
+      }
+    }
+    return res;
   }
 
   async logout(): Promise<void> {
-    if (this.isMockMode) {
-      return mockEngine.logout();
+    try {
+      if (this.isMockMode) {
+        await mockEngine.logout();
+      } else {
+        await this.post("/auth/logout", {});
+      }
+    } finally {
+      clearStoredSession();
     }
-    await this.post("/auth/logout", {});
   }
 
   async getCurrentUser(): Promise<CurrentUserResponse> {
     if (this.isMockMode) {
       return mockEngine.getCurrentUser();
     }
-    return this.get<CurrentUserResponse>("/auth/me");
+    const res = await this.get<CurrentUserResponse>("/auth/me");
+    if (typeof window !== "undefined" && res.user) {
+      try {
+        localStorage.setItem(SESSION_USER_KEY, JSON.stringify(res.user));
+        const mem =
+          res.memberships?.[0] || (res as any).membership;
+        if (mem) {
+          localStorage.setItem(SESSION_MEMBERSHIP_KEY, JSON.stringify(mem));
+        }
+      } catch {
+        // Ignore
+      }
+    }
+    return res;
   }
 
   switchDemoRole(

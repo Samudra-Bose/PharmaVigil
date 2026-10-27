@@ -35,9 +35,47 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<CurrentUserResponse["user"] | null>(null);
-  const [membership, setMembership] = useState<Membership | null>(null);
-  const [role, setRole] = useState<UserRole | null>(null);
+  const [user, setUser] = useState<CurrentUserResponse["user"] | null>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const cached = localStorage.getItem("pharmavigil_user");
+        return cached ? JSON.parse(cached) : null;
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  });
+
+  const [membership, setMembership] = useState<Membership | null>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const cached = localStorage.getItem("pharmavigil_membership");
+        return cached ? JSON.parse(cached) : null;
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  });
+
+  const [role, setRole] = useState<UserRole | null>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const cached = localStorage.getItem("pharmavigil_membership");
+        if (cached) {
+          const mem = JSON.parse(cached);
+          return (mem.assignedRole ||
+            mem.requestedRole ||
+            mem.role) as UserRole | null;
+        }
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  });
+
   const [hospital, setHospital] = useState<Hospital | null>(null);
   const [hospitalName, setHospitalName] = useState<string>(
     "Metro General Hospital",
@@ -63,11 +101,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const refreshSession = useCallback(async () => {
+    const hasToken =
+      typeof window !== "undefined"
+        ? localStorage.getItem("pharmavigil_session_token")
+        : null;
+
+    if (!hasToken && !isMockMode && pathname?.startsWith("/auth")) {
+      setIsLoading(false);
+      return;
+    }
+
     try {
       setIsLoading(true);
       const res = await api.getCurrentUser();
       setUser(res.user);
-      const activeMem = res.memberships?.[0] || (res as any).membership || null;
+      const activeMem =
+        res.memberships?.[0] || (res as any).membership || null;
       setMembership(activeMem);
       const assigned = (activeMem?.assignedRole ||
         activeMem?.requestedRole ||
@@ -89,7 +138,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     } finally {
       setIsLoading(false);
     }
-  }, [pathname, router]);
+  }, [pathname, router, isMockMode]);
 
   useEffect(() => {
     refreshSession();
