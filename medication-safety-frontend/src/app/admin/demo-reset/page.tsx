@@ -6,6 +6,10 @@ import Link from "next/link";
 import { api } from "@/lib/api-client";
 import { Button } from "@/components/ui/Button";
 import { ErrorDisplay } from "@/components/ui/ErrorDisplay";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/Alert";
+import { Card, CardContent } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import { Kbd } from "@/components/ui/Kbd";
 import { RotateCcw, AlertTriangle, ShieldAlert, ArrowLeft, Check } from "lucide-react";
 
 export default function ScopedDemoResetPage() {
@@ -58,26 +62,26 @@ export default function ScopedDemoResetPage() {
         </Link>
       </div>
 
-      {/* Safety Warning */}
-      <div className="p-4 rounded-lg bg-rose-50 border border-rose-300 text-xs text-rose-950 space-y-2">
-        <div className="font-bold flex items-center gap-2 text-rose-900">
-          <ShieldAlert className="w-4 h-4 text-rose-600" />
-          High-Consequence Administrative Action (REQ-SEC-006)
-        </div>
-        <p className="leading-relaxed">
-          This operation will clear all captured outpatient prescriptions, re-seed the deterministic
-          clinical scenario (Warfarin + Aspirin DDI for patient Rajan Sharma P-9021), and restore original staff personas.
-          The reset is strictly scoped to the synthetic demo workspace.
-        </p>
-        <div className="font-mono text-[11px] text-rose-900/80 pt-1 border-t border-rose-200">
-          Audit Guarantee: In accordance with clinical governance, the reset audit event itself is indelibly recorded and cannot be erased.
-        </div>
-      </div>
+      {/* Safety Warning Alert */}
+      <Alert variant="destructive">
+        <ShieldAlert className="h-4 w-4" />
+        <AlertTitle className="font-bold text-rose-950">High-Consequence Administrative Action (REQ-SEC-006)</AlertTitle>
+        <AlertDescription className="text-rose-900 mt-1 space-y-2">
+          <p className="leading-relaxed">
+            This operation will clear all captured outpatient prescriptions, re-seed the deterministic
+            clinical scenario (Warfarin + Aspirin DDI for patient Rajan Sharma P-9021), and restore original staff personas.
+            The reset is strictly scoped to the synthetic demo workspace.
+          </p>
+          <div className="font-mono text-[11px] text-rose-900/80 pt-1 border-t border-rose-200/80">
+            Audit Guarantee: In accordance with clinical governance, the reset audit event itself is indelibly recorded and cannot be erased.
+          </div>
+        </AlertDescription>
+      </Alert>
 
       {error && <ErrorDisplay error={error} />}
 
       {success ? (
-        <div className="p-6 rounded-lg bg-teal-50 border border-teal-300 text-center space-y-2">
+        <Card className="p-6 bg-teal-50 border-teal-300 text-center space-y-2">
           <Check className="w-8 h-8 text-teal-600 mx-auto" />
           <h3 className="text-sm font-bold text-teal-950">
             Demo Workspace Successfully Reset
@@ -85,36 +89,40 @@ export default function ScopedDemoResetPage() {
           <p className="text-xs text-teal-800">
             Deterministic fixtures restored. Redirecting to Pharmacist Pipeline...
           </p>
-        </div>
+        </Card>
       ) : (
-        <form onSubmit={handleReset} className="bg-white p-6 rounded-lg border border-slate-200 shadow-xs space-y-4 text-xs">
-          <div>
-            <label htmlFor="confirm" className="block text-xs font-bold text-slate-800 mb-1">
-              Type the confirmation phrase <span className="font-mono text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200">{REQUIRED_PHRASE}</span> to execute:
-            </label>
-            <input
-              id="confirm"
-              type="text"
-              required
-              value={confirmPhrase}
-              onChange={(e) => setConfirmPhrase(e.target.value)}
-              placeholder="RESET-DEMO-METRO"
-              className="w-full p-2.5 font-mono text-xs rounded border border-slate-300 focus:outline-none focus:ring-2 focus:ring-rose-500 uppercase"
-            />
-          </div>
+        <Card className="shadow-2xs">
+          <CardContent className="p-6 space-y-4 text-xs">
+            <form onSubmit={handleReset} className="space-y-4">
+              <div>
+                <label htmlFor="confirm" className="block text-xs font-bold text-slate-800 mb-1.5">
+                  Type the confirmation phrase <Kbd className="font-mono text-rose-700 bg-rose-50 border-rose-300">{REQUIRED_PHRASE}</Kbd> to execute:
+                </label>
+                <Input
+                  id="confirm"
+                  type="text"
+                  required
+                  value={confirmPhrase}
+                  onChange={(e) => setConfirmPhrase(e.target.value)}
+                  placeholder="RESET-DEMO-METRO"
+                  className="font-mono text-xs uppercase bg-white border-slate-300 focus-visible:ring-rose-500 focus-visible:border-rose-500"
+                />
+              </div>
 
-          <div className="pt-3 border-t border-slate-100 flex justify-end">
-            <Button
-              type="submit"
-              variant="danger"
-              disabled={!isMatch}
-              loading={submitting}
-              className="gap-2 text-xs"
-            >
-              <RotateCcw className="w-3.5 h-3.5" /> Execute Scoped Reset
-            </Button>
-          </div>
-        </form>
+              <div className="pt-3 border-t border-slate-100 flex justify-end">
+                <Button
+                  type="submit"
+                  variant="danger"
+                  disabled={!isMatch}
+                  loading={submitting}
+                  className="gap-2 text-xs"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" /> Execute Scoped Reset
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
       )}
     </div>
   );
