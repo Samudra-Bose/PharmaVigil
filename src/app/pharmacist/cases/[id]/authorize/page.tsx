@@ -11,14 +11,14 @@ import { Badge } from "@/components/ui/Badge";
 import { AlertCardSkeleton } from "@/components/skeletons";
 import { ErrorDisplay } from "@/components/ui/ErrorDisplay";
 import { formatDateTime } from "@/lib/utils";
-import { 
-  CheckCircle2, 
-  ShieldCheck, 
-  AlertTriangle, 
+import {
+  CheckCircle2,
+  ShieldCheck,
+  AlertTriangle,
   ArrowLeft,
   FileCheck,
   Lock,
-  ArrowRight 
+  ArrowRight,
 } from "lucide-react";
 
 export default function DispensingAuthorizePage() {
@@ -45,11 +45,17 @@ export default function DispensingAuthorizePage() {
     loadCase();
   }, [caseId]);
 
-  const hasUnresolvedAlerts = caseData?.alerts && caseData.alerts.some((a) => a.status === "OPEN" || a.status === "CHANGE_REQUIRED");
-  const isOutcomeClear = caseData?.checkResult?.data.outcome === "NO_MATCHING_RULE";
+  const hasUnresolvedAlerts =
+    caseData?.alerts &&
+    caseData.alerts.some(
+      (a) => a.status === "OPEN" || a.status === "CHANGE_REQUIRED",
+    );
+  const isOutcomeClear =
+    caseData?.checkResult?.data.outcome === "NO_MATCHING_RULE";
   const isAuthorized = caseData?.status === "DISPENSING_AUTHORIZED";
 
-  const canAuthorize = !hasUnresolvedAlerts && isOutcomeClear && acknowledged && !isAuthorized;
+  const canAuthorize =
+    !hasUnresolvedAlerts && isOutcomeClear && acknowledged && !isAuthorized;
 
   const handleAuthorize = async () => {
     if (!caseData || !canAuthorize) return;
@@ -59,7 +65,7 @@ export default function DispensingAuthorizePage() {
       await api.authorizeDispensing(caseId, caseData.currentRevisionNumber);
       clinicalToast.success(
         "Workflow Authorized",
-        "Dispensation recorded under Pharmacist credentials"
+        "Dispensation recorded under Pharmacist credentials",
       );
       const updated = await api.getCase(caseId);
       setCaseData(updated);
@@ -83,7 +89,8 @@ export default function DispensingAuthorizePage() {
             Pharmacist Dispensing Workflow Authorization
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Final workflow gate before physical medication dispensation at the hospital pharmacy
+            Final workflow gate before physical medication dispensation at the
+            hospital pharmacy
           </p>
         </div>
 
@@ -94,7 +101,12 @@ export default function DispensingAuthorizePage() {
         )}
       </div>
 
-      {error && <ErrorDisplay error={error} title="Authorization Rejected by Safety Gates" />}
+      {error && (
+        <ErrorDisplay
+          error={error}
+          title="Authorization Rejected by Safety Gates"
+        />
+      )}
 
       {loading ? (
         <AlertCardSkeleton />
@@ -110,16 +122,23 @@ export default function DispensingAuthorizePage() {
                 Dispensing Workflow Authorization Recorded
               </h2>
               <div className="text-xs text-slate-500 font-mono">
-                Timestamp: {formatDateTime(caseData?.dispensingAuthorization?.authorizedAt)} • Authorized by: {caseData?.dispensingAuthorization?.authorizedBy}
+                Timestamp:{" "}
+                {formatDateTime(
+                  caseData?.dispensingAuthorization?.authorizedAt,
+                )}{" "}
+                • Authorized by:{" "}
+                {caseData?.dispensingAuthorization?.authorizedBy}
               </div>
             </div>
           </div>
 
           <div className="p-3.5 bg-slate-50 rounded-md border border-slate-200 text-xs text-slate-600 leading-relaxed">
-            <span className="font-semibold text-slate-900">Safety Notice:</span> This recorded state
-            attests that all required workflow gates (patient identity confirmation, catalogue matching,
-            rule check execution against Revision {caseData?.currentRevisionNumber}, and alert resolution)
-            have been satisfied. It does not certify clinical infallibility or replace pharmacist professional vigilance.
+            <span className="font-semibold text-slate-900">Safety Notice:</span>{" "}
+            This recorded state attests that all required workflow gates
+            (patient identity confirmation, catalogue matching, rule check
+            execution against Revision {caseData?.currentRevisionNumber}, and
+            alert resolution) have been satisfied. It does not certify clinical
+            infallibility or replace pharmacist professional vigilance.
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
@@ -129,7 +148,8 @@ export default function DispensingAuthorizePage() {
               onClick={() => router.push(`/pharmacist/history`)}
               className="text-xs gap-1.5"
             >
-              View Revision & Audit History <ArrowRight className="w-3.5 h-3.5" />
+              View Revision & Audit History{" "}
+              <ArrowRight className="w-3.5 h-3.5" />
             </Button>
             <Button
               size="sm"
@@ -152,13 +172,19 @@ export default function DispensingAuthorizePage() {
 
             <div className="space-y-3 text-xs divide-y divide-slate-100">
               <div className="pt-2 flex items-center justify-between">
-                <span className="text-slate-700">1. Patient Identity Confirmed:</span>
+                <span className="text-slate-700">
+                  1. Patient Identity Confirmed:
+                </span>
                 <Badge variant="authorized">VERIFIED (P-9021)</Badge>
               </div>
 
               <div className="pt-2 flex items-center justify-between">
-                <span className="text-slate-700">2. Current Prescription Revision:</span>
-                <span className="font-mono font-bold text-slate-900">Revision {caseData?.currentRevisionNumber}</span>
+                <span className="text-slate-700">
+                  2. Current Prescription Revision:
+                </span>
+                <span className="font-mono font-bold text-slate-900">
+                  Revision {caseData?.currentRevisionNumber}
+                </span>
               </div>
 
               <div className="pt-2 flex items-center justify-between">
@@ -169,7 +195,9 @@ export default function DispensingAuthorizePage() {
               </div>
 
               <div className="pt-2 flex items-center justify-between">
-                <span className="text-slate-700">4. Open Clinical Alerts Status:</span>
+                <span className="text-slate-700">
+                  4. Open Clinical Alerts Status:
+                </span>
                 {hasUnresolvedAlerts ? (
                   <Badge variant="critical">UNRESOLVED ALERTS PENDING</Badge>
                 ) : (
@@ -182,8 +210,9 @@ export default function DispensingAuthorizePage() {
               <div className="p-3 bg-amber-50 rounded border border-amber-300 text-xs text-amber-900 flex items-start gap-2">
                 <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                 <span>
-                  Authorization is locked because open clinical alerts exist on this case.
-                  A doctor must review and record clinical disposition before dispensing can be authorized.
+                  Authorization is locked because open clinical alerts exist on
+                  this case. A doctor must review and record clinical
+                  disposition before dispensing can be authorized.
                 </span>
               </div>
             )}
@@ -200,10 +229,12 @@ export default function DispensingAuthorizePage() {
                 />
                 <div className="text-xs">
                   <span className="font-bold text-slate-900">
-                    I acknowledge that the workflow requirements have been satisfied (WORKFLOW_REQUIREMENTS_REVIEWED).
+                    I acknowledge that the workflow requirements have been
+                    satisfied (WORKFLOW_REQUIREMENTS_REVIEWED).
                   </span>
                   <p className="text-slate-500 mt-0.5">
-                    I have physically verified the dispensed medications against the confirmed items.
+                    I have physically verified the dispensed medications against
+                    the confirmed items.
                   </p>
                 </div>
               </label>
@@ -229,7 +260,8 @@ export default function DispensingAuthorizePage() {
               onClick={handleAuthorize}
               className="gap-2 text-xs w-full sm:w-auto"
             >
-              <Lock className="w-4 h-4 text-emerald-400" /> Record Workflow Authorization
+              <Lock className="w-4 h-4 text-emerald-400" /> Record Workflow
+              Authorization
             </Button>
           </div>
         </div>

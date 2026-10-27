@@ -22,10 +22,15 @@ import type {
   PatientMedicationHistoryItem,
   MedicationOrderStatus,
 } from "@/types";
-import type { FixtureCase, PatientRecord, AppointmentRecord } from "./mock-data/fixtures";
+import type {
+  FixtureCase,
+  PatientRecord,
+  AppointmentRecord,
+} from "./mock-data/fixtures";
 
 const USE_MOCKS = process.env.NEXT_PUBLIC_ENABLE_MOCKS !== "false";
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8787/api/v1";
+export const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8787/api/v1";
 
 export interface HospitalMemberRecord {
   id: string;
@@ -88,7 +93,7 @@ export class ApiClientError extends Error {
     code: string = "INTERNAL_ERROR",
     requestId?: string,
     details?: Array<{ field?: string; message: string; code?: string }>,
-    statusCode?: number
+    statusCode?: number,
   ) {
     super(message);
     this.name = "ApiClientError";
@@ -116,7 +121,9 @@ export function normalizeAxiosError(error: unknown): ApiClientError {
 
   const res = axiosErr?.response;
   const requestId =
-    (typeof res?.headers?.get === "function" ? (res.headers.get("x-request-id") as string) : undefined) ||
+    (typeof res?.headers?.get === "function"
+      ? (res.headers.get("x-request-id") as string)
+      : undefined) ||
     (res?.headers?.["x-request-id"] as string) ||
     res?.data?.error?.requestId;
 
@@ -127,7 +134,7 @@ export function normalizeAxiosError(error: unknown): ApiClientError {
       errData.code || `HTTP_${res.status}`,
       requestId,
       errData.details,
-      res.status
+      res.status,
     );
   }
 
@@ -145,17 +152,19 @@ export function normalizeAxiosError(error: unknown): ApiClientError {
     };
     const code = defaultCodes[status] || `HTTP_${status}`;
     return new ApiClientError(
-      res.statusText || axiosErr.message || `Request failed with status ${status}`,
+      res.statusText ||
+        axiosErr.message ||
+        `Request failed with status ${status}`,
       code,
       requestId,
       undefined,
-      status
+      status,
     );
   }
 
   return new ApiClientError(
     axiosErr?.message || "Network connection failed.",
-    "NETWORK_FAILURE"
+    "NETWORK_FAILURE",
   );
 }
 
@@ -194,7 +203,8 @@ axiosInstance.interceptors.request.use(
       const hasIdempotencyKey =
         typeof config.headers?.get === "function"
           ? config.headers.get("Idempotency-Key")
-          : (config.headers?.["Idempotency-Key"] || config.headers?.["idempotency-key"]);
+          : config.headers?.["Idempotency-Key"] ||
+            config.headers?.["idempotency-key"];
 
       if (!hasIdempotencyKey) {
         const timestamp = Date.now();
@@ -210,20 +220,24 @@ axiosInstance.interceptors.request.use(
 
     return config;
   },
-  (error) => Promise.reject(normalizeAxiosError(error))
+  (error) => Promise.reject(normalizeAxiosError(error)),
 );
 
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => {
     // Automatically unwrap { data: T } envelope to T
-    if (response.data && typeof response.data === "object" && "data" in response.data) {
+    if (
+      response.data &&
+      typeof response.data === "object" &&
+      "data" in response.data
+    ) {
       response.data = response.data.data;
     }
     return response;
   },
   (error: AxiosError) => {
     return Promise.reject(normalizeAxiosError(error));
-  }
+  },
 );
 
 export class ApiClient {
@@ -268,7 +282,9 @@ export class ApiClient {
     return this.get<CurrentUserResponse>("/auth/me");
   }
 
-  switchDemoRole(role: "PHARMACIST" | "DOCTOR" | "PATIENT" | "HOSPITAL_ADMIN"): void {
+  switchDemoRole(
+    role: "PHARMACIST" | "DOCTOR" | "PATIENT" | "HOSPITAL_ADMIN",
+  ): void {
     mockEngine.switchPersona(role);
   }
 
@@ -279,7 +295,12 @@ export class ApiClient {
     requestedRole: "PATIENT" | "DOCTOR" | "PHARMACIST" | "HOSPITAL_ADMIN";
     hospitalSlug?: string;
     syntheticHospitalPatientId?: string;
-  }): Promise<{ id?: string; userId?: string; status?: "PENDING"; message?: string }> {
+  }): Promise<{
+    id?: string;
+    userId?: string;
+    status?: "PENDING";
+    message?: string;
+  }> {
     if (this.isMockMode) {
       return mockEngine.registerApplicant(applicant);
     }
@@ -287,18 +308,25 @@ export class ApiClient {
       hospitalSlug: applicant.hospitalSlug || "demo-hospital",
       ...applicant,
     };
-    return this.post<{ id?: string; userId?: string; status?: "PENDING"; message?: string }>("/auth/register", payload);
+    return this.post<{
+      id?: string;
+      userId?: string;
+      status?: "PENDING";
+      message?: string;
+    }>("/auth/register", payload);
   }
 
   // ==========================================
   // Patient API
   // ==========================================
-  async searchPatients(hospitalPatientIdOrQuery: string): Promise<PatientRecord[]> {
+  async searchPatients(
+    hospitalPatientIdOrQuery: string,
+  ): Promise<PatientRecord[]> {
     if (this.isMockMode) {
       return mockEngine.searchPatients(hospitalPatientIdOrQuery);
     }
     return this.get<PatientRecord[]>(
-      `/patients/search?hospitalPatientId=${encodeURIComponent(hospitalPatientIdOrQuery)}`
+      `/patients/search?hospitalPatientId=${encodeURIComponent(hospitalPatientIdOrQuery)}`,
     );
   }
 
@@ -314,55 +342,61 @@ export class ApiClient {
       return mockEngine.getAllergies(patientId);
     }
     const res = await this.get<{ data: PatientAllergy[] }>(
-      `/patients/${patientId}/allergies`
+      `/patients/${patientId}/allergies`,
     );
     return res.data || [];
   }
 
   async addAllergy(
     patientId: string,
-    allergy: Partial<PatientAllergy>
+    allergy: Partial<PatientAllergy>,
   ): Promise<PatientAllergy> {
     if (this.isMockMode) {
       return mockEngine.addAllergy(patientId, allergy);
     }
-    return this.post<PatientAllergy>(`/patients/${patientId}/allergies`, allergy);
+    return this.post<PatientAllergy>(
+      `/patients/${patientId}/allergies`,
+      allergy,
+    );
   }
 
   async getMedicationHistory(
-    patientId: string
+    patientId: string,
   ): Promise<PatientMedicationHistoryItem[]> {
     if (this.isMockMode) {
       return mockEngine.getMedicationHistory(patientId);
     }
     const res = await this.get<{ data: PatientMedicationHistoryItem[] }>(
-      `/patients/${patientId}/medication-history`
+      `/patients/${patientId}/medication-history`,
     );
     return res.data || [];
   }
 
   async addMedicationHistory(
     patientId: string,
-    medHistory: Partial<PatientMedicationHistoryItem>
+    medHistory: Partial<PatientMedicationHistoryItem>,
   ): Promise<PatientMedicationHistoryItem> {
     if (this.isMockMode) {
       return mockEngine.addMedicationHistory(patientId, medHistory);
     }
     return this.post<PatientMedicationHistoryItem>(
       `/patients/${patientId}/medication-history`,
-      medHistory
+      medHistory,
     );
   }
 
   // ==========================================
   // Medicine Catalogue API
   // ==========================================
-  async searchCatalogue(query: string, limit: number = 20): Promise<MedicineCandidate[]> {
+  async searchCatalogue(
+    query: string,
+    limit: number = 20,
+  ): Promise<MedicineCandidate[]> {
     if (this.isMockMode) {
       return mockEngine.searchCatalogue(query);
     }
     return this.get<MedicineCandidate[]>(
-      `/medicine-catalogue/search?query=${encodeURIComponent(query)}&limit=${limit}`
+      `/medicine-catalogue/search?query=${encodeURIComponent(query)}&limit=${limit}`,
     );
   }
 
@@ -386,14 +420,19 @@ export class ApiClient {
   async createCapture(
     patientIdOrData: string | CreateCaptureInput,
     rawText?: string,
-    mode: "BROWSER_OCR" | "MANUAL_ENTRY" | "SEEDED_IMAGE" = "BROWSER_OCR"
+    mode: "BROWSER_OCR" | "MANUAL_ENTRY" | "SEEDED_IMAGE" = "BROWSER_OCR",
   ): Promise<FixtureCase> {
     if (this.isMockMode) {
-      const patientId = typeof patientIdOrData === "string" ? patientIdOrData : patientIdOrData.patientId;
+      const patientId =
+        typeof patientIdOrData === "string"
+          ? patientIdOrData
+          : patientIdOrData.patientId;
       const text =
         typeof patientIdOrData === "string"
           ? rawText || ""
-          : patientIdOrData.extractedText || patientIdOrData.rawExtractedText || "";
+          : patientIdOrData.extractedText ||
+            patientIdOrData.rawExtractedText ||
+            "";
       return mockEngine.createCapture(patientId, text);
     }
 
@@ -409,7 +448,10 @@ export class ApiClient {
             patientId: patientIdOrData.patientId,
             captureMode: patientIdOrData.captureMode || "BROWSER_OCR",
             ocrLanguage: patientIdOrData.ocrLanguage || "eng",
-            extractedText: patientIdOrData.extractedText || patientIdOrData.rawExtractedText || "",
+            extractedText:
+              patientIdOrData.extractedText ||
+              patientIdOrData.rawExtractedText ||
+              "",
           };
 
     return this.post<FixtureCase>("/prescription-captures", payload);
@@ -417,8 +459,10 @@ export class ApiClient {
 
   async confirmMedicines(
     caseId: string,
-    itemsOrInput: PrescriptionItem[] | { confirmedItems?: PrescriptionItem[]; items?: PrescriptionItem[] },
-    expectedVersion: number = 1
+    itemsOrInput:
+      | PrescriptionItem[]
+      | { confirmedItems?: PrescriptionItem[]; items?: PrescriptionItem[] },
+    expectedVersion: number = 1,
   ): Promise<FixtureCase> {
     const items = Array.isArray(itemsOrInput)
       ? itemsOrInput
@@ -431,14 +475,37 @@ export class ApiClient {
     return this.post<FixtureCase>(
       `/prescription-captures/${caseId}/confirm`,
       { patientConfirmed: true, items },
-      { "If-Match": String(expectedVersion) }
+      { "If-Match": String(expectedVersion) },
     );
+  }
+
+  async updateExtraction(
+    caseId: string,
+    updates: { extractedText?: string; items?: any[] },
+    expectedVersion: number = 1,
+  ): Promise<FixtureCase> {
+    if (this.isMockMode) {
+      return mockEngine.getCase(caseId);
+    }
+    return this.patch<FixtureCase>(
+      `/prescription-captures/${caseId}`,
+      updates,
+      { "If-Match": String(expectedVersion) },
+    );
+  }
+
+  async updateCapture(
+    caseId: string,
+    updates: { extractedText?: string; items?: any[] },
+    expectedVersion: number = 1,
+  ): Promise<FixtureCase> {
+    return this.updateExtraction(caseId, updates, expectedVersion);
   }
 
   async updateExtractedText(
     caseId: string,
     lines: Array<{ id: number; text: string; confidence: number }>,
-    expectedVersion: number = 1
+    expectedVersion: number = 1,
   ): Promise<FixtureCase> {
     if (this.isMockMode) {
       return mockEngine.updateExtractedText(caseId, lines);
@@ -446,7 +513,7 @@ export class ApiClient {
     return this.patch<FixtureCase>(
       `/prescription-captures/${caseId}`,
       { extractedText: lines.map((l) => l.text).join("\n") },
-      { "If-Match": String(expectedVersion) }
+      { "If-Match": String(expectedVersion) },
     );
   }
 
@@ -455,7 +522,7 @@ export class ApiClient {
   // ==========================================
   async runCheck(
     target: string | RunCheckParams,
-    subjectVersion: number = 1
+    subjectVersion: number = 1,
   ): Promise<CheckEnvelope> {
     const subjectId = typeof target === "string" ? target : target.subjectId;
     if (this.isMockMode) {
@@ -464,7 +531,11 @@ export class ApiClient {
 
     const body =
       typeof target === "string"
-        ? { subjectType: "PRESCRIPTION_REVISION", subjectId: target, subjectVersion }
+        ? {
+            subjectType: "PRESCRIPTION_REVISION",
+            subjectId: target,
+            subjectVersion,
+          }
         : {
             subjectType: target.subjectType || "PRESCRIPTION_REVISION",
             subjectId: target.subjectId,
@@ -478,7 +549,7 @@ export class ApiClient {
     caseId: string,
     items: PrescriptionItem[],
     changeReason: string,
-    expectedVersion: number = 1
+    expectedVersion: number = 1,
   ): Promise<FixtureCase> {
     if (this.isMockMode) {
       return mockEngine.createRevision(caseId, items, changeReason);
@@ -486,7 +557,7 @@ export class ApiClient {
     return this.post<FixtureCase>(
       `/prescriptions/${caseId}/revisions`,
       { items, changeReason, expectedVersion },
-      { "If-Match": String(expectedVersion) }
+      { "If-Match": String(expectedVersion) },
     );
   }
 
@@ -498,10 +569,14 @@ export class ApiClient {
       | "CLINICAL_DISPOSITION_RECORDED"
       | "OTHER_DOCUMENTED",
     rationale: string,
-    expectedVersion: number = 1
+    expectedVersion: number = 1,
   ): Promise<void> {
     if (this.isMockMode) {
-      return mockEngine.recordDisposition(alertId, dispositionType as any, rationale);
+      return mockEngine.recordDisposition(
+        alertId,
+        dispositionType as any,
+        rationale,
+      );
     }
 
     // Normalize CLINICAL_DISPOSITION_RECORDED to CLINICALLY_REVIEWED for OpenAPI contract conformance
@@ -513,7 +588,7 @@ export class ApiClient {
     await this.post(
       `/alerts/${alertId}/disposition`,
       { dispositionType: normalizedType, rationale },
-      { "If-Match": String(expectedVersion) }
+      { "If-Match": String(expectedVersion) },
     );
   }
 
@@ -521,7 +596,7 @@ export class ApiClient {
     caseId: string,
     expectedVersion: number,
     revisionId?: string,
-    checkRunId?: string
+    checkRunId?: string,
   ): Promise<void> {
     if (this.isMockMode) {
       return mockEngine.authorizeDispensing(caseId, expectedVersion);
@@ -556,7 +631,9 @@ export class ApiClient {
     return this.get<AppointmentRecord[]>(`/appointments${qs}`);
   }
 
-  async createAppointment(data: CreateAppointmentInput): Promise<AppointmentRecord> {
+  async createAppointment(
+    data: CreateAppointmentInput,
+  ): Promise<AppointmentRecord> {
     if (this.isMockMode) {
       return mockEngine.createAppointment(data as any);
     }
@@ -564,7 +641,10 @@ export class ApiClient {
       patientId: data.patientId,
       doctorUserId: data.doctorUserId || data.clinicianUserId || "",
       startAt: data.startAt || data.slotStart || new Date().toISOString(),
-      endAt: data.endAt || data.slotEnd || new Date(Date.now() + 30 * 60000).toISOString(),
+      endAt:
+        data.endAt ||
+        data.slotEnd ||
+        new Date(Date.now() + 30 * 60000).toISOString(),
       reason: data.reason || "General Consultation",
     };
     return this.post<AppointmentRecord>("/appointments", payload);
@@ -573,7 +653,7 @@ export class ApiClient {
   async cancelAppointment(
     appointmentId: string,
     expectedVersion: number = 1,
-    reason?: string
+    reason?: string,
   ): Promise<AppointmentRecord> {
     if (this.isMockMode) {
       return mockEngine.cancelAppointment(appointmentId);
@@ -581,7 +661,7 @@ export class ApiClient {
     return this.post<AppointmentRecord>(
       `/appointments/${appointmentId}/cancel`,
       { expectedVersion, reason },
-      { "If-Match": String(expectedVersion) }
+      { "If-Match": String(expectedVersion) },
     );
   }
 
@@ -602,65 +682,90 @@ export class ApiClient {
       assignedRole: "PATIENT" | "DOCTOR" | "PHARMACIST" | "HOSPITAL_ADMIN";
       expectedVersion?: number;
       reason?: string;
-    }
+    },
   ): Promise<HospitalMemberRecord> {
     if (this.isMockMode) {
-      await mockEngine.updateMembershipStatus(membershipId, "ACTIVE", options.assignedRole);
+      await mockEngine.updateMembershipStatus(
+        membershipId,
+        "ACTIVE",
+        options.assignedRole,
+      );
       const members = await mockEngine.getMemberships();
       return members.find((m) => m.id === membershipId)!;
     }
-    return this.post<HospitalMemberRecord>(`/memberships/${membershipId}/approve`, {
-      assignedRole: options.assignedRole,
-      expectedVersion: options.expectedVersion ?? 0,
-      reason: options.reason,
-    });
+    return this.post<HospitalMemberRecord>(
+      `/memberships/${membershipId}/approve`,
+      {
+        assignedRole: options.assignedRole,
+        expectedVersion: options.expectedVersion ?? 0,
+        reason: options.reason,
+      },
+    );
   }
 
   async rejectMembership(
     membershipId: string,
-    options: { expectedVersion?: number; reason?: string } = {}
+    options: { expectedVersion?: number; reason?: string } = {},
   ): Promise<{ message: string }> {
     if (this.isMockMode) {
       await mockEngine.updateMembershipStatus(membershipId, "REVOKED");
       return { message: "Membership rejected" };
     }
-    return this.post<{ message: string }>(`/memberships/${membershipId}/reject`, {
-      expectedVersion: options.expectedVersion ?? 0,
-      reason: options.reason,
-    });
+    return this.post<{ message: string }>(
+      `/memberships/${membershipId}/reject`,
+      {
+        expectedVersion: options.expectedVersion ?? 0,
+        reason: options.reason,
+      },
+    );
   }
 
   async suspendMembership(
     membershipId: string,
-    options: { reason?: string; expectedVersion?: number } = {}
+    options: { reason?: string; expectedVersion?: number } = {},
   ): Promise<{ message: string }> {
     if (this.isMockMode) {
       await mockEngine.updateMembershipStatus(membershipId, "SUSPENDED");
       return { message: "Membership suspended" };
     }
-    return this.post<{ message: string }>(`/memberships/${membershipId}/suspend`, {
-      reason: options.reason || "Suspended by admin",
-      expectedVersion: options.expectedVersion ?? 0,
-    });
+    return this.post<{ message: string }>(
+      `/memberships/${membershipId}/suspend`,
+      {
+        reason: options.reason || "Suspended by admin",
+        expectedVersion: options.expectedVersion ?? 0,
+      },
+    );
   }
 
   async updateMembershipStatus(
     id: string,
     status: "ACTIVE" | "PENDING" | "SUSPENDED" | "REVOKED",
     role?: "PATIENT" | "DOCTOR" | "PHARMACIST" | "HOSPITAL_ADMIN",
-    expectedVersion: number = 0
+    expectedVersion: number = 0,
   ) {
     if (this.isMockMode) {
       return mockEngine.updateMembershipStatus(id, status, role);
     }
     if (status === "ACTIVE") {
-      return this.approveMembership(id, { assignedRole: role || "PATIENT", expectedVersion });
+      return this.approveMembership(id, {
+        assignedRole: role || "PATIENT",
+        expectedVersion,
+      });
     } else if (status === "SUSPENDED") {
-      return this.suspendMembership(id, { reason: "Suspended by admin", expectedVersion });
+      return this.suspendMembership(id, {
+        reason: "Suspended by admin",
+        expectedVersion,
+      });
     } else if (status === "REVOKED") {
-      return this.rejectMembership(id, { reason: "Revoked by admin", expectedVersion });
+      return this.rejectMembership(id, {
+        reason: "Revoked by admin",
+        expectedVersion,
+      });
     }
-    throw new ApiClientError(`Cannot update membership directly to status ${status}`, "INVALID_ACTION");
+    throw new ApiClientError(
+      `Cannot update membership directly to status ${status}`,
+      "INVALID_ACTION",
+    );
   }
 
   // ==========================================
@@ -668,7 +773,7 @@ export class ApiClient {
   // ==========================================
   async resetDemoWorkspace(
     workspaceId: string = "ws_metro_default",
-    confirmation: "RESET_SYNTHETIC_DEMO" = "RESET_SYNTHETIC_DEMO"
+    confirmation: "RESET_SYNTHETIC_DEMO" = "RESET_SYNTHETIC_DEMO",
   ): Promise<void> {
     if (this.isMockMode) {
       return mockEngine.resetDemoWorkspace();
@@ -678,7 +783,7 @@ export class ApiClient {
 
   async seedDemoWorkspace(
     workspaceId: string = "ws_metro_default",
-    confirmation: "SEED_SYNTHETIC_DEMO" = "SEED_SYNTHETIC_DEMO"
+    confirmation: "SEED_SYNTHETIC_DEMO" = "SEED_SYNTHETIC_DEMO",
   ): Promise<void> {
     if (this.isMockMode) {
       return;
@@ -692,7 +797,7 @@ export class ApiClient {
   async getNotifications(
     unreadOnly: boolean = false,
     cursor?: string,
-    limit: number = 20
+    limit: number = 20,
   ): Promise<NotificationItem[]> {
     if (this.isMockMode) {
       return mockEngine.getNotifications(unreadOnly);
@@ -702,7 +807,9 @@ export class ApiClient {
     if (cursor) params.append("cursor", cursor);
     if (limit) params.append("limit", String(limit));
     const qs = params.toString() ? `?${params.toString()}` : "";
-    const res = await this.get<{ data: NotificationItem[] } | NotificationItem[]>(`/notifications${qs}`);
+    const res = await this.get<
+      { data: NotificationItem[] } | NotificationItem[]
+    >(`/notifications${qs}`);
     if (Array.isArray(res)) return res;
     return res.data || [];
   }
@@ -737,7 +844,8 @@ export class ApiClient {
     }
     const params = new URLSearchParams();
     if (filter?.patientId) params.append("patientId", filter.patientId);
-    if (filter?.status && filter.status !== "ALL") params.append("status", filter.status);
+    if (filter?.status && filter.status !== "ALL")
+      params.append("status", filter.status);
     if (filter?.limit) params.append("limit", String(filter.limit));
     const qs = params.toString() ? `?${params.toString()}` : "";
     const res = await this.get<any>(`/medication-orders${qs}`);
@@ -781,12 +889,14 @@ export class ApiClient {
 
   async updateMedicationOrderStatus(
     id: string,
-    status: MedicationOrderStatus
+    status: MedicationOrderStatus,
   ): Promise<InpatientMedicationOrder> {
     if (this.isMockMode) {
       return mockEngine.updateMedicationOrderStatus(id, status);
     }
-    const res = await this.post<any>(`/medication-orders/${id}/status`, { status });
+    const res = await this.post<any>(`/medication-orders/${id}/status`, {
+      status,
+    });
     return res?.data ?? res;
   }
 
@@ -803,7 +913,8 @@ export class ApiClient {
       return mockEngine.listAuditEvents(filter);
     }
     const params = new URLSearchParams();
-    if (filter?.resourceType && filter.resourceType !== "ALL") params.append("resourceType", filter.resourceType);
+    if (filter?.resourceType && filter.resourceType !== "ALL")
+      params.append("resourceType", filter.resourceType);
     if (filter?.actorUserId) params.append("actorUserId", filter.actorUserId);
     if (filter?.limit) params.append("limit", String(filter.limit));
     if (filter?.cursor) params.append("cursor", filter.cursor);
@@ -844,7 +955,8 @@ export class ApiClient {
       return mockEngine.listRuleSets(filter);
     }
     const params = new URLSearchParams();
-    if (filter?.status && filter.status !== "ALL") params.append("status", filter.status);
+    if (filter?.status && filter.status !== "ALL")
+      params.append("status", filter.status);
     if (filter?.limit) params.append("limit", String(filter.limit));
     const qs = params.toString() ? `?${params.toString()}` : "";
     const res = await this.get<any>(`/rule-sets${qs}`);
@@ -854,7 +966,10 @@ export class ApiClient {
   // ==========================================
   // Core HTTP Primitives
   // ==========================================
-  private async get<T>(path: string, headers?: Record<string, string>): Promise<T> {
+  private async get<T>(
+    path: string,
+    headers?: Record<string, string>,
+  ): Promise<T> {
     const res = await this.axios.get<T>(path, { headers });
     return res.data;
   }
@@ -862,7 +977,7 @@ export class ApiClient {
   private async post<T>(
     path: string,
     body?: unknown,
-    headers?: Record<string, string>
+    headers?: Record<string, string>,
   ): Promise<T> {
     const res = await this.axios.post<T>(path, body, { headers });
     return res.data;
@@ -871,7 +986,7 @@ export class ApiClient {
   private async patch<T>(
     path: string,
     body?: unknown,
-    headers?: Record<string, string>
+    headers?: Record<string, string>,
   ): Promise<T> {
     const res = await this.axios.patch<T>(path, body, { headers });
     return res.data;
@@ -880,13 +995,16 @@ export class ApiClient {
   private async put<T>(
     path: string,
     body?: unknown,
-    headers?: Record<string, string>
+    headers?: Record<string, string>,
   ): Promise<T> {
     const res = await this.axios.put<T>(path, body, { headers });
     return res.data;
   }
 
-  private async delete<T>(path: string, headers?: Record<string, string>): Promise<T> {
+  private async delete<T>(
+    path: string,
+    headers?: Record<string, string>,
+  ): Promise<T> {
     const res = await this.axios.delete<T>(path, { headers });
     return res.data;
   }

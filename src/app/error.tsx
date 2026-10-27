@@ -26,18 +26,26 @@ export default function ErrorBoundary({
           System Interruption (Fail-Closed)
         </h1>
         <p className="mt-2 text-xs text-rose-900/80 leading-relaxed">
-          An application error occurred. To protect patient safety, clinical workflow advancement is halted.
-          No unverified state has been authorized.
+          An application error occurred. To protect patient safety, clinical
+          workflow advancement is halted. No unverified state has been
+          authorized.
         </p>
 
         {error.digest && (
           <div className="mt-3 p-2 bg-slate-50 rounded border border-slate-200 text-left">
-            <span className="text-[10px] font-mono text-slate-500">Error Digest: {error.digest}</span>
+            <span className="text-[10px] font-mono text-slate-500">
+              Error Digest: {error.digest}
+            </span>
           </div>
         )}
 
         <div className="mt-6 pt-4 border-t border-slate-100 flex justify-center gap-2">
-          <Button size="sm" variant="outline" onClick={() => reset()} className="gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => reset()}
+            className="gap-2"
+          >
             <RefreshCw className="w-3.5 h-3.5" /> Attempt Safe Reload
           </Button>
         </div>

@@ -1,8 +1,19 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import { api, ApiClientError } from "@/lib/api-client";
-import type { CurrentUserResponse, Membership, UserRole, Hospital } from "@/types";
+import type {
+  CurrentUserResponse,
+  Membership,
+  UserRole,
+  Hospital,
+} from "@/types";
 import { useRouter, usePathname } from "next/navigation";
 
 interface AuthContextType {
@@ -21,12 +32,16 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<CurrentUserResponse["user"] | null>(null);
   const [membership, setMembership] = useState<Membership | null>(null);
   const [role, setRole] = useState<UserRole | null>(null);
   const [hospital, setHospital] = useState<Hospital | null>(null);
-  const [hospitalName, setHospitalName] = useState<string>("Metro General Hospital");
+  const [hospitalName, setHospitalName] = useState<string>(
+    "Metro General Hospital",
+  );
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const router = useRouter();
   const pathname = usePathname();
@@ -54,7 +69,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(res.user);
       const activeMem = res.memberships?.[0] || (res as any).membership || null;
       setMembership(activeMem);
-      const assigned = (activeMem?.assignedRole || activeMem?.requestedRole || (activeMem as any)?.role) as UserRole | undefined;
+      const assigned = (activeMem?.assignedRole ||
+        activeMem?.requestedRole ||
+        (activeMem as any)?.role) as UserRole | undefined;
       setRole(assigned || null);
       await resolveHospital(activeMem);
     } catch (err) {
@@ -85,7 +102,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(res.user);
       const activeMem = res.memberships?.[0] || (res as any).membership || null;
       setMembership(activeMem);
-      const userRole = (activeMem?.assignedRole || activeMem?.requestedRole || (activeMem as any)?.role) as UserRole | undefined;
+      const userRole = (activeMem?.assignedRole ||
+        activeMem?.requestedRole ||
+        (activeMem as any)?.role) as UserRole | undefined;
       setRole(userRole || null);
       await resolveHospital(activeMem);
 

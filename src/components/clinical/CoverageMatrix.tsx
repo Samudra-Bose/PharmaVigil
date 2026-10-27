@@ -65,11 +65,15 @@ export const CoverageMatrix: React.FC<CoverageMatrixProps> = ({
 
       <div className="divide-y divide-slate-100 text-xs">
         {categories.map((cat) => (
-          <div key={cat.code} className="p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div
+            key={cat.code}
+            className="p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2"
+          >
             <div className="space-y-0.5">
               <div className="font-semibold text-slate-900">{cat.title}</div>
               <div className="text-slate-500 text-[11px] leading-relaxed">
-                {cat.info?.limitation || "Coverage not evaluated in this illustrative run."}
+                {cat.info?.limitation ||
+                  "Coverage not evaluated in this illustrative run."}
               </div>
             </div>
             <div className="shrink-0">
@@ -84,7 +88,8 @@ export const CoverageMatrix: React.FC<CoverageMatrixProps> = ({
       <div className="p-2.5 bg-slate-50/80 border-t border-slate-200 text-[11px] text-slate-500 flex items-center gap-1.5">
         <AlertCircle className="w-3.5 h-3.5 text-slate-400 shrink-0" />
         <span>
-          Categories with "NO_MATCHING_SEEDED_RULE" reflect absence of a match in the illustrative subset, not a safety clearance.
+          Categories with "NO_MATCHING_SEEDED_RULE" reflect absence of a match
+          in the illustrative subset, not a safety clearance.
         </span>
       </div>
     </div>

@@ -6,17 +6,16 @@ interface PrescriptionTableSkeletonProps {
   className?: string;
 }
 
-export const PrescriptionTableSkeleton: React.FC<PrescriptionTableSkeletonProps> = ({
-  rowCount = 5,
-  className,
-}) => {
+export const PrescriptionTableSkeleton: React.FC<
+  PrescriptionTableSkeletonProps
+> = ({ rowCount = 5, className }) => {
   return (
     <div
       role="status"
       aria-label="Loading prescription records..."
       className={cn(
         "bg-white rounded-xl border border-slate-200 overflow-hidden shadow-subtle select-none",
-        className
+        className,
       )}
     >
       {/* Table Header Placeholder */}

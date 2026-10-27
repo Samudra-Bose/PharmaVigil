@@ -10,7 +10,15 @@ import { Button } from "@/components/ui/Button";
 import { PrescriptionTableSkeleton } from "@/components/skeletons";
 import { Card, CardContent } from "@/components/ui/Card";
 import { formatDateTime } from "@/lib/utils";
-import { Calendar, Plus, Clock, User, ArrowLeft, XCircle, CheckCircle2 } from "lucide-react";
+import {
+  Calendar,
+  Plus,
+  Clock,
+  User,
+  ArrowLeft,
+  XCircle,
+  CheckCircle2,
+} from "lucide-react";
 
 export default function PatientAppointmentsPage() {
   const [appointments, setAppointments] = useState<AppointmentRecord[]>([]);
@@ -21,7 +29,9 @@ export default function PatientAppointmentsPage() {
     async function load() {
       try {
         setLoading(true);
-        const data = await api.listAppointments({ patientId: "pat_rajan_9021" });
+        const data = await api.listAppointments({
+          patientId: "pat_rajan_9021",
+        });
         setAppointments(data);
       } finally {
         setLoading(false);
@@ -31,15 +41,18 @@ export default function PatientAppointmentsPage() {
   }, []);
 
   const handleCancel = async (id: string) => {
-    if (!confirm("Are you sure you want to cancel this scheduled appointment?")) return;
+    if (!confirm("Are you sure you want to cancel this scheduled appointment?"))
+      return;
     setCancellingId(id);
     try {
       await api.cancelAppointment(id);
       clinicalToast.info(
         "Appointment Cancelled",
-        "Slot released back to outpatient schedule."
+        "Slot released back to outpatient schedule.",
       );
-      const updated = await api.listAppointments({ patientId: "pat_rajan_9021" });
+      const updated = await api.listAppointments({
+        patientId: "pat_rajan_9021",
+      });
       setAppointments(updated);
     } catch (err) {
       clinicalToast.error(err, "Failed to cancel appointment");
@@ -61,7 +74,8 @@ export default function PatientAppointmentsPage() {
             My Hospital Appointments
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Upcoming doctor consultations and clinical pharmacy visits at Metro General Hospital
+            Upcoming doctor consultations and clinical pharmacy visits at Metro
+            General Hospital
           </p>
         </div>
 
@@ -86,29 +100,37 @@ export default function PatientAppointmentsPage() {
           {/* Upcoming Section */}
           <div className="space-y-3">
             <h2 className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-blue-600" /> Upcoming Scheduled Appointments ({upcoming.length})
+              <Clock className="w-3.5 h-3.5 text-blue-600" /> Upcoming Scheduled
+              Appointments ({upcoming.length})
             </h2>
 
             {upcoming.length === 0 ? (
               <Card className="p-6 text-center text-xs text-slate-500 shadow-2xs">
-                No upcoming consultations scheduled. You can book a follow-up consultation with your attending cardiologist.
+                No upcoming consultations scheduled. You can book a follow-up
+                consultation with your attending cardiologist.
               </Card>
             ) : (
               <div className="space-y-3">
                 {upcoming.map((apt) => (
-                  <Card key={apt.id} className="shadow-2xs border-l-4 border-l-blue-600">
+                  <Card
+                    key={apt.id}
+                    className="shadow-2xs border-l-4 border-l-blue-600"
+                  >
                     <CardContent className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div className="space-y-1.5">
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-sm text-slate-900">
                             {apt.clinicianDisplayName}
                           </span>
-                          <span className="text-xs text-slate-500">({apt.department})</span>
+                          <span className="text-xs text-slate-500">
+                            ({apt.department})
+                          </span>
                           <Badge variant="info">Scheduled</Badge>
                         </div>
 
                         <div className="text-xs text-slate-700 font-medium">
-                          Purpose: {apt.reason || "Outpatient Clinical Follow-up"}
+                          Purpose:{" "}
+                          {apt.reason || "Outpatient Clinical Follow-up"}
                         </div>
 
                         <div className="text-[11px] text-slate-500 font-mono font-tabular flex items-center gap-2">
@@ -158,7 +180,11 @@ export default function PatientAppointmentsPage() {
                         <span className="text-slate-400 font-mono text-[11px] font-tabular">
                           {formatDateTime(apt.slotStart)}
                         </span>
-                        <Badge variant={apt.status === "COMPLETED" ? "authorized" : "failed"}>
+                        <Badge
+                          variant={
+                            apt.status === "COMPLETED" ? "authorized" : "failed"
+                          }
+                        >
                           {apt.status}
                         </Badge>
                       </div>

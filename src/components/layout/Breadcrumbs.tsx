@@ -48,7 +48,10 @@ export const Breadcrumbs: React.FC = () => {
   }
 
   return (
-    <nav aria-label="Breadcrumb" className="flex items-center text-[11px] font-medium text-slate-500 mb-4 overflow-x-auto whitespace-nowrap scrollbar-none py-1">
+    <nav
+      aria-label="Breadcrumb"
+      className="flex items-center text-[11px] font-medium text-slate-500 mb-4 overflow-x-auto whitespace-nowrap scrollbar-none py-1"
+    >
       <ol className="flex items-center gap-1.5">
         <li>
           <Link
@@ -63,8 +66,15 @@ export const Breadcrumbs: React.FC = () => {
         {segments.map((seg, idx) => {
           const href = "/" + segments.slice(0, idx + 1).join("/");
           const isLast = idx === segments.length - 1;
-          const isId = seg.startsWith("case_") || seg.startsWith("pat_") || seg.startsWith("P-") || seg.startsWith("mem_") || seg.startsWith("usr_");
-          const label = isId ? `#${seg}` : (ROUTE_LABELS[seg] || seg.replace(/-/g, " "));
+          const isId =
+            seg.startsWith("case_") ||
+            seg.startsWith("pat_") ||
+            seg.startsWith("P-") ||
+            seg.startsWith("mem_") ||
+            seg.startsWith("usr_");
+          const label = isId
+            ? `#${seg}`
+            : ROUTE_LABELS[seg] || seg.replace(/-/g, " ");
 
           return (
             <React.Fragment key={href}>

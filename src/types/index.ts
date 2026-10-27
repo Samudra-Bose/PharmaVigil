@@ -33,33 +33,32 @@ export type CheckEnvelope = Schemas["CheckEnvelope"];
 export type AlertList = Schemas["AlertList"];
 export type AlertEnvelope = Schemas["AlertEnvelope"];
 export type AlertDisposition = Schemas["AlertDisposition"];
-export type DispensingAuthorizationRequest = Schemas["DispensingAuthorizationRequest"];
-export type DispensingAuthorizationResponse = Schemas["DispensingAuthorizationResponse"];
+export type DispensingAuthorizationRequest =
+  Schemas["DispensingAuthorizationRequest"];
+export type DispensingAuthorizationResponse =
+  Schemas["DispensingAuthorizationResponse"];
 export type Notification = Schemas["Notification"];
 export type RuleSetMetadata = Schemas["RuleSetMetadata"];
 export type ErrorResponse = Schemas["ErrorResponse"];
 
 export type UserRole = "PATIENT" | "DOCTOR" | "PHARMACIST" | "HOSPITAL_ADMIN";
 
-export type CheckOutcome = 
-  | "FLAGGED" 
-  | "NO_MATCHING_RULE" 
-  | "INCOMPLETE" 
-  | "UNSUPPORTED" 
-  | "FAILED";
+export type CheckOutcome =
+  "FLAGGED" | "NO_MATCHING_RULE" | "INCOMPLETE" | "UNSUPPORTED" | "FAILED";
 
 export type AlertSeverity = "CRITICAL" | "HIGH" | "MODERATE" | "LOW";
 
-export type AlertStatus = 
-  | "OPEN" 
-  | "ACKNOWLEDGED" 
-  | "UNDER_REVIEW" 
-  | "CHANGE_REQUIRED" 
-  | "CLINICAL_DISPOSITION_RECORDED" 
+export type AlertStatus =
+  | "OPEN"
+  | "ACKNOWLEDGED"
+  | "UNDER_REVIEW"
+  | "CHANGE_REQUIRED"
+  | "CLINICAL_DISPOSITION_RECORDED"
   | "RESOLVED";
 
 // Inpatient Medication Orders
-export type MedicationOrderStatus = "ACTIVE" | "HELD" | "DISCONTINUED" | "CANCELLED";
+export type MedicationOrderStatus =
+  "ACTIVE" | "HELD" | "DISCONTINUED" | "CANCELLED";
 
 export interface InpatientMedicationOrderItem {
   id?: string;
@@ -132,7 +131,8 @@ export interface PatientMedicationHistoryItem {
   status: "ACTIVE" | "STOPPED" | "UNKNOWN";
   startDate?: string;
   endDate?: string;
-  sourceType: "CLINICIAN_PRESCRIBED" | "PATIENT_REPORTED" | "IMPORTED_SYNTHETIC";
+  sourceType:
+    "CLINICIAN_PRESCRIBED" | "PATIENT_REPORTED" | "IMPORTED_SYNTHETIC";
   verificationStatus: "VERIFIED" | "REPORTED" | "UNVERIFIED";
   createdAt?: string;
 }
@@ -156,7 +156,13 @@ export interface AuditEvent {
 export interface ClinicalRule {
   ruleId: string;
   name?: string;
-  category: "DDI" | "DOSE_RANGE" | "DUPLICATE_THERAPY" | "ALLERGY_CROSS_REACTIVITY" | "CONTRAINDICATION" | string;
+  category:
+    | "DDI"
+    | "DOSE_RANGE"
+    | "DUPLICATE_THERAPY"
+    | "ALLERGY_CROSS_REACTIVITY"
+    | "CONTRAINDICATION"
+    | string;
   severity: "CRITICAL" | "HIGH" | "MODERATE" | "LOW";
   triggerCondition?: string;
   targetIngredients?: string[];
@@ -170,7 +176,13 @@ export interface ClinicalRuleSet {
   ruleSetId: string;
   version: string;
   description: string;
-  status: "DRAFT" | "PENDING_REVIEW" | "APPROVED" | "PUBLISHED" | "DEPRECATED" | "ILLUSTRATIVE_NOT_VALIDATED";
+  status:
+    | "DRAFT"
+    | "PENDING_REVIEW"
+    | "APPROVED"
+    | "PUBLISHED"
+    | "DEPRECATED"
+    | "ILLUSTRATIVE_NOT_VALIDATED";
   ruleCount: number;
   isClinicallyValidated: boolean;
   publishedAt?: string;

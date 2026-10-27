@@ -5,16 +5,16 @@ interface PatientIdentityCardSkeletonProps {
   className?: string;
 }
 
-export const PatientIdentityCardSkeleton: React.FC<PatientIdentityCardSkeletonProps> = ({
-  className,
-}) => {
+export const PatientIdentityCardSkeleton: React.FC<
+  PatientIdentityCardSkeletonProps
+> = ({ className }) => {
   return (
     <div
       role="status"
       aria-label="Loading patient identity..."
       className={cn(
         "bg-white rounded-lg border border-slate-200 shadow-xs overflow-hidden select-none",
-        className
+        className,
       )}
     >
       {/* Header */}

@@ -16,8 +16,9 @@ export default function UnauthorizedPage() {
           Access Denied (403 Forbidden)
         </h1>
         <p className="mt-2 text-xs text-slate-600 leading-relaxed">
-          Your account does not possess the required clinical authorization or hospital membership
-          privilege to access this resource. Authorization is strictly enforced on the server.
+          Your account does not possess the required clinical authorization or
+          hospital membership privilege to access this resource. Authorization
+          is strictly enforced on the server.
         </p>
         <div className="mt-6 pt-4 border-t border-slate-100 flex justify-center gap-2">
           <Link href="/">

@@ -62,10 +62,17 @@ export default function MembershipDetailPage() {
         </Link>
       </div>
 
-      <form onSubmit={handleSave} className="bg-white p-6 rounded-lg border border-slate-200 shadow-xs space-y-4 text-xs">
+      <form
+        onSubmit={handleSave}
+        className="bg-white p-6 rounded-lg border border-slate-200 shadow-xs space-y-4 text-xs"
+      >
         <div>
-          <span className="block text-slate-500 uppercase font-mono text-[10px] mb-1">User Email</span>
-          <div className="font-mono font-bold text-slate-900 text-sm">{member?.email}</div>
+          <span className="block text-slate-500 uppercase font-mono text-[10px] mb-1">
+            User Email
+          </span>
+          <div className="font-mono font-bold text-slate-900 text-sm">
+            {member?.email}
+          </div>
         </div>
 
         <div>
@@ -93,15 +100,23 @@ export default function MembershipDetailPage() {
             onChange={(e) => setStatus(e.target.value)}
             className="w-full p-2 rounded border border-slate-300 text-xs font-semibold text-slate-800 bg-white"
           >
-            <option value="ACTIVE">Active (Granted Full Role Permissions)</option>
+            <option value="ACTIVE">
+              Active (Granted Full Role Permissions)
+            </option>
             <option value="PENDING">Pending (Access Blocked)</option>
             <option value="SUSPENDED">Suspended (Access Revoked)</option>
           </select>
         </div>
 
         <div className="pt-4 border-t border-slate-100 flex justify-end gap-2">
-          <Button type="submit" variant="primary" loading={submitting} className="gap-2 text-xs">
-            <Check className="w-4 h-4 text-emerald-400" /> Save Membership Configuration
+          <Button
+            type="submit"
+            variant="primary"
+            loading={submitting}
+            className="gap-2 text-xs"
+          >
+            <Check className="w-4 h-4 text-emerald-400" /> Save Membership
+            Configuration
           </Button>
         </div>
       </form>

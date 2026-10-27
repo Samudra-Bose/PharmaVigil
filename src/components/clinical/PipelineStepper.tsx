@@ -14,7 +14,9 @@ const STEPS = [
   { step: 5, label: "Authorize Dispensing" },
 ];
 
-export const PipelineStepper: React.FC<PipelineStepperProps> = ({ currentStep }) => {
+export const PipelineStepper: React.FC<PipelineStepperProps> = ({
+  currentStep,
+}) => {
   return (
     <div
       role="region"
@@ -36,8 +38,8 @@ export const PipelineStepper: React.FC<PipelineStepperProps> = ({ currentStep })
                     isCompleted
                       ? "bg-teal-700 text-white shadow-2xs"
                       : isCurrent
-                      ? "bg-slate-900 text-white ring-2 ring-slate-900 ring-offset-2 ring-offset-white shadow-xs"
-                      : "bg-slate-100 text-slate-400 border border-slate-200"
+                        ? "bg-slate-900 text-white ring-2 ring-slate-900 ring-offset-2 ring-offset-white shadow-xs"
+                        : "bg-slate-100 text-slate-400 border border-slate-200",
                   )}
                   aria-current={isCurrent ? "step" : undefined}
                 >
@@ -57,14 +59,18 @@ export const PipelineStepper: React.FC<PipelineStepperProps> = ({ currentStep })
                       isCurrent
                         ? "text-slate-900"
                         : isCompleted
-                        ? "text-slate-700"
-                        : "text-slate-400"
+                          ? "text-slate-700"
+                          : "text-slate-400",
                     )}
                   >
                     {s.label}
                   </span>
                   <span className="text-[10px] font-mono text-slate-400 leading-none mt-0.5">
-                    {isCompleted ? "Completed" : isCurrent ? "Active Step" : "Gated"}
+                    {isCompleted
+                      ? "Completed"
+                      : isCurrent
+                        ? "Active Step"
+                        : "Gated"}
                   </span>
                 </div>
               </div>
@@ -73,7 +79,7 @@ export const PipelineStepper: React.FC<PipelineStepperProps> = ({ currentStep })
                 <div
                   className={cn(
                     "flex-1 h-0.5 mx-3 rounded-full transition-colors",
-                    s.step < currentStep ? "bg-teal-600" : "bg-slate-200"
+                    s.step < currentStep ? "bg-teal-600" : "bg-slate-200",
                   )}
                 />
               )}

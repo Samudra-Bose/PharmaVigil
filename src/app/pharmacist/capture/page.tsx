@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, useRef, Suspense } from "react";
+import React, { useState, useRef, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { api } from "@/lib/api-client";
+import { clinicalToast } from "@/lib/toast";
 import { PipelineStepper } from "@/components/clinical/PipelineStepper";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { Card, CardContent } from "@/components/ui/Card";
+import { Card } from "@/components/ui/Card";
 import { Textarea } from "@/components/ui/Textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import {
@@ -16,50 +17,266 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/Dialog";
-import { Kbd } from "@/components/ui/Kbd";
-import { 
-  Camera, 
-  Upload, 
-  FileText, 
-  ZoomIn, 
-  Sparkles, 
+import { CameraCaptureModal } from "@/components/clinical/CameraCaptureModal";
+import { OcrProgressBar } from "@/components/clinical/OcrProgressBar";
+import { preprocessImageForOcr } from "@/lib/ocr/image-preprocessor";
+import { recognizePrescriptionImage, terminateOcrWorker } from "@/lib/ocr/tesseract-worker";
+import { parsePrescriptionText } from "@/lib/ocr/prescription-parser";
+import type { OcrProgressState, ParsedClinicalItem } from "@/lib/ocr/types";
+import {
+  Camera,
+  Upload,
+  FileText,
+  RotateCw,
+  Sparkles,
   ArrowRight,
   ShieldAlert,
-  Image as ImageIcon 
+  AlertTriangle,
+  ZoomIn,
+  RefreshCw,
+  CheckCircle2,
+  Image as ImageIcon,
 } from "lucide-react";
 
 function CapturePrescriptionContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const patientId = searchParams.get("patientId") || "P-9021";
+  const patientId = searchParams.get("patientId") || "PAT-DEMO-001";
 
+  // Tab mode: IMAGE vs MANUAL
   const [mode, setMode] = useState<string>("IMAGE");
-  const [sampleLoaded, setSampleLoaded] = useState(true);
+
+  // Camera modal state
+  const [cameraModalOpen, setCameraModalOpen] = useState(false);
+
+  // Image & Canvas state
+  const [imageUri, setImageUri] = useState<string | null>(null);
+  const [rotationAngle, setRotationAngle] = useState<number>(0);
   const [zoomOpen, setZoomOpen] = useState(false);
-  const [uploadedFileName, setUploadedFileName] = useState<string | null>("rx_scan_rajan_9021.png");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const previewCanvasRef = useRef<HTMLCanvasElement>(null);
+
+  // OCR state
+  const [ocrProgress, setOcrProgress] = useState<OcrProgressState>({
+    status: "Ready",
+    progress: 0,
+    phase: "IDLE",
+  });
+  const [isProcessingOcr, setIsProcessingOcr] = useState(false);
+  const [recognizedText, setRecognizedText] = useState<string>("");
+  const [parsedItems, setParsedItems] = useState<ParsedClinicalItem[]>([]);
+  const [ocrConfidence, setOcrConfidence] = useState<number | null>(null);
+  const [ocrWarning, setOcrWarning] = useState<string | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Manual fallback state
   const [manualText, setManualText] = useState(
-    "Rx: Rajan Sharma (P-9021)\nTab. Warfarin 5mg - 1 Tab OD x 30 days\nTab. Aspirin 100mg - 1 Tab OD x 15 days\nDr. Arvind Patel, MD (Reg #MED-4091)"
+    "Tab. Warfarin 5mg - 1 Tab OD at night x 30 days\nTab. Aspirin 75mg - 1 Tab OD with food x 15 days"
   );
   const [submitting, setSubmitting] = useState(false);
 
+  // Clean up OCR worker on page unmount
+  useEffect(() => {
+    return () => {
+      terminateOcrWorker();
+    };
+  }, []);
+
+  // Update preview canvas whenever imageUri or rotation changes
+  useEffect(() => {
+    let isCancelled = false;
+
+    async function updatePreview() {
+      if (!imageUri || !previewCanvasRef.current) return;
+      try {
+        const processed = await preprocessImageForOcr(imageUri, {
+          rotationDegrees: rotationAngle,
+          enhanceContrast: true,
+          grayscale: true,
+          maxDimension: 1200,
+        });
+
+        if (isCancelled || !previewCanvasRef.current) return;
+        const targetCanvas = previewCanvasRef.current;
+        targetCanvas.width = processed.width;
+        targetCanvas.height = processed.height;
+        const ctx = targetCanvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(processed, 0, 0);
+        }
+      } catch (err) {
+        console.warn("Failed to render preview canvas:", err);
+      }
+    }
+
+    updatePreview();
+    return () => {
+      isCancelled = true;
+    };
+  }, [imageUri, rotationAngle]);
+
+  // Handle image capture from WebRTC Camera modal
+  const handleCameraCapture = (capturedUri: string) => {
+    setImageUri(capturedUri);
+    setRotationAngle(0);
+    setRecognizedText("");
+    setParsedItems([]);
+    setOcrWarning(null);
+    clinicalToast.info("Frame Captured", "Prescription ready for OCR extraction");
+  };
+
+  // Handle image file selection
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setUploadedFileName(file.name);
-      setSampleLoaded(true);
+      if (file.size > 15 * 1024 * 1024) {
+        clinicalToast.error("File size exceeds 15MB limit. Please upload a smaller image.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setImageUri(event.target.result as string);
+          setRotationAngle(0);
+          setRecognizedText("");
+          setParsedItems([]);
+          setOcrWarning(null);
+          clinicalToast.info("Image Loaded", `Loaded ${file.name}`);
+        }
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  const handleCreateCapture = async () => {
+  // Rotate image by 90 degrees clockwise
+  const handleRotate90 = () => {
+    setRotationAngle((prev) => (prev + 90) % 360);
+  };
+
+  // Cancel OCR execution
+  const handleCancelOcr = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setIsProcessingOcr(false);
+    setOcrProgress({
+      status: "OCR Cancelled by user",
+      progress: 0,
+      phase: "IDLE",
+    });
+  };
+
+  // Run live Tesseract OCR on current preprocessed image
+  const handleRunOcr = async () => {
+    if (!imageUri) {
+      clinicalToast.error("Please take a photo or select an image first");
+      return;
+    }
+
+    setIsProcessingOcr(true);
+    setOcrWarning(null);
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    try {
+      // 1. Preprocess image
+      const processedCanvas = await preprocessImageForOcr(imageUri, {
+        rotationDegrees: rotationAngle,
+        enhanceContrast: true,
+        grayscale: true,
+        maxDimension: 1800,
+      });
+
+      // 2. Execute Tesseract OCR in Web Worker
+      const result = await recognizePrescriptionImage(
+        processedCanvas,
+        (progress) => setOcrProgress(progress),
+        controller.signal
+      );
+
+      setRecognizedText(result.rawText);
+      setOcrConfidence(result.confidence);
+
+      // 3. Parse recognized text into structured prescription items
+      const items = parsePrescriptionText(result.rawText, result.words);
+      setParsedItems(items);
+
+      if (result.confidence < 45 || items.length === 0) {
+        setOcrWarning(
+          "Low recognition confidence or blurry image detected. Verify image orientation, try rotating 90°, or use Manual Transcription."
+        );
+      } else {
+        clinicalToast.success(
+          "Extraction Complete",
+          `Recognized ${items.length} prescription medication item(s) (${result.confidence}% confidence)`
+        );
+      }
+    } catch (err: any) {
+      if (err.name === "AbortError") {
+        clinicalToast.info("OCR Cancelled", "Scan processing aborted");
+      } else {
+        clinicalToast.error(err, "OCR Recognition Failed");
+        setOcrWarning("OCR failed to process the image. Please retry or enter items manually.");
+      }
+    } finally {
+      setIsProcessingOcr(false);
+      abortControllerRef.current = null;
+    }
+  };
+
+  // Save Capture and ingest into backend API
+  const handleSaveAndProceed = async () => {
     setSubmitting(true);
     try {
-      const rawText = mode === "IMAGE"
-        ? "Rx: Rajan Sharma (P-9021)\nTab. Warfarin 5mg - 1 Tab OD x 30 days\nTab. Aspirin 100mg - 1 Tab OD x 15 days\nDr. Arvind Patel, MD"
-        : manualText;
+      const isImageMode = mode === "IMAGE";
+      const rawText = isImageMode ? recognizedText : manualText;
+      const itemsToIngest = isImageMode
+        ? parsedItems
+        : parsePrescriptionText(manualText);
 
-      const created = await api.createCapture(patientId, rawText);
+      // 1. Create Capture record on backend
+      const created = await api.createCapture(
+        patientId,
+        rawText,
+        isImageMode ? "BROWSER_OCR" : "MANUAL_ENTRY"
+      );
+
+      // 2. Ingest structured items if items were parsed
+      if (itemsToIngest.length > 0) {
+        try {
+          await api.updateExtraction(created.id, {
+            extractedText: rawText,
+            items: itemsToIngest.map((item) => ({
+              rawExtractedText: item.rawExtractedText,
+              brandText: item.brandText || null,
+              strengthValue: item.strengthValue || null,
+              strengthUnit: item.strengthUnit || null,
+              dosageForm: item.dosageForm || null,
+              doseValue: item.doseValue || 1,
+              doseUnit: item.doseUnit || "unit",
+              route: item.route || "ORAL",
+              frequency: item.frequency || "OD",
+              durationValue: item.durationValue || 7,
+              durationUnit: item.durationUnit || "days",
+              matchStatus: "UNRESOLVED",
+              matchConfidence: item.confidence,
+              canonicalIngredientIds: [],
+            })),
+          });
+        } catch (updateErr) {
+          console.warn("Capture item update non-fatal error:", updateErr);
+        }
+      }
+
+      clinicalToast.success(
+        "Capture Ingested",
+        `Created clinical intake record #${created.id.slice(0, 8)}`
+      );
+
       router.push(`/pharmacist/cases/${created.id}/extract`);
+    } catch (err: any) {
+      clinicalToast.error(err, "Failed to save prescription capture");
     } finally {
       setSubmitting(false);
     }
@@ -73,11 +290,15 @@ function CapturePrescriptionContent() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <Camera className="w-5 h-5 text-slate-700" />
-            Prescription Capture & Image Ingestion
+            <Camera className="w-5 h-5 text-teal-700" />
+            Live Prescription Capture & OCR Ingestion
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Linked to Confirmed Patient: <span className="font-mono font-bold text-slate-800 font-tabular">{patientId}</span> (Rajan Sharma)
+            Target Patient ID:{" "}
+            <span className="font-mono font-bold text-slate-800 font-tabular">
+              {patientId}
+            </span>{" "}
+            (Donna Noble)
           </p>
         </div>
       </div>
@@ -86,169 +307,268 @@ function CapturePrescriptionContent() {
       <Tabs value={mode} onValueChange={setMode} className="w-full">
         <div className="flex justify-between items-center mb-4">
           <TabsList>
-            <TabsTrigger value="IMAGE" className="gap-1.5">
-              <Camera className="w-3.5 h-3.5" /> Camera / Scan Ingestion
+            <TabsTrigger value="IMAGE" className="gap-1.5 text-xs font-semibold">
+              <Camera className="w-3.5 h-3.5" /> Camera / Document Scan
             </TabsTrigger>
-            <TabsTrigger value="MANUAL" className="gap-1.5">
+            <TabsTrigger value="MANUAL" className="gap-1.5 text-xs font-semibold">
               <FileText className="w-3.5 h-3.5" /> Manual Text Fallback
             </TabsTrigger>
           </TabsList>
-
-          {mode === "IMAGE" && (
-            <div className="text-xs text-slate-500 hidden sm:flex items-center gap-1.5">
-              <span>Zoom hotkey:</span> <Kbd>Click to inspect</Kbd>
-            </div>
-          )}
         </div>
 
+        {/* IMAGE MODE CONTENT */}
         <TabsContent value="IMAGE" className="space-y-4 m-0">
-          {/* Quick Demo Prescription Loader */}
-          <div className="p-3 bg-slate-100 rounded-md border border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-amber-500" />
-              <span className="font-semibold text-slate-800">
-                Seeded Synthetic Prescription Fixture (Warfarin + Aspirin DDI Demo):
-              </span>
-            </div>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => setSampleLoaded(true)}
-              className="text-xs gap-1.5 h-7"
+          {/* Action Trigger Card */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => setCameraModalOpen(true)}
+              className="p-4 rounded-lg border-2 border-dashed border-teal-300 hover:border-teal-500 bg-teal-50/50 hover:bg-teal-50 transition-all flex items-center gap-3 text-left group"
             >
-              <ImageIcon className="w-3.5 h-3.5" /> Re-load Seeded Sample
-            </Button>
+              <div className="w-10 h-10 rounded-lg bg-teal-600 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+                <Camera className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="text-xs font-bold text-teal-950">
+                  Open Camera Scanner
+                </div>
+                <div className="text-[11px] text-teal-700 mt-0.5">
+                  Live WebRTC stream with prescription alignment guide
+                </div>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="p-4 rounded-lg border-2 border-dashed border-slate-300 hover:border-slate-400 bg-slate-50/70 hover:bg-slate-100 transition-all flex items-center gap-3 text-left group"
+            >
+              <div className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+                <Upload className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="text-xs font-bold text-slate-900">
+                  Upload Scan / File
+                </div>
+                <div className="text-[11px] text-slate-500 mt-0.5">
+                  Select PNG, JPG, or WEBP image from device
+                </div>
+              </div>
+            </button>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileUpload}
+            />
           </div>
 
-          {/* Image Canvas / Viewfinder with Click-to-Zoom */}
-          <Card className="overflow-hidden shadow-2xs">
-            <div className="p-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-xs text-slate-600">
-              <span className="font-semibold text-slate-800">Scanned Prescription Image Preview</span>
-              <button
-                type="button"
-                onClick={() => setZoomOpen(true)}
-                className="inline-flex items-center gap-1.5 text-slate-700 hover:text-slate-900 font-medium px-2 py-1 rounded bg-white border border-slate-200 shadow-2xs transition-colors"
-              >
-                <ZoomIn className="w-3.5 h-3.5 text-slate-600" /> Click to Zoom <Kbd>ESC</Kbd>
-              </button>
-            </div>
+          {/* OCR Progress Bar */}
+          <OcrProgressBar
+            progressState={ocrProgress}
+            onCancel={handleCancelOcr}
+          />
 
-            <div className="p-6 flex flex-col items-center justify-center bg-slate-900/5 min-h-[300px]">
-              {sampleLoaded ? (
-                <div
-                  onClick={() => setZoomOpen(true)}
-                  className="max-w-md w-full bg-white p-6 rounded-md border border-slate-300 shadow-md font-mono text-xs space-y-3 cursor-zoom-in hover:border-slate-400 hover:shadow-lg transition-all select-none"
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") setZoomOpen(true);
-                  }}
-                  aria-label="Click to enlarge prescription image"
-                >
-                  <div className="border-b border-slate-200 pb-2 flex justify-between items-center text-slate-500 text-[10px]">
-                    <span className="font-bold text-slate-800">METRO GENERAL HOSPITAL • OUTPATIENT Rx</span>
-                    <span className="font-tabular">2026-10-27</span>
-                  </div>
-                  <div className="text-slate-900 font-semibold text-sm">
-                    Patient: Rajan Sharma (P-9021) • Age: 58 • M
-                  </div>
-                  <div className="space-y-2 py-2 border-y border-dashed border-slate-200 text-slate-800">
-                    <div>1. Tab. Warfarin 5mg — 1 Tab OD at night x 30 days</div>
-                    <div>2. Tab. Aspirin 100mg — 1 Tab OD with breakfast x 15 days</div>
-                  </div>
-                  <div className="text-right text-[11px] text-slate-500 pt-1">
-                    Dr. Arvind Patel, MD (Cardiology)
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center text-slate-400 space-y-3 p-6 border-2 border-dashed border-slate-300 rounded-lg max-w-sm w-full">
-                  <Upload className="w-8 h-8 mx-auto text-slate-400" />
-                  <div>
-                    <p className="text-xs font-semibold text-slate-700">Upload prescription scan or image</p>
-                    <p className="text-[11px] text-slate-500 mt-0.5">PNG, JPG, or PDF up to 10MB</p>
-                  </div>
+          {/* Warning / Error Recovery Banner */}
+          {ocrWarning && (
+            <div className="p-3 bg-amber-50 rounded-lg border border-amber-200 text-amber-900 flex items-start gap-2.5 text-xs">
+              <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <div className="flex-1 space-y-2">
+                <p className="leading-relaxed font-medium">{ocrWarning}</p>
+                <div className="flex flex-wrap gap-2">
                   <Button
                     type="button"
                     size="sm"
                     variant="outline"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="text-xs"
+                    onClick={handleRotate90}
+                    className="h-6 text-[11px] gap-1"
                   >
-                    Select File from Device
+                    <RotateCw className="w-3 h-3" /> Rotate 90°
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setCameraModalOpen(true)}
+                    className="h-6 text-[11px] gap-1"
+                  >
+                    <RefreshCw className="w-3 h-3" /> Retake Photo
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setManualText(recognizedText || manualText);
+                      setMode("MANUAL");
+                    }}
+                    className="h-6 text-[11px] gap-1"
+                  >
+                    <FileText className="w-3 h-3" /> Switch to Manual Entry
                   </Button>
                 </div>
-              )}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*,.pdf"
-                className="hidden"
-                onChange={handleFileUpload}
-              />
+              </div>
             </div>
-          </Card>
+          )}
+
+          {/* Image Canvas Preview & Pre-Processing Card */}
+          {imageUri ? (
+            <Card className="overflow-hidden shadow-sm border-slate-200">
+              <div className="p-3 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-slate-800">
+                    Active Prescription Frame
+                  </span>
+                  {ocrConfidence !== null && (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-teal-50 text-teal-800 border border-teal-200">
+                      OCR Confidence: {ocrConfidence}%
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-1.5">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={handleRotate90}
+                    className="h-7 text-xs gap-1"
+                    title="Rotate 90 degrees clockwise"
+                  >
+                    <RotateCw className="w-3.5 h-3.5" /> Rotate 90°
+                  </Button>
+
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="primary"
+                    disabled={isProcessingOcr}
+                    loading={isProcessingOcr}
+                    onClick={handleRunOcr}
+                    className="h-7 text-xs gap-1.5 bg-teal-600 hover:bg-teal-500 text-white"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" /> Run OCR Extraction
+                  </Button>
+                </div>
+              </div>
+
+              <div className="p-4 flex flex-col items-center justify-center bg-slate-900/5 min-h-[260px] overflow-auto">
+                <canvas
+                  ref={previewCanvasRef}
+                  className="max-h-[380px] max-w-full rounded border border-slate-300 shadow-sm object-contain"
+                />
+              </div>
+
+              {/* Extracted Structured Items Preview */}
+              {parsedItems.length > 0 && (
+                <div className="p-4 border-t border-slate-200 bg-white space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                      Extracted Prescription Items ({parsedItems.length})
+                    </span>
+                    <span className="text-[11px] text-slate-400">
+                      Attestation required in next step
+                    </span>
+                  </div>
+
+                  <div className="space-y-2">
+                    {parsedItems.map((item, idx) => (
+                      <div
+                        key={item.id}
+                        className="p-2.5 rounded-md border border-slate-200 bg-slate-50 flex items-center justify-between gap-3 text-xs"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="w-5 h-5 rounded-full bg-teal-100 text-teal-800 text-[10px] font-bold flex items-center justify-center">
+                            {idx + 1}
+                          </span>
+                          <div>
+                            <div className="font-bold text-slate-900">
+                              {item.brandText}
+                              {item.strengthValue && (
+                                <span className="ml-1 text-slate-600 font-normal">
+                                  {item.strengthValue} {item.strengthUnit}
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-[11px] text-slate-500">
+                              {item.dosageForm} • {item.frequency} • {item.route} • {item.durationValue} {item.durationUnit}
+                            </div>
+                          </div>
+                        </div>
+
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-white border border-slate-200 text-slate-700">
+                          {Math.round(item.confidence * 100)}% conf
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </Card>
+          ) : (
+            /* Empty State Prompt */
+            <div className="p-8 text-center rounded-lg border-2 border-dashed border-slate-200 bg-white space-y-3">
+              <div className="w-10 h-10 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center mx-auto">
+                <ImageIcon className="w-5 h-5" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-xs font-bold text-slate-800">
+                  No Prescription Scan Loaded
+                </p>
+                <p className="text-[11px] text-slate-500 max-w-sm mx-auto">
+                  Click <strong>Open Camera Scanner</strong> to take a photo of the patient's prescription or upload an existing scan.
+                </p>
+              </div>
+            </div>
+          )}
         </TabsContent>
 
+        {/* MANUAL FALLBACK CONTENT */}
         <TabsContent value="MANUAL" className="space-y-3 m-0">
-          <Card className="p-5 shadow-2xs space-y-3">
+          <Card className="p-5 shadow-sm space-y-3 border-slate-200">
             <div className="flex items-center gap-2 text-xs font-semibold text-slate-800">
               <FileText className="w-4 h-4 text-slate-600" />
               Manual Prescription Transcription
             </div>
             <p className="text-xs text-slate-500">
-              Use this fallback when camera OCR is illegible or camera hardware is unavailable.
+              Paste or type prescription lines directly. The parser will automatically extract dosages, frequencies, and formulations.
             </p>
             <Textarea
               rows={6}
               value={manualText}
               onChange={(e) => setManualText(e.target.value)}
-              placeholder="Paste raw prescription text here..."
-              className="font-mono"
+              placeholder="e.g. Tab. Amoxicillin 500mg - 1 Tab TID x 7 days..."
+              className="font-mono text-xs"
             />
           </Card>
         </TabsContent>
       </Tabs>
 
-      {/* Accessible Radix Click-to-Zoom Dialog */}
-      <Dialog open={zoomOpen} onOpenChange={setZoomOpen}>
-        <DialogContent className="max-w-xl">
-          <DialogHeader>
-            <DialogTitle>High-Resolution Prescription Zoom</DialogTitle>
-            <DialogDescription>
-              Verify raw scan details, handwritten dosage notations, and doctor signatures.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="bg-white p-6 rounded border border-slate-300 font-mono text-sm space-y-4 leading-relaxed text-slate-900 shadow-xs">
-            <div className="border-b border-slate-200 pb-2 flex justify-between items-center text-slate-500 text-xs">
-              <span className="font-bold text-slate-900">METRO GENERAL HOSPITAL • OUTPATIENT DEPARTMENT</span>
-              <span className="font-tabular">Date: 2026-10-27</span>
-            </div>
-            <div className="font-bold text-base text-slate-900">
-              Patient: Rajan Sharma (P-9021) • Age: 58 • Gender: Male
-            </div>
-            <div className="p-3 bg-slate-50 rounded border border-slate-200 space-y-2 text-slate-900 text-xs">
-              <div className="font-bold text-slate-900 uppercase">PRESCRIPTION ITEMS:</div>
-              <div>1. <span className="font-bold">Tab. Warfarin 5mg</span> — 1 Tab OD (At Night) x 30 days</div>
-              <div>2. <span className="font-bold">Tab. Aspirin 100mg</span> — 1 Tab OD (Morning with food) x 15 days</div>
-            </div>
-            <div className="pt-2 text-right text-xs text-slate-600">
-              Attending Physician: <span className="font-bold text-slate-900">Dr. Arvind Patel, MD</span> (Reg: MED-4091)
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Live WebRTC Camera Capture Modal */}
+      <CameraCaptureModal
+        isOpen={cameraModalOpen}
+        onClose={() => setCameraModalOpen(false)}
+        onCapture={handleCameraCapture}
+      />
 
       {/* Action Footer */}
-      <div className="flex justify-end pt-2">
+      <div className="flex justify-between items-center pt-2 border-t border-slate-200">
+        <div className="text-[11px] text-slate-400">
+          PRD Invariant: OCR output is an untrusted suggestion until pharmacist review.
+        </div>
+
         <Button
           size="md"
           variant="primary"
-          onClick={handleCreateCapture}
+          onClick={handleSaveAndProceed}
           loading={submitting}
-          className="gap-2 text-xs"
+          disabled={submitting || (mode === "IMAGE" && !imageUri && !recognizedText)}
+          className="gap-2 text-xs bg-slate-900 hover:bg-slate-800 text-white"
         >
-          Save Capture & Review OCR Extraction <ArrowRight className="w-4 h-4" />
+          Proceed to Extraction Review <ArrowRight className="w-4 h-4" />
         </Button>
       </div>
     </div>
@@ -257,7 +577,13 @@ function CapturePrescriptionContent() {
 
 export default function CapturePrescriptionPage() {
   return (
-    <Suspense fallback={<div className="max-w-4xl mx-auto p-8"><Skeleton className="h-64 w-full" /></div>}>
+    <Suspense
+      fallback={
+        <div className="max-w-4xl mx-auto p-8">
+          <Skeleton className="h-64 w-full" />
+        </div>
+      }
+    >
       <CapturePrescriptionContent />
     </Suspense>
   );

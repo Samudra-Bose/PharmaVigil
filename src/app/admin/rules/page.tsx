@@ -55,16 +55,21 @@ export default function AdminRulesPage() {
     return {
       ddi: ruleSet.rules.filter((r) => r.category === "DDI").length,
       dose: ruleSet.rules.filter((r) => r.category === "DOSE_RANGE").length,
-      allergy: ruleSet.rules.filter((r) => r.category === "ALLERGY_CROSS_REACTIVITY").length,
-      dup: ruleSet.rules.filter((r) => r.category === "DUPLICATE_THERAPY").length,
+      allergy: ruleSet.rules.filter(
+        (r) => r.category === "ALLERGY_CROSS_REACTIVITY",
+      ).length,
+      dup: ruleSet.rules.filter((r) => r.category === "DUPLICATE_THERAPY")
+        .length,
     };
   }, [ruleSet]);
 
   const filteredRules = useMemo(() => {
     if (!ruleSet?.rules) return [];
     return ruleSet.rules.filter((r) => {
-      if (categoryFilter !== "ALL" && r.category !== categoryFilter) return false;
-      if (severityFilter !== "ALL" && r.severity !== severityFilter) return false;
+      if (categoryFilter !== "ALL" && r.category !== categoryFilter)
+        return false;
+      if (severityFilter !== "ALL" && r.severity !== severityFilter)
+        return false;
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         const matches =
@@ -126,7 +131,8 @@ export default function AdminRulesPage() {
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Deterministic clinical decision support knowledge base, safety thresholds, and validation monograph citations.
+            Deterministic clinical decision support knowledge base, safety
+            thresholds, and validation monograph citations.
           </p>
         </div>
 
@@ -161,9 +167,7 @@ export default function AdminRulesPage() {
                   <span className="font-mono text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-semibold border border-slate-200">
                     {ruleSet.version}
                   </span>
-                  <Badge variant="authorized">
-                    {ruleSet.status}
-                  </Badge>
+                  <Badge variant="authorized">{ruleSet.status}</Badge>
                 </div>
                 <p className="text-xs text-slate-600 mt-1">
                   {ruleSet.description}
@@ -175,7 +179,10 @@ export default function AdminRulesPage() {
                   {ruleSet.publishedBy || "Indian Pharmacopoeia Commission"}
                 </span>
                 <span className="font-mono text-[11px] text-slate-400">
-                  Published: {ruleSet.publishedAt ? new Date(ruleSet.publishedAt).toLocaleDateString() : "Active"}
+                  Published:{" "}
+                  {ruleSet.publishedAt
+                    ? new Date(ruleSet.publishedAt).toLocaleDateString()
+                    : "Active"}
                 </span>
               </div>
             </div>
@@ -188,7 +195,11 @@ export default function AdminRulesPage() {
                   Illustrative Demonstration Ruleset — Not Clinically Validated
                 </span>
                 <p className="mt-0.5 text-amber-800 leading-relaxed">
-                  Rules in this active version are illustrative demonstration rulesets for software testing; they are not clinically validated for diagnostic, prescriptive, or unverified treatment decisions. Independent clinician verification is mandatory prior to dispensing.
+                  Rules in this active version are illustrative demonstration
+                  rulesets for software testing; they are not clinically
+                  validated for diagnostic, prescriptive, or unverified
+                  treatment decisions. Independent clinician verification is
+                  mandatory prior to dispensing.
                 </p>
               </div>
             </div>
@@ -211,14 +222,18 @@ export default function AdminRulesPage() {
           {/* Category Metric Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <button
-              onClick={() => setCategoryFilter(categoryFilter === "DDI" ? "ALL" : "DDI")}
+              onClick={() =>
+                setCategoryFilter(categoryFilter === "DDI" ? "ALL" : "DDI")
+              }
               className={`p-3 rounded-lg border text-left transition-all ${
                 categoryFilter === "DDI"
                   ? "bg-slate-900 text-white border-slate-900 shadow-xs"
                   : "bg-white text-slate-800 border-slate-200 hover:border-slate-300"
               }`}
             >
-              <span className={`text-[10px] font-bold uppercase tracking-wider block ${categoryFilter === "DDI" ? "text-slate-300" : "text-slate-400"}`}>
+              <span
+                className={`text-[10px] font-bold uppercase tracking-wider block ${categoryFilter === "DDI" ? "text-slate-300" : "text-slate-400"}`}
+              >
                 Drug-Drug Interactions
               </span>
               <span className="text-xl font-bold mt-1 block">
@@ -227,14 +242,20 @@ export default function AdminRulesPage() {
             </button>
 
             <button
-              onClick={() => setCategoryFilter(categoryFilter === "DOSE_RANGE" ? "ALL" : "DOSE_RANGE")}
+              onClick={() =>
+                setCategoryFilter(
+                  categoryFilter === "DOSE_RANGE" ? "ALL" : "DOSE_RANGE",
+                )
+              }
               className={`p-3 rounded-lg border text-left transition-all ${
                 categoryFilter === "DOSE_RANGE"
                   ? "bg-slate-900 text-white border-slate-900 shadow-xs"
                   : "bg-white text-slate-800 border-slate-200 hover:border-slate-300"
               }`}
             >
-              <span className={`text-[10px] font-bold uppercase tracking-wider block ${categoryFilter === "DOSE_RANGE" ? "text-slate-300" : "text-slate-400"}`}>
+              <span
+                className={`text-[10px] font-bold uppercase tracking-wider block ${categoryFilter === "DOSE_RANGE" ? "text-slate-300" : "text-slate-400"}`}
+              >
                 Dose Range Checks
               </span>
               <span className="text-xl font-bold mt-1 block">
@@ -243,14 +264,22 @@ export default function AdminRulesPage() {
             </button>
 
             <button
-              onClick={() => setCategoryFilter(categoryFilter === "ALLERGY_CROSS_REACTIVITY" ? "ALL" : "ALLERGY_CROSS_REACTIVITY")}
+              onClick={() =>
+                setCategoryFilter(
+                  categoryFilter === "ALLERGY_CROSS_REACTIVITY"
+                    ? "ALL"
+                    : "ALLERGY_CROSS_REACTIVITY",
+                )
+              }
               className={`p-3 rounded-lg border text-left transition-all ${
                 categoryFilter === "ALLERGY_CROSS_REACTIVITY"
                   ? "bg-slate-900 text-white border-slate-900 shadow-xs"
                   : "bg-white text-slate-800 border-slate-200 hover:border-slate-300"
               }`}
             >
-              <span className={`text-[10px] font-bold uppercase tracking-wider block ${categoryFilter === "ALLERGY_CROSS_REACTIVITY" ? "text-slate-300" : "text-slate-400"}`}>
+              <span
+                className={`text-[10px] font-bold uppercase tracking-wider block ${categoryFilter === "ALLERGY_CROSS_REACTIVITY" ? "text-slate-300" : "text-slate-400"}`}
+              >
                 Allergy Cross-Reactivity
               </span>
               <span className="text-xl font-bold mt-1 block">
@@ -259,14 +288,22 @@ export default function AdminRulesPage() {
             </button>
 
             <button
-              onClick={() => setCategoryFilter(categoryFilter === "DUPLICATE_THERAPY" ? "ALL" : "DUPLICATE_THERAPY")}
+              onClick={() =>
+                setCategoryFilter(
+                  categoryFilter === "DUPLICATE_THERAPY"
+                    ? "ALL"
+                    : "DUPLICATE_THERAPY",
+                )
+              }
               className={`p-3 rounded-lg border text-left transition-all ${
                 categoryFilter === "DUPLICATE_THERAPY"
                   ? "bg-slate-900 text-white border-slate-900 shadow-xs"
                   : "bg-white text-slate-800 border-slate-200 hover:border-slate-300"
               }`}
             >
-              <span className={`text-[10px] font-bold uppercase tracking-wider block ${categoryFilter === "DUPLICATE_THERAPY" ? "text-slate-300" : "text-slate-400"}`}>
+              <span
+                className={`text-[10px] font-bold uppercase tracking-wider block ${categoryFilter === "DUPLICATE_THERAPY" ? "text-slate-300" : "text-slate-400"}`}
+              >
                 Duplicate Therapy
               </span>
               <span className="text-xl font-bold mt-1 block">
@@ -290,7 +327,9 @@ export default function AdminRulesPage() {
                   <option value="ALL">All Categories</option>
                   <option value="DDI">Drug-Drug Interaction (DDI)</option>
                   <option value="DOSE_RANGE">Dose Range Check</option>
-                  <option value="ALLERGY_CROSS_REACTIVITY">Allergy Cross-Reactivity</option>
+                  <option value="ALLERGY_CROSS_REACTIVITY">
+                    Allergy Cross-Reactivity
+                  </option>
                   <option value="DUPLICATE_THERAPY">Duplicate Therapy</option>
                 </select>
               </div>
@@ -366,30 +405,40 @@ export default function AdminRulesPage() {
                   {/* Name & Trigger Condition */}
                   <div>
                     {rule.name && (
-                      <h3 className="font-bold text-slate-900 text-sm">{rule.name}</h3>
+                      <h3 className="font-bold text-slate-900 text-sm">
+                        {rule.name}
+                      </h3>
                     )}
                     {rule.triggerCondition && (
                       <p className="text-slate-500 text-[11px] mt-0.5">
                         <strong>Trigger:</strong> {rule.triggerCondition}
                       </p>
                     )}
-                    {rule.targetIngredients && rule.targetIngredients.length > 0 && (
-                      <div className="flex items-center gap-1.5 mt-1">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase">Target Ingredients:</span>
-                        <div className="flex flex-wrap gap-1">
-                          {rule.targetIngredients.map((ing) => (
-                            <span key={ing} className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-teal-50 text-teal-800 border border-teal-200 font-medium">
-                              {ing}
-                            </span>
-                          ))}
+                    {rule.targetIngredients &&
+                      rule.targetIngredients.length > 0 && (
+                        <div className="flex items-center gap-1.5 mt-1">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase">
+                            Target Ingredients:
+                          </span>
+                          <div className="flex flex-wrap gap-1">
+                            {rule.targetIngredients.map((ing) => (
+                              <span
+                                key={ing}
+                                className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-teal-50 text-teal-800 border border-teal-200 font-medium"
+                              >
+                                {ing}
+                              </span>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
                   </div>
 
                   {/* Clinical Description & Mechanistic Rationale */}
                   <div className="p-3 rounded-md bg-slate-50/70 border border-slate-150 space-y-1">
-                    <p className="text-slate-800 leading-relaxed">{rule.description}</p>
+                    <p className="text-slate-800 leading-relaxed">
+                      {rule.description}
+                    </p>
                     {rule.mechanisticRationale && (
                       <p className="text-slate-500 text-[11px] pt-1 border-t border-slate-200/60">
                         <strong>Mechanism:</strong> {rule.mechanisticRationale}

@@ -37,7 +37,8 @@ export default function PatientHistoryPage() {
             My Past Medication History
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Historical records of completed outpatient prescriptions at Metro General Hospital
+            Historical records of completed outpatient prescriptions at Metro
+            General Hospital
           </p>
         </div>
 
@@ -56,15 +57,25 @@ export default function PatientHistoryPage() {
             <Card key={c.id} className="shadow-2xs">
               <CardContent className="p-5 space-y-3">
                 <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-                  <span className="font-bold text-sm text-slate-900 font-mono font-tabular">Prescription #{c.id}</span>
-                  <span className="text-xs text-slate-400 font-mono font-tabular">{formatDateTime(c.createdAt)}</span>
+                  <span className="font-bold text-sm text-slate-900 font-mono font-tabular">
+                    Prescription #{c.id}
+                  </span>
+                  <span className="text-xs text-slate-400 font-mono font-tabular">
+                    {formatDateTime(c.createdAt)}
+                  </span>
                 </div>
 
                 <div className="text-xs text-slate-700 space-y-1">
                   {c.items.map((item, idx) => (
                     <div key={idx} className="flex justify-between">
-                      <span className="font-semibold text-slate-900">{item.canonicalIngredientIds.join(", ")} {item.strengthValue}{item.strengthUnit}</span>
-                      <span className="text-slate-500 font-mono font-tabular">{item.durationValue} {item.durationUnit}</span>
+                      <span className="font-semibold text-slate-900">
+                        {item.canonicalIngredientIds.join(", ")}{" "}
+                        {item.strengthValue}
+                        {item.strengthUnit}
+                      </span>
+                      <span className="text-slate-500 font-mono font-tabular">
+                        {item.durationValue} {item.durationUnit}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -72,7 +83,10 @@ export default function PatientHistoryPage() {
                 {c.dispensingAuthorization && (
                   <div className="pt-2 flex items-center gap-2 text-teal-800 text-xs font-medium">
                     <CheckCircle2 className="w-4 h-4 text-teal-600 shrink-0" />
-                    <span>Dispensed on {formatDateTime(c.dispensingAuthorization.authorizedAt)}</span>
+                    <span>
+                      Dispensed on{" "}
+                      {formatDateTime(c.dispensingAuthorization.authorizedAt)}
+                    </span>
                   </div>
                 )}
               </CardContent>

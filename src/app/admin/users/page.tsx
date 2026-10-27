@@ -68,11 +68,19 @@ export default function AdminUsersPage() {
           <TableBody>
             {memberships.map((m) => (
               <TableRow key={m.id}>
-                <TableCell className="font-bold text-slate-900">{m.displayName}</TableCell>
-                <TableCell className="font-mono text-slate-600 text-xs">{m.email}</TableCell>
-                <TableCell className="font-semibold text-slate-800">{m.role}</TableCell>
+                <TableCell className="font-bold text-slate-900">
+                  {m.displayName}
+                </TableCell>
+                <TableCell className="font-mono text-slate-600 text-xs">
+                  {m.email}
+                </TableCell>
+                <TableCell className="font-semibold text-slate-800">
+                  {m.role}
+                </TableCell>
                 <TableCell>
-                  <Badge variant={m.status === "ACTIVE" ? "authorized" : "moderate"}>
+                  <Badge
+                    variant={m.status === "ACTIVE" ? "authorized" : "moderate"}
+                  >
                     {m.status}
                   </Badge>
                 </TableCell>

@@ -199,8 +199,10 @@ export const INITIAL_FIXTURE_APPOINTMENTS: AppointmentRecord[] = [
     slotStart: "2026-10-30T10:00:00Z",
     slotEnd: "2026-10-30T10:30:00Z",
     status: "SCHEDULED",
-    reason: "Anticoagulation & Antithrombotic Therapy Follow-up (Warfarin Monitoring)",
-    notes: "Review recent INR lab values and adjust warfarin dosage if indicated.",
+    reason:
+      "Anticoagulation & Antithrombotic Therapy Follow-up (Warfarin Monitoring)",
+    notes:
+      "Review recent INR lab values and adjust warfarin dosage if indicated.",
   },
   {
     id: "apt_002",
@@ -214,7 +216,8 @@ export const INITIAL_FIXTURE_APPOINTMENTS: AppointmentRecord[] = [
     slotEnd: "2026-10-31T14:20:00Z",
     status: "SCHEDULED",
     reason: "Outpatient Medication Counseling & Regimen Review",
-    notes: "Patient education on avoiding OTC NSAIDs while on anticoagulant therapy.",
+    notes:
+      "Patient education on avoiding OTC NSAIDs while on anticoagulant therapy.",
   },
   {
     id: "apt_003",
@@ -320,7 +323,15 @@ export const INITIAL_PRESCRIPTION_ITEMS: PrescriptionItem[] = [
 export interface FixtureCase {
   id: string;
   patientId: string;
-  status: "DRAFT_CAPTURE" | "EXTRACTED" | "MEDICINES_CONFIRMED" | "CHECK_FLAGGED" | "DOCTOR_REVIEW" | "REVISED" | "CHECK_PASSED" | "DISPENSING_AUTHORIZED";
+  status:
+    | "DRAFT_CAPTURE"
+    | "EXTRACTED"
+    | "MEDICINES_CONFIRMED"
+    | "CHECK_FLAGGED"
+    | "DOCTOR_REVIEW"
+    | "REVISED"
+    | "CHECK_PASSED"
+    | "DISPENSING_AUTHORIZED";
   createdAt: string;
   updatedAt: string;
   currentRevisionNumber: number;
@@ -343,7 +354,8 @@ export const INITIAL_FIXTURE_CASE: FixtureCase = {
   createdAt: "2026-10-27T10:15:00Z",
   updatedAt: "2026-10-27T10:30:00Z",
   currentRevisionNumber: 1,
-  extractedRawText: "Rx: Rajan Sharma (P-9021)\nTab. Warfarin 5mg - 1 Tab OD x 30 days\nTab. Aspirin 100mg - 1 Tab OD x 15 days\nDr. Arvind Patel, MD",
+  extractedRawText:
+    "Rx: Rajan Sharma (P-9021)\nTab. Warfarin 5mg - 1 Tab OD x 30 days\nTab. Aspirin 100mg - 1 Tab OD x 15 days\nDr. Arvind Patel, MD",
   items: [...INITIAL_PRESCRIPTION_ITEMS],
   alerts: [
     {
@@ -352,7 +364,8 @@ export const INITIAL_FIXTURE_CASE: FixtureCase = {
       ruleVersion: 1,
       severity: "MODERATE",
       status: "OPEN",
-      rationale: "Concomitant use of Warfarin (anticoagulant) and Aspirin (antiplatelet agent) significantly increases the risk of severe gastrointestinal and systemic bleeding.",
+      rationale:
+        "Concomitant use of Warfarin (anticoagulant) and Aspirin (antiplatelet agent) significantly increases the risk of severe gastrointestinal and systemic bleeding.",
       limitations: [
         "Illustrative rule set; not clinically validated",
         "Synthetic demonstration dataset only",
@@ -361,7 +374,8 @@ export const INITIAL_FIXTURE_CASE: FixtureCase = {
       evidenceReferences: [
         {
           sourceId: "SRC-NFI-2026",
-          title: "National Formulary of India (NFI) — Antithrombotic Interactions",
+          title:
+            "National Formulary of India (NFI) — Antithrombotic Interactions",
           publisher: "Indian Pharmacopoeia Commission (IPC)",
           url: "https://ipc.gov.in/mandates/nfi.html",
           locator: "Section 10.2: Antithrombotic Agents",
@@ -390,7 +404,8 @@ export const INITIAL_FIXTURE_CASE: FixtureCase = {
           ruleVersion: 1,
           severity: "MODERATE",
           status: "OPEN",
-          rationale: "Concomitant use of Warfarin (anticoagulant) and Aspirin (antiplatelet agent) significantly increases the risk of severe gastrointestinal and systemic bleeding.",
+          rationale:
+            "Concomitant use of Warfarin (anticoagulant) and Aspirin (antiplatelet agent) significantly increases the risk of severe gastrointestinal and systemic bleeding.",
           limitations: [
             "Illustrative rule set; not clinically validated",
             "Synthetic demonstration dataset only",
@@ -405,7 +420,8 @@ export const INITIAL_FIXTURE_CASE: FixtureCase = {
         },
         allergy: {
           status: "NO_MATCHING_SEEDED_RULE",
-          limitation: "No match detected against patient's Penicillin allergy profile.",
+          limitation:
+            "No match detected against patient's Penicillin allergy profile.",
           evaluatedInputsCount: 2,
         },
         foodDrink: {
@@ -441,7 +457,8 @@ export const INITIAL_MEDICATION_ORDERS: InpatientMedicationOrder[] = [
     route: "INTRAVENOUS",
     startDate: "2026-10-27T08:00:00Z",
     endDate: "2026-11-03T08:00:00Z",
-    notes: "Post-PCI acute antibiotic coverage. Monitor trough concentrations before 4th dose.",
+    notes:
+      "Post-PCI acute antibiotic coverage. Monitor trough concentrations before 4th dose.",
     createdAt: "2026-10-27T08:30:00Z",
     updatedAt: "2026-10-27T08:30:00Z",
     items: [
@@ -467,7 +484,8 @@ export const INITIAL_MEDICATION_ORDERS: InpatientMedicationOrder[] = [
         route: "SUBCUTANEOUS",
         frequency: "Q24H",
         duration: "5 days",
-        instructions: "Deep subcutaneous injection in anterolateral abdominal wall",
+        instructions:
+          "Deep subcutaneous injection in anterolateral abdominal wall",
       },
     ],
     versions: [
@@ -557,7 +575,8 @@ export const INITIAL_MEDICATION_ORDERS: InpatientMedicationOrder[] = [
         route: "INTRAVENOUS",
         frequency: "STAT",
         duration: "Single dose",
-        instructions: "Slow IV push over 3-5 minutes prior to chemotherapy cycle",
+        instructions:
+          "Slow IV push over 3-5 minutes prior to chemotherapy cycle",
       },
     ],
   },
@@ -611,7 +630,8 @@ export const INITIAL_AUDIT_EVENTS: AuditEvent[] = [
     metadata: {
       alertId: "alert_ddi_001",
       dispositionType: "CLINICALLY_REVIEWED",
-      rationale: "Patient closely monitored with INR daily. Warfarin dose adjusted to 3mg; aspirin indicated post-stent.",
+      rationale:
+        "Patient closely monitored with INR daily. Warfarin dose adjusted to 3mg; aspirin indicated post-stent.",
       caseId: "case_rx_9021_01",
     },
   },
@@ -708,7 +728,8 @@ export const INITIAL_RULE_SETS: ClinicalRuleSet[] = [
   {
     ruleSetId: "RULES-IN-IPC-2026",
     version: "v1.0.0-illustrative",
-    description: "Illustrative Clinical Decision Support Ruleset for Outpatient & Inpatient Pharmacotherapy",
+    description:
+      "Illustrative Clinical Decision Support Ruleset for Outpatient & Inpatient Pharmacotherapy",
     status: "PUBLISHED",
     ruleCount: 6,
     isClinicallyValidated: false,
@@ -726,59 +747,88 @@ export const INITIAL_RULE_SETS: ClinicalRuleSet[] = [
         name: "Warfarin + Aspirin Concomitant Bleeding Risk",
         category: "DDI",
         severity: "CRITICAL",
-        triggerCondition: "Co-prescription of Vitamin K Antagonist and Antiplatelet Agent",
+        triggerCondition:
+          "Co-prescription of Vitamin K Antagonist and Antiplatelet Agent",
         targetIngredients: ["Warfarin", "Aspirin"],
-        description: "Concomitant administration of Warfarin and Aspirin synergistically impairs hemostasis, exponentially elevating major gastrointestinal and intracerebral hemorrhage hazards.",
-        mechanisticRationale: "Warfarin inhibits clotting factors II, VII, IX, and X synthesis while Aspirin irreversibly inhibits platelet COX-1.",
-        recommendation: "Evaluate INR target rigorously. Prescribe proton-pump inhibitor gastroprotection and consider antiplatelet discontinuation if post-stent endothelialization complete.",
-        guidelineReference: "National Formulary of India (NFI) 2026, Section 10.2",
+        description:
+          "Concomitant administration of Warfarin and Aspirin synergistically impairs hemostasis, exponentially elevating major gastrointestinal and intracerebral hemorrhage hazards.",
+        mechanisticRationale:
+          "Warfarin inhibits clotting factors II, VII, IX, and X synthesis while Aspirin irreversibly inhibits platelet COX-1.",
+        recommendation:
+          "Evaluate INR target rigorously. Prescribe proton-pump inhibitor gastroprotection and consider antiplatelet discontinuation if post-stent endothelialization complete.",
+        guidelineReference:
+          "National Formulary of India (NFI) 2026, Section 10.2",
       },
       {
         ruleId: "RULE-DDI-CIPRO-THEOPHYLLINE",
         name: "Ciprofloxacin + Theophylline Toxicity Risk",
         category: "DDI",
         severity: "HIGH",
-        triggerCondition: "Co-prescription of Fluoroquinolone and Methylxanthine",
+        triggerCondition:
+          "Co-prescription of Fluoroquinolone and Methylxanthine",
         targetIngredients: ["Ciprofloxacin", "Theophylline"],
-        description: "Ciprofloxacin markedly inhibits CYP1A2 metabolism of Theophylline, driving serum concentrations into narrow-therapeutic toxic ranges and triggering fatal arrhythmias or seizures.",
-        mechanisticRationale: "Strong competitive inhibition of cytochrome P450 1A2 hepatic clearance.",
-        recommendation: "Reduce theophylline dose by 50% with intensive serum drug level monitoring, or switch to alternative non-interacting antibiotic.",
-        guidelineReference: "British National Formulary (BNF 85), Drug Interactions",
+        description:
+          "Ciprofloxacin markedly inhibits CYP1A2 metabolism of Theophylline, driving serum concentrations into narrow-therapeutic toxic ranges and triggering fatal arrhythmias or seizures.",
+        mechanisticRationale:
+          "Strong competitive inhibition of cytochrome P450 1A2 hepatic clearance.",
+        recommendation:
+          "Reduce theophylline dose by 50% with intensive serum drug level monitoring, or switch to alternative non-interacting antibiotic.",
+        guidelineReference:
+          "British National Formulary (BNF 85), Drug Interactions",
       },
       {
         ruleId: "RULE-DOSE-PARACETAMOL",
         name: "Paracetamol Daily Ceiling Dose Check",
         category: "DOSE_RANGE",
         severity: "HIGH",
-        triggerCondition: "Total 24-hour paracetamol equivalent dosage exceeds 4000mg",
+        triggerCondition:
+          "Total 24-hour paracetamol equivalent dosage exceeds 4000mg",
         targetIngredients: ["Paracetamol"],
-        description: "Cumulative acetaminophen doses exceeding 4g per 24 hours precipitate hepatic glutathione depletion and acute centrilobular liver necrosis.",
-        mechanisticRationale: "Excess toxic metabolite NAPQI binds covalently to hepatic macromolecules causing hepatocellular failure.",
-        recommendation: "Reduce aggregate dose to maximum 3000mg/day (2000mg/day in elderly or malnourished patients). Check for duplicate combination products.",
-        guidelineReference: "Indian Pharmacopoeia Monograph, Paracetamol Oral Preparations",
+        description:
+          "Cumulative acetaminophen doses exceeding 4g per 24 hours precipitate hepatic glutathione depletion and acute centrilobular liver necrosis.",
+        mechanisticRationale:
+          "Excess toxic metabolite NAPQI binds covalently to hepatic macromolecules causing hepatocellular failure.",
+        recommendation:
+          "Reduce aggregate dose to maximum 3000mg/day (2000mg/day in elderly or malnourished patients). Check for duplicate combination products.",
+        guidelineReference:
+          "Indian Pharmacopoeia Monograph, Paracetamol Oral Preparations",
       },
       {
         ruleId: "RULE-DOSE-METFORMIN-RENAL",
         name: "Metformin Renal Threshold Screening",
         category: "DOSE_RANGE",
         severity: "MODERATE",
-        triggerCondition: "Metformin prescribed when eGFR < 45 mL/min/1.73m² or dose > 1000mg in CKD Stage 3",
+        triggerCondition:
+          "Metformin prescribed when eGFR < 45 mL/min/1.73m² or dose > 1000mg in CKD Stage 3",
         targetIngredients: ["Metformin"],
-        description: "Impaired renal elimination causes metformin accumulation and promotes rare but lethal lactic acidosis.",
-        mechanisticRationale: "Inhibition of mitochondrial respiratory complex I increases blood lactate levels.",
-        recommendation: "Reduce dose to 500mg-1000mg daily if eGFR 30-44 mL/min; contraindicate if eGFR < 30 mL/min.",
-        guidelineReference: "KDIGO 2024 Clinical Practice Guideline for Diabetes Management in CKD",
+        description:
+          "Impaired renal elimination causes metformin accumulation and promotes rare but lethal lactic acidosis.",
+        mechanisticRationale:
+          "Inhibition of mitochondrial respiratory complex I increases blood lactate levels.",
+        recommendation:
+          "Reduce dose to 500mg-1000mg daily if eGFR 30-44 mL/min; contraindicate if eGFR < 30 mL/min.",
+        guidelineReference:
+          "KDIGO 2024 Clinical Practice Guideline for Diabetes Management in CKD",
       },
       {
         ruleId: "RULE-ALLERGY-PENICILLIN",
         name: "Beta-Lactam Antibiotic Cross-Reactivity",
         category: "ALLERGY_CROSS_REACTIVITY",
         severity: "CRITICAL",
-        triggerCondition: "Prescription of Cephalosporins / Penicillins with documented Penicillin Anaphylaxis",
-        targetIngredients: ["Amoxicillin", "Ampicillin", "Ceftriaxone", "Cefuroxime"],
-        description: "Cross-reactivity between beta-lactam core rings and shared R1 side chains carries immediate IgE-mediated anaphylaxis danger.",
-        mechanisticRationale: "Shared immunogenic beta-lactam epitope or side-chain similarity triggering mast cell degranulation.",
-        recommendation: "Do not administer beta-lactam antibiotics. Select non-beta-lactam alternative (e.g., Vancomycin, Macrolide, or Fluoroquinolone).",
+        triggerCondition:
+          "Prescription of Cephalosporins / Penicillins with documented Penicillin Anaphylaxis",
+        targetIngredients: [
+          "Amoxicillin",
+          "Ampicillin",
+          "Ceftriaxone",
+          "Cefuroxime",
+        ],
+        description:
+          "Cross-reactivity between beta-lactam core rings and shared R1 side chains carries immediate IgE-mediated anaphylaxis danger.",
+        mechanisticRationale:
+          "Shared immunogenic beta-lactam epitope or side-chain similarity triggering mast cell degranulation.",
+        recommendation:
+          "Do not administer beta-lactam antibiotics. Select non-beta-lactam alternative (e.g., Vancomycin, Macrolide, or Fluoroquinolone).",
         guidelineReference: "EAACI Guidelines on Antibiotic Hypersensitivity",
       },
       {
@@ -786,12 +836,17 @@ export const INITIAL_RULE_SETS: ClinicalRuleSet[] = [
         name: "Dual Renin-Angiotensin System Blockade",
         category: "DUPLICATE_THERAPY",
         severity: "MODERATE",
-        triggerCondition: "Concomitant prescribing of ACE inhibitor and Angiotensin Receptor Blocker",
+        triggerCondition:
+          "Concomitant prescribing of ACE inhibitor and Angiotensin Receptor Blocker",
         targetIngredients: ["Ramipril", "Telmisartan", "Enalapril", "Losartan"],
-        description: "Dual RAS blockade yields no incremental cardiovascular benefit while substantially aggravating risks of hyperkalemia, syncope, and acute kidney injury.",
-        mechanisticRationale: "Redundant pathway inhibition at upstream and receptor levels without additive organ protection.",
-        recommendation: "Discontinue either the ACE inhibitor or the ARB; maintain monotherapy RAS blockade.",
-        guidelineReference: "ESC/ESH Guidelines for the Management of Arterial Hypertension",
+        description:
+          "Dual RAS blockade yields no incremental cardiovascular benefit while substantially aggravating risks of hyperkalemia, syncope, and acute kidney injury.",
+        mechanisticRationale:
+          "Redundant pathway inhibition at upstream and receptor levels without additive organ protection.",
+        recommendation:
+          "Discontinue either the ACE inhibitor or the ARB; maintain monotherapy RAS blockade.",
+        guidelineReference:
+          "ESC/ESH Guidelines for the Management of Arterial Hypertension",
       },
     ],
   },
@@ -803,7 +858,8 @@ export const INITIAL_PATIENT_ALLERGIES: PatientAllergy[] = [
     patientId: "P-9021",
     substanceText: "Penicillin",
     recordType: "ALLERGY",
-    reactionDescription: "Generalized urticaria, bronchospasm, and facial angioedema within 20 minutes of oral administration in 2021.",
+    reactionDescription:
+      "Generalized urticaria, bronchospasm, and facial angioedema within 20 minutes of oral administration in 2021.",
     severity: "SEVERE",
     sourceType: "PATIENT_REPORTED",
     verificationStatus: "REPORTED",
@@ -815,7 +871,8 @@ export const INITIAL_PATIENT_ALLERGIES: PatientAllergy[] = [
     patientId: "P-9021",
     substanceText: "Sulfamethoxazole / Trimethoprim",
     recordType: "ADVERSE_REACTION",
-    reactionDescription: "Mild maculopapular rash and epigastric nausea without respiratory involvement.",
+    reactionDescription:
+      "Mild maculopapular rash and epigastric nausea without respiratory involvement.",
     severity: "MILD",
     sourceType: "PATIENT_REPORTED",
     verificationStatus: "REPORTED",
@@ -900,7 +957,8 @@ export const INITIAL_FIXTURE_NOTIFICATIONS: FixtureNotification[] = [
     type: "ALERT_DISPOSITION_RECORDED",
     subjectId: "case_rx_9021_01",
     title: "Physician Disposition Logged",
-    message: "Dr. Arvind Patel recorded CHANGE_REQUIRED on Case case_rx_9021_01.",
+    message:
+      "Dr. Arvind Patel recorded CHANGE_REQUIRED on Case case_rx_9021_01.",
     read: true,
     createdAt: "2026-10-27T09:30:00Z",
   },
@@ -911,7 +969,8 @@ export const INITIAL_FIXTURE_NOTIFICATIONS: FixtureNotification[] = [
     type: "PRESCRIPTION_ALERT_FLAGGED",
     subjectId: "alert_warfarin_aspirin_01",
     title: "Clinical Safety Triage Required",
-    message: "Outpatient case case_rx_9021_01 requires physician clinical review.",
+    message:
+      "Outpatient case case_rx_9021_01 requires physician clinical review.",
     read: false,
     createdAt: "2026-10-27T10:16:00Z",
   },
@@ -922,7 +981,8 @@ export const INITIAL_FIXTURE_NOTIFICATIONS: FixtureNotification[] = [
     type: "APPOINTMENT_BOOKED",
     subjectId: "apt_001",
     title: "New Consultation Booked",
-    message: "Patient Rajan Sharma scheduled consultation for Cardiology review.",
+    message:
+      "Patient Rajan Sharma scheduled consultation for Cardiology review.",
     read: false,
     createdAt: "2026-10-27T08:45:00Z",
   },
@@ -949,4 +1009,3 @@ export const INITIAL_FIXTURE_NOTIFICATIONS: FixtureNotification[] = [
     createdAt: "2026-10-27T08:00:00Z",
   },
 ];
-

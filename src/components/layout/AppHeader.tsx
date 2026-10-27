@@ -48,10 +48,16 @@ export const AppHeader: React.FC = () => {
             {membership && (
               <div className="hidden sm:flex items-center gap-1.5 pl-2.5 ml-1 border-l border-slate-200/80 text-xs text-slate-500">
                 <Building2 className="w-3 h-3 text-slate-400 shrink-0" />
-                <span className="font-medium text-slate-700 truncate max-w-[140px] md:max-w-[180px]" title={hospitalName}>
+                <span
+                  className="font-medium text-slate-700 truncate max-w-[140px] md:max-w-[180px]"
+                  title={hospitalName}
+                >
                   {hospitalName}
                 </span>
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" title="Connected" />
+                <span
+                  className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"
+                  title="Connected"
+                />
               </div>
             )}
           </div>
@@ -66,10 +72,14 @@ export const AppHeader: React.FC = () => {
                     data-testid="user-role-badge"
                     className={cn(
                       "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold tracking-wide border select-none",
-                      role === "DOCTOR" && "bg-teal-50 text-teal-800 border-teal-200/80",
-                      role === "PHARMACIST" && "bg-emerald-50 text-emerald-800 border-emerald-200/80",
-                      role === "PATIENT" && "bg-sky-50 text-sky-800 border-sky-200/80",
-                      role === "HOSPITAL_ADMIN" && "bg-purple-50 text-purple-800 border-purple-200/80"
+                      role === "DOCTOR" &&
+                        "bg-teal-50 text-teal-800 border-teal-200/80",
+                      role === "PHARMACIST" &&
+                        "bg-emerald-50 text-emerald-800 border-emerald-200/80",
+                      role === "PATIENT" &&
+                        "bg-sky-50 text-sky-800 border-sky-200/80",
+                      role === "HOSPITAL_ADMIN" &&
+                        "bg-purple-50 text-purple-800 border-purple-200/80",
                     )}
                   >
                     <span
@@ -78,17 +88,17 @@ export const AppHeader: React.FC = () => {
                         role === "DOCTOR" && "bg-teal-600",
                         role === "PHARMACIST" && "bg-emerald-600",
                         role === "PATIENT" && "bg-sky-600",
-                        role === "HOSPITAL_ADMIN" && "bg-purple-600"
+                        role === "HOSPITAL_ADMIN" && "bg-purple-600",
                       )}
                     />
                     <span>
                       {role === "HOSPITAL_ADMIN"
                         ? "Hospital Admin"
                         : role === "PHARMACIST"
-                        ? "Pharmacist"
-                        : role === "DOCTOR"
-                        ? "Doctor"
-                        : "Patient"}
+                          ? "Pharmacist"
+                          : role === "DOCTOR"
+                            ? "Doctor"
+                            : "Patient"}
                     </span>
                   </span>
                 </div>
@@ -141,7 +151,10 @@ export const AppHeader: React.FC = () => {
       </header>
 
       {/* Mobile Drawer */}
-      <MobileNav isOpen={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
+      <MobileNav
+        isOpen={mobileNavOpen}
+        onClose={() => setMobileNavOpen(false)}
+      />
     </>
   );
 };

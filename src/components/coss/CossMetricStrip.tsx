@@ -19,17 +19,40 @@ interface CossMetricStripProps {
  * Inspired by Linear's operational dashboards and COSS UI's crisp 1px micro-borders.
  * Replaces fragmented "card soup" with a monolithic, high-density metric rail.
  */
-export const CossMetricStrip: React.FC<CossMetricStripProps> = ({ metrics, className }) => {
+export const CossMetricStrip: React.FC<CossMetricStripProps> = ({
+  metrics,
+  className,
+}) => {
   const getIndicatorDot = (tone: CossMetricItem["tone"]) => {
     switch (tone) {
       case "urgent":
-        return <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" aria-hidden="true" />;
+        return (
+          <span
+            className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0"
+            aria-hidden="true"
+          />
+        );
       case "success":
-        return <span className="w-1.5 h-1.5 rounded-full bg-teal-500 shrink-0" aria-hidden="true" />;
+        return (
+          <span
+            className="w-1.5 h-1.5 rounded-full bg-teal-500 shrink-0"
+            aria-hidden="true"
+          />
+        );
       case "info":
-        return <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" aria-hidden="true" />;
+        return (
+          <span
+            className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"
+            aria-hidden="true"
+          />
+        );
       default:
-        return <span className="w-1.5 h-1.5 rounded-full bg-slate-300 shrink-0" aria-hidden="true" />;
+        return (
+          <span
+            className="w-1.5 h-1.5 rounded-full bg-slate-300 shrink-0"
+            aria-hidden="true"
+          />
+        );
     }
   };
 
@@ -38,7 +61,7 @@ export const CossMetricStrip: React.FC<CossMetricStripProps> = ({ metrics, class
       aria-label="Operational Metrics"
       className={cn(
         "bg-white border border-slate-200/80 rounded-lg shadow-2xs divide-y sm:divide-y-0 sm:divide-x divide-slate-100 flex flex-col sm:flex-row items-stretch select-none",
-        className
+        className,
       )}
     >
       {metrics.map((m, idx) => {
@@ -54,7 +77,9 @@ export const CossMetricStrip: React.FC<CossMetricStripProps> = ({ metrics, class
                 {getIndicatorDot(m.tone)}
                 <span className="truncate">{m.label}</span>
               </span>
-              {Icon && <Icon className="w-3.5 h-3.5 text-slate-400 shrink-0 opacity-70" />}
+              {Icon && (
+                <Icon className="w-3.5 h-3.5 text-slate-400 shrink-0 opacity-70" />
+              )}
             </div>
 
             <div className="mt-1 flex items-baseline justify-between gap-2">

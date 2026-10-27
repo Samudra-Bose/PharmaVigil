@@ -58,8 +58,9 @@ export default function RegisterPage() {
         <div className="p-3 bg-amber-50 rounded-md border border-amber-200 text-xs text-amber-900 flex items-start gap-2">
           <Info className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
           <p className="leading-relaxed">
-            Public registration creates an unverified account. Clinical roles (Doctor, Pharmacist)
-            require explicit administrator verification and approval before access is granted.
+            Public registration creates an unverified account. Clinical roles
+            (Doctor, Pharmacist) require explicit administrator verification and
+            approval before access is granted.
           </p>
         </div>
 
@@ -67,7 +68,10 @@ export default function RegisterPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="name" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+            <label
+              htmlFor="name"
+              className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1"
+            >
               Full Legal Name
             </label>
             <input
@@ -82,7 +86,10 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label htmlFor="reg-email" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+            <label
+              htmlFor="reg-email"
+              className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1"
+            >
               Email Address
             </label>
             <input
@@ -98,7 +105,10 @@ export default function RegisterPage() {
 
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label htmlFor="reg-password" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+              <label
+                htmlFor="reg-password"
+                className="block text-xs font-semibold text-slate-700 uppercase tracking-wider"
+              >
                 Create Password
               </label>
               <span className="text-[11px] text-slate-400">Min 12 chars</span>
@@ -116,7 +126,10 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label htmlFor="role" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+            <label
+              htmlFor="role"
+              className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1"
+            >
               Requested Hospital Role
             </label>
             <select
@@ -131,14 +144,22 @@ export default function RegisterPage() {
             </select>
           </div>
 
-          <Button type="submit" variant="primary" loading={loading} className="w-full gap-2">
+          <Button
+            type="submit"
+            variant="primary"
+            loading={loading}
+            className="w-full gap-2"
+          >
             <UserPlus className="w-4 h-4" /> Submit Application
           </Button>
         </form>
 
         <div className="text-center pt-2 border-t border-slate-100 text-xs text-slate-500">
           Already registered?{" "}
-          <Link href="/auth/login" className="font-semibold text-slate-900 hover:underline">
+          <Link
+            href="/auth/login"
+            className="font-semibold text-slate-900 hover:underline"
+          >
             Sign in here
           </Link>
         </div>

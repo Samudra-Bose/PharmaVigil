@@ -10,14 +10,14 @@ import type { PrescriptionItem, MedicineCandidate } from "@/types";
 import { Button } from "@/components/ui/Button";
 import { ErrorDisplay } from "@/components/ui/ErrorDisplay";
 import { PrescriptionTableSkeleton } from "@/components/skeletons";
-import { 
-  FileEdit, 
-  Plus, 
-  Trash2, 
-  Check, 
-  ArrowLeft, 
+import {
+  FileEdit,
+  Plus,
+  Trash2,
+  Check,
+  ArrowLeft,
   Sparkles,
-  GitCommit 
+  GitCommit,
 } from "lucide-react";
 
 function CreateRevisionContent() {
@@ -65,7 +65,7 @@ function CreateRevisionContent() {
   ]);
 
   const [changeReason, setChangeReason] = useState(
-    "Discontinued Aspirin to eliminate gastrointestinal bleeding hazard with Warfarin. Substituted with Paracetamol 500mg for analgesia."
+    "Discontinued Aspirin to eliminate gastrointestinal bleeding hazard with Warfarin. Substituted with Paracetamol 500mg for analgesia.",
   );
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -168,7 +168,7 @@ function CreateRevisionContent() {
       },
     ]);
     setChangeReason(
-      "Substituted Aspirin with Paracetamol 500mg to eliminate Warfarin drug-drug interaction bleeding hazard."
+      "Substituted Aspirin with Paracetamol 500mg to eliminate Warfarin drug-drug interaction bleeding hazard.",
     );
   };
 
@@ -181,7 +181,7 @@ function CreateRevisionContent() {
       await api.createRevision(caseId, items, changeReason);
       clinicalToast.success(
         "Prescription Revision Published",
-        `Prescription revision ${nextRevisionNumber} active for patient.`
+        `Prescription revision ${nextRevisionNumber} active for patient.`,
       );
       api.switchDemoRole("PHARMACIST");
       router.push(`/pharmacist/cases/${caseId}/check`);
@@ -205,7 +205,9 @@ function CreateRevisionContent() {
             Issue Prescription Revision {nextRevisionNumber}
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Prescription ID: <span className="font-mono font-bold text-slate-800">{caseId}</span> • Superceding Revision {caseData?.currentRevisionNumber || 1}
+            Prescription ID:{" "}
+            <span className="font-mono font-bold text-slate-800">{caseId}</span>{" "}
+            • Superceding Revision {caseData?.currentRevisionNumber || 1}
           </p>
         </div>
 
@@ -221,7 +223,8 @@ function CreateRevisionContent() {
         <div className="flex items-center gap-2 text-emerald-950">
           <Sparkles className="w-4 h-4 text-emerald-600" />
           <span className="font-semibold">
-            One-Click Clinical Resolution: Substitute Aspirin with Paracetamol 500mg
+            One-Click Clinical Resolution: Substitute Aspirin with Paracetamol
+            500mg
           </span>
         </div>
         <Button
@@ -244,7 +247,9 @@ function CreateRevisionContent() {
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
                 Revised Medication Items (Revision {nextRevisionNumber})
               </h3>
-              <span className="text-xs text-slate-500 font-mono">{items.length} item(s)</span>
+              <span className="text-xs text-slate-500 font-mono">
+                {items.length} item(s)
+              </span>
             </div>
 
             <div className="flex items-center gap-2">
@@ -259,7 +264,9 @@ function CreateRevisionContent() {
                 defaultValue=""
                 className="text-xs rounded border border-slate-300 px-2 py-1 bg-white font-medium text-slate-700"
               >
-                <option value="" disabled>+ Add from Catalogue...</option>
+                <option value="" disabled>
+                  + Add from Catalogue...
+                </option>
                 {catalogue.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.displayName}
@@ -280,13 +287,20 @@ function CreateRevisionContent() {
 
           <div className="space-y-3">
             {items.map((item, idx) => (
-              <div key={idx} className="p-3 bg-slate-50 rounded-md border border-slate-200 space-y-2 text-xs">
+              <div
+                key={idx}
+                className="p-3 bg-slate-50 rounded-md border border-slate-200 space-y-2 text-xs"
+              >
                 <div className="flex justify-between items-center">
-                  <span className="font-bold text-slate-800">Item {idx + 1}: {item.canonicalIngredientIds.join(", ")}</span>
+                  <span className="font-bold text-slate-800">
+                    Item {idx + 1}: {item.canonicalIngredientIds.join(", ")}
+                  </span>
                   {items.length > 1 && (
                     <button
                       type="button"
-                      onClick={() => setItems(items.filter((_, i) => i !== idx))}
+                      onClick={() =>
+                        setItems(items.filter((_, i) => i !== idx))
+                      }
                       className="text-slate-400 hover:text-rose-600 p-1"
                       title="Remove Item"
                     >
@@ -297,7 +311,9 @@ function CreateRevisionContent() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   <div>
-                    <label className="block text-[10px] text-slate-500 uppercase font-mono">Medication & Strength</label>
+                    <label className="block text-[10px] text-slate-500 uppercase font-mono">
+                      Medication & Strength
+                    </label>
                     <input
                       type="text"
                       value={item.rawExtractedText}
@@ -310,7 +326,9 @@ function CreateRevisionContent() {
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] text-slate-500 uppercase font-mono">Dose & Frequency</label>
+                    <label className="block text-[10px] text-slate-500 uppercase font-mono">
+                      Dose & Frequency
+                    </label>
                     <input
                       type="text"
                       value={item.frequency || "Once Daily"}
@@ -323,13 +341,16 @@ function CreateRevisionContent() {
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] text-slate-500 uppercase font-mono">Duration (Days)</label>
+                    <label className="block text-[10px] text-slate-500 uppercase font-mono">
+                      Duration (Days)
+                    </label>
                     <input
                       type="number"
                       value={item.durationValue || 30}
                       onChange={(e) => {
                         const updated = [...items];
-                        updated[idx].durationValue = parseInt(e.target.value) || 30;
+                        updated[idx].durationValue =
+                          parseInt(e.target.value) || 30;
                         setItems(updated);
                       }}
                       className="w-full px-2.5 py-1 text-xs rounded border border-slate-300 bg-white"
@@ -343,11 +364,16 @@ function CreateRevisionContent() {
 
         {/* Change Reason Field */}
         <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-xs space-y-2">
-          <label htmlFor="reason" className="block text-xs font-bold uppercase tracking-wider text-slate-700">
-            Prescription Revision Clinical Justification <span className="text-rose-600">*</span>
+          <label
+            htmlFor="reason"
+            className="block text-xs font-bold uppercase tracking-wider text-slate-700"
+          >
+            Prescription Revision Clinical Justification{" "}
+            <span className="text-rose-600">*</span>
           </label>
           <p className="text-xs text-slate-500">
-            Document why Revision {nextRevisionNumber} was created and how it resolves the prior clinical concern.
+            Document why Revision {nextRevisionNumber} was created and how it
+            resolves the prior clinical concern.
           </p>
           <textarea
             id="reason"
@@ -367,7 +393,8 @@ function CreateRevisionContent() {
             loading={submitting}
             className="gap-2 text-xs"
           >
-            <GitCommit className="w-4 h-4 text-emerald-400" /> Create Revision {nextRevisionNumber} & Send to Pharmacy
+            <GitCommit className="w-4 h-4 text-emerald-400" /> Create Revision{" "}
+            {nextRevisionNumber} & Send to Pharmacy
           </Button>
         </div>
       </form>
@@ -377,7 +404,13 @@ function CreateRevisionContent() {
 
 export default function CreateRevisionPage() {
   return (
-    <Suspense fallback={<div className="max-w-4xl mx-auto p-4"><PrescriptionTableSkeleton rowCount={4} /></div>}>
+    <Suspense
+      fallback={
+        <div className="max-w-4xl mx-auto p-4">
+          <PrescriptionTableSkeleton rowCount={4} />
+        </div>
+      }
+    >
       <CreateRevisionContent />
     </Suspense>
   );

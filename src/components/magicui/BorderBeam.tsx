@@ -49,7 +49,7 @@ export const BorderBeam: React.FC<BorderBeamProps> = ({
         "after:[background:linear-gradient(to_left,var(--color-from),var(--color-to),transparent)]",
         "after:[offset-anchor:calc(var(--anchor)*1%)_50%] after:[offset-path:rect(0_auto_auto_0_round_calc(var(--size)*1px))]",
         "motion-reduce:hidden",
-        className
+        className,
       )}
       aria-hidden="true"
     />

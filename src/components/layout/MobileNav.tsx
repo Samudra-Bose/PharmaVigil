@@ -23,7 +23,7 @@ import {
   X,
   Building2,
   LogOut,
-  ArrowLeftRight
+  ArrowLeftRight,
 } from "lucide-react";
 import type { UserRole } from "@/types";
 
@@ -65,17 +65,51 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
 
   if (role === "PHARMACIST") {
     items = [
-      { label: "Work Queue", href: "/pharmacist", icon: ClipboardList, badge: "1" },
-      { label: "Patient Search", href: "/pharmacist/patients/search", icon: Search },
-      { label: "Prescription Capture", href: "/pharmacist/capture", icon: Camera },
-      { label: "Audit & Dispense History", href: "/pharmacist/history", icon: History },
+      {
+        label: "Work Queue",
+        href: "/pharmacist",
+        icon: ClipboardList,
+        badge: "1",
+      },
+      {
+        label: "Patient Search",
+        href: "/pharmacist/patients/search",
+        icon: Search,
+      },
+      {
+        label: "Prescription Capture",
+        href: "/pharmacist/capture",
+        icon: Camera,
+      },
+      {
+        label: "Audit & Dispense History",
+        href: "/pharmacist/history",
+        icon: History,
+      },
     ];
   } else if (role === "DOCTOR") {
     items = [
-      { label: "Triage Task Queue", href: "/doctor", icon: AlertTriangle, badge: "1" },
-      { label: "Prescriptions Ledger", href: "/doctor/prescriptions", icon: FileText },
-      { label: "Author Revision", href: "/doctor/prescriptions/new", icon: PlusCircle },
-      { label: "Consultation Queue", href: "/doctor/appointments", icon: Calendar },
+      {
+        label: "Triage Task Queue",
+        href: "/doctor",
+        icon: AlertTriangle,
+        badge: "1",
+      },
+      {
+        label: "Prescriptions Ledger",
+        href: "/doctor/prescriptions",
+        icon: FileText,
+      },
+      {
+        label: "Author Revision",
+        href: "/doctor/prescriptions/new",
+        icon: PlusCircle,
+      },
+      {
+        label: "Consultation Queue",
+        href: "/doctor/appointments",
+        icon: Calendar,
+      },
     ];
   } else if (role === "PATIENT") {
     items = [
@@ -87,14 +121,28 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
   } else if (role === "HOSPITAL_ADMIN") {
     items = [
       { label: "Admin Dashboard", href: "/admin", icon: LayoutDashboard },
-      { label: "Membership Requests", href: "/admin/memberships", icon: UserCheck, badge: "1" },
+      {
+        label: "Membership Requests",
+        href: "/admin/memberships",
+        icon: UserCheck,
+        badge: "1",
+      },
       { label: "Clinician Directory", href: "/admin/users", icon: Users },
-      { label: "Scoped Demo Reset", href: "/admin/demo-reset", icon: RotateCcw },
+      {
+        label: "Scoped Demo Reset",
+        href: "/admin/demo-reset",
+        icon: RotateCcw,
+      },
     ];
   }
 
   return (
-    <div className="fixed inset-0 z-50 md:hidden flex" role="dialog" aria-modal="true" aria-label="Mobile Navigation">
+    <div
+      className="fixed inset-0 z-50 md:hidden flex"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Mobile Navigation"
+    >
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity"
@@ -143,10 +191,14 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
                 <span
                   className={cn(
                     "inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase border",
-                    role === "DOCTOR" && "bg-teal-50 text-teal-800 border-teal-200/80",
-                    role === "PHARMACIST" && "bg-emerald-50 text-emerald-800 border-emerald-200/80",
-                    role === "PATIENT" && "bg-sky-50 text-sky-800 border-sky-200/80",
-                    role === "HOSPITAL_ADMIN" && "bg-purple-50 text-purple-800 border-purple-200/80"
+                    role === "DOCTOR" &&
+                      "bg-teal-50 text-teal-800 border-teal-200/80",
+                    role === "PHARMACIST" &&
+                      "bg-emerald-50 text-emerald-800 border-emerald-200/80",
+                    role === "PATIENT" &&
+                      "bg-sky-50 text-sky-800 border-sky-200/80",
+                    role === "HOSPITAL_ADMIN" &&
+                      "bg-purple-50 text-purple-800 border-purple-200/80",
                   )}
                 >
                   {role === "HOSPITAL_ADMIN" ? "Admin" : role}
@@ -164,7 +216,8 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
               pathname === item.href ||
               (item.href !== "/" &&
                 pathname?.startsWith(item.href) &&
-                (pathname === item.href || pathname.charAt(item.href.length) === "/"));
+                (pathname === item.href ||
+                  pathname.charAt(item.href.length) === "/"));
 
             return (
               <Link
@@ -175,10 +228,15 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
                   "flex items-center gap-3 px-3 py-2.5 rounded-md text-xs font-semibold transition-colors min-h-[44px]",
                   isActive
                     ? "bg-slate-900 text-white"
-                    : "text-slate-700 hover:bg-slate-100"
+                    : "text-slate-700 hover:bg-slate-100",
                 )}
               >
-                <Icon className={cn("w-4 h-4 shrink-0", isActive ? "text-teal-400" : "text-slate-500")} />
+                <Icon
+                  className={cn(
+                    "w-4 h-4 shrink-0",
+                    isActive ? "text-teal-400" : "text-slate-500",
+                  )}
+                />
                 <span className="flex-1">{item.label}</span>
                 {item.badge && (
                   <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-slate-200 text-slate-800">
@@ -194,7 +252,9 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
         {user && (
           <div className="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
             <div className="min-w-0 flex-1 pr-2">
-              <div className="text-xs font-bold text-slate-900 truncate">{user.displayName}</div>
+              <div className="text-xs font-bold text-slate-900 truncate">
+                {user.displayName}
+              </div>
               <div className="text-[10px] font-mono text-slate-500 uppercase tracking-wider truncate">
                 Role: {role}
               </div>

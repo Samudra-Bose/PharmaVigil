@@ -32,9 +32,13 @@ export default function PatientMedicationHistoryPage() {
   const { user } = useAuth();
   const patientId = (user as any)?.syntheticHospitalPatientId || "P-9021";
 
-  const [activeTab, setActiveTab] = useState<"ALLERGIES" | "HOME_MEDS">("ALLERGIES");
+  const [activeTab, setActiveTab] = useState<"ALLERGIES" | "HOME_MEDS">(
+    "ALLERGIES",
+  );
   const [allergies, setAllergies] = useState<PatientAllergy[]>([]);
-  const [medications, setMedications] = useState<PatientMedicationHistoryItem[]>([]);
+  const [medications, setMedications] = useState<
+    PatientMedicationHistoryItem[]
+  >([]);
   const [loading, setLoading] = useState(true);
 
   // Modals
@@ -44,8 +48,12 @@ export default function PatientMedicationHistoryPage() {
 
   // New Allergy Form
   const [allergySubstance, setAllergySubstance] = useState("");
-  const [allergyType, setAllergyType] = useState<"ALLERGY" | "ADVERSE_REACTION" | "INTOLERANCE">("ALLERGY");
-  const [allergySeverity, setAllergySeverity] = useState<"MILD" | "MODERATE" | "SEVERE" | "LIFE_THREATENING">("MODERATE");
+  const [allergyType, setAllergyType] = useState<
+    "ALLERGY" | "ADVERSE_REACTION" | "INTOLERANCE"
+  >("ALLERGY");
+  const [allergySeverity, setAllergySeverity] = useState<
+    "MILD" | "MODERATE" | "SEVERE" | "LIFE_THREATENING"
+  >("MODERATE");
   const [allergyReaction, setAllergyReaction] = useState("");
 
   // New Medication Form
@@ -55,7 +63,9 @@ export default function PatientMedicationHistoryPage() {
   const [medRoute, setMedRoute] = useState("ORAL");
   const [medFrequency, setMedFrequency] = useState("Once daily");
   const [medStatus, setMedStatus] = useState<"ACTIVE" | "STOPPED">("ACTIVE");
-  const [medStartDate, setMedStartDate] = useState(new Date().toISOString().split("T")[0]);
+  const [medStartDate, setMedStartDate] = useState(
+    new Date().toISOString().split("T")[0],
+  );
 
   const loadData = useCallback(async () => {
     try {
@@ -169,7 +179,8 @@ export default function PatientMedicationHistoryPage() {
             </h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Patient self-reporting portal for declaring home therapies, over-the-counter supplements, and drug reactions.
+            Patient self-reporting portal for declaring home therapies,
+            over-the-counter supplements, and drug reactions.
           </p>
         </div>
 
@@ -200,10 +211,15 @@ export default function PatientMedicationHistoryPage() {
       <div className="p-3.5 rounded-lg bg-amber-50/80 border border-amber-200/90 flex items-start gap-3 text-xs text-amber-950">
         <Info className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
         <div>
-          <span className="font-bold text-amber-900 block">Clinical Verification Notice</span>
+          <span className="font-bold text-amber-900 block">
+            Clinical Verification Notice
+          </span>
           <p className="mt-0.5 leading-relaxed text-amber-800">
-            Self-reported medications and allergies are visible to your healthcare team with a{" "}
-            <span className="font-semibold underline">Patient-Reported</span> verification badge. Your physician or pharmacist will formally verify these entries during your next clinical visit.
+            Self-reported medications and allergies are visible to your
+            healthcare team with a{" "}
+            <span className="font-semibold underline">Patient-Reported</span>{" "}
+            verification badge. Your physician or pharmacist will formally
+            verify these entries during your next clinical visit.
           </p>
         </div>
       </div>
@@ -259,15 +275,21 @@ export default function PatientMedicationHistoryPage() {
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <h2 className="font-bold text-slate-900 text-sm">{alg.substanceText}</h2>
-                      <span className="text-[11px] text-slate-500 font-medium">{alg.recordType}</span>
+                      <h2 className="font-bold text-slate-900 text-sm">
+                        {alg.substanceText}
+                      </h2>
+                      <span className="text-[11px] text-slate-500 font-medium">
+                        {alg.recordType}
+                      </span>
                     </div>
                     {getSeverityBadge(alg.severity)}
                   </div>
 
                   {alg.reactionDescription && (
                     <div className="p-2.5 rounded bg-slate-50 text-slate-700 border border-slate-150">
-                      <strong className="block text-[10px] text-slate-400 uppercase tracking-wider mb-0.5">Reaction Experienced:</strong>
+                      <strong className="block text-[10px] text-slate-400 uppercase tracking-wider mb-0.5">
+                        Reaction Experienced:
+                      </strong>
                       <p>{alg.reactionDescription}</p>
                     </div>
                   )}
@@ -283,7 +305,9 @@ export default function PatientMedicationHistoryPage() {
                     </div>
 
                     <span className="text-slate-400 font-mono text-[10px]">
-                      {alg.recordedAt ? new Date(alg.recordedAt).toLocaleDateString() : ""}
+                      {alg.recordedAt
+                        ? new Date(alg.recordedAt).toLocaleDateString()
+                        : ""}
                     </span>
                   </div>
                 </div>
@@ -323,12 +347,18 @@ export default function PatientMedicationHistoryPage() {
                   </thead>
                   <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
                     {medications.map((m) => (
-                      <tr key={m.id} className="hover:bg-slate-50/70 transition-colors">
+                      <tr
+                        key={m.id}
+                        className="hover:bg-slate-50/70 transition-colors"
+                      >
                         <td className="py-3 px-4">
-                          <div className="font-bold text-slate-900">{m.medicineName}</div>
+                          <div className="font-bold text-slate-900">
+                            {m.medicineName}
+                          </div>
                           {m.startDate && (
                             <div className="text-[10px] text-slate-400 mt-0.5">
-                              Started: {new Date(m.startDate).toLocaleDateString()}
+                              Started:{" "}
+                              {new Date(m.startDate).toLocaleDateString()}
                             </div>
                           )}
                         </td>
@@ -336,11 +366,19 @@ export default function PatientMedicationHistoryPage() {
                           {m.dose} {m.unit}
                         </td>
                         <td className="py-3 px-4">
-                          <span className="font-medium text-slate-800">{m.route}</span>
-                          <span className="text-slate-500 block text-[11px]">{m.frequency}</span>
+                          <span className="font-medium text-slate-800">
+                            {m.route}
+                          </span>
+                          <span className="text-slate-500 block text-[11px]">
+                            {m.frequency}
+                          </span>
                         </td>
                         <td className="py-3 px-4">
-                          <Badge variant={m.status === "ACTIVE" ? "authorized" : "neutral"}>
+                          <Badge
+                            variant={
+                              m.status === "ACTIVE" ? "authorized" : "neutral"
+                            }
+                          >
                             {m.status}
                           </Badge>
                         </td>
@@ -394,9 +432,15 @@ export default function PatientMedicationHistoryPage() {
                 onChange={(e) => setAllergyType(e.target.value as any)}
                 className="w-full h-8 px-2 rounded-md border border-slate-200 bg-white text-xs font-medium"
               >
-                <option value="ALLERGY">Allergy (Immune-mediated / Rash / Anaphylaxis)</option>
-                <option value="ADVERSE_REACTION">Adverse Reaction (Severe nausea / Vomiting)</option>
-                <option value="INTOLERANCE">Intolerance (Mild stomach upset)</option>
+                <option value="ALLERGY">
+                  Allergy (Immune-mediated / Rash / Anaphylaxis)
+                </option>
+                <option value="ADVERSE_REACTION">
+                  Adverse Reaction (Severe nausea / Vomiting)
+                </option>
+                <option value="INTOLERANCE">
+                  Intolerance (Mild stomach upset)
+                </option>
               </select>
             </div>
 
@@ -410,9 +454,15 @@ export default function PatientMedicationHistoryPage() {
                 className="w-full h-8 px-2 rounded-md border border-slate-200 bg-white text-xs font-medium"
               >
                 <option value="MILD">Mild (Localized rash, itching)</option>
-                <option value="MODERATE">Moderate (Generalized hives, swelling)</option>
-                <option value="SEVERE">Severe (Shortness of breath, throat tightness)</option>
-                <option value="LIFE_THREATENING">Life-Threatening (Anaphylaxis shock)</option>
+                <option value="MODERATE">
+                  Moderate (Generalized hives, swelling)
+                </option>
+                <option value="SEVERE">
+                  Severe (Shortness of breath, throat tightness)
+                </option>
+                <option value="LIFE_THREATENING">
+                  Life-Threatening (Anaphylaxis shock)
+                </option>
               </select>
             </div>
           </div>
@@ -431,14 +481,26 @@ export default function PatientMedicationHistoryPage() {
           </div>
 
           <div className="p-2.5 rounded bg-amber-50 text-[11px] text-amber-900 border border-amber-200">
-            <strong>Note:</strong> This entry will be stored with a <em>Patient-Reported</em> tag and verified by your clinician during your next appointment.
+            <strong>Note:</strong> This entry will be stored with a{" "}
+            <em>Patient-Reported</em> tag and verified by your clinician during
+            your next appointment.
           </div>
 
           <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-200">
-            <Button type="button" size="sm" variant="outline" onClick={() => setAllergyModalOpen(false)}>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={() => setAllergyModalOpen(false)}
+            >
               Cancel
             </Button>
-            <Button type="submit" size="sm" variant="primary" disabled={submitting}>
+            <Button
+              type="submit"
+              size="sm"
+              variant="primary"
+              disabled={submitting}
+            >
               {submitting ? "Submitting..." : "Submit Allergy Report"}
             </Button>
           </div>
@@ -454,7 +516,8 @@ export default function PatientMedicationHistoryPage() {
         <form onSubmit={handleCreateMedication} className="space-y-4 text-xs">
           <div>
             <label className="block font-semibold text-slate-700 mb-1">
-              Medication or Supplement Name <span className="text-red-500">*</span>
+              Medication or Supplement Name{" "}
+              <span className="text-red-500">*</span>
             </label>
             <Input
               value={medName}
@@ -510,7 +573,9 @@ export default function PatientMedicationHistoryPage() {
               >
                 <option value="ORAL">Oral (Swallowed)</option>
                 <option value="TOPICAL">Topical (Skin cream/patch)</option>
-                <option value="INHALATION">Inhalation (Inhaler/Nebulizer)</option>
+                <option value="INHALATION">
+                  Inhalation (Inhaler/Nebulizer)
+                </option>
                 <option value="SUBLINGUAL">Sublingual (Under tongue)</option>
                 <option value="EYE_DROPS">Eye Drops</option>
               </select>
@@ -556,10 +621,20 @@ export default function PatientMedicationHistoryPage() {
           </div>
 
           <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-200">
-            <Button type="button" size="sm" variant="outline" onClick={() => setMedModalOpen(false)}>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={() => setMedModalOpen(false)}
+            >
               Cancel
             </Button>
-            <Button type="submit" size="sm" variant="primary" disabled={submitting}>
+            <Button
+              type="submit"
+              size="sm"
+              variant="primary"
+              disabled={submitting}
+            >
               {submitting ? "Submitting..." : "Submit Home Medication"}
             </Button>
           </div>

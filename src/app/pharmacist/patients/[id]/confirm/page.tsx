@@ -10,7 +10,13 @@ import { PipelineStepper } from "@/components/clinical/PipelineStepper";
 import { PatientIdentityCard } from "@/components/clinical/PatientIdentityCard";
 import { PatientIdentityCardSkeleton } from "@/components/skeletons";
 import { Button } from "@/components/ui/Button";
-import { AlertCircle, UserCheck, ArrowLeft, ArrowRight, ShieldCheck } from "lucide-react";
+import {
+  AlertCircle,
+  UserCheck,
+  ArrowLeft,
+  ArrowRight,
+  ShieldCheck,
+} from "lucide-react";
 
 export default function ConfirmPatientPage() {
   const params = useParams();
@@ -41,9 +47,11 @@ export default function ConfirmPatientPage() {
     if (!confirmedCheck) return;
     clinicalToast.success(
       "Patient Identity Confirmed",
-      `Linked to capture pipeline for ${patient?.displayName || "Patient"}`
+      `Linked to capture pipeline for ${patient?.displayName || "Patient"}`,
     );
-    router.push(`/pharmacist/capture?patientId=${patient?.syntheticHospitalPatientId}`);
+    router.push(
+      `/pharmacist/capture?patientId=${patient?.syntheticHospitalPatientId}`,
+    );
   };
 
   return (
@@ -54,9 +62,12 @@ export default function ConfirmPatientPage() {
       <div className="p-3.5 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-900 flex items-start gap-2.5 shadow-xs">
         <AlertCircle className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
         <div className="leading-relaxed">
-          <span className="font-bold">Mandatory Safety Gate (REQ-SAFE-001):</span> Explicit patient
-          confirmation is required before linking any physical prescription image or manual capture.
-          Verify patient name, synthetic ID, and DOB with a physical ID badge or verbal verification.
+          <span className="font-bold">
+            Mandatory Safety Gate (REQ-SAFE-001):
+          </span>{" "}
+          Explicit patient confirmation is required before linking any physical
+          prescription image or manual capture. Verify patient name, synthetic
+          ID, and DOB with a physical ID badge or verbal verification.
         </div>
       </div>
 
@@ -81,10 +92,12 @@ export default function ConfirmPatientPage() {
               />
               <div className="text-xs">
                 <span className="font-bold text-slate-900">
-                  I confirm that the prescription being processed belongs to {patient.displayName} ({patient.syntheticHospitalPatientId}).
+                  I confirm that the prescription being processed belongs to{" "}
+                  {patient.displayName} ({patient.syntheticHospitalPatientId}).
                 </span>
                 <p className="text-slate-500 mt-0.5">
-                  This confirmation will be logged in the immutable audit trail along with the pharmacist user ID and timestamp.
+                  This confirmation will be logged in the immutable audit trail
+                  along with the pharmacist user ID and timestamp.
                 </p>
               </div>
             </label>
@@ -105,7 +118,8 @@ export default function ConfirmPatientPage() {
               onClick={handleProceed}
               className="gap-2 text-xs w-full sm:w-auto"
             >
-              <UserCheck className="w-4 h-4 text-emerald-400" /> Confirm Identity & Proceed to Capture <ArrowRight className="w-4 h-4" />
+              <UserCheck className="w-4 h-4 text-emerald-400" /> Confirm
+              Identity & Proceed to Capture <ArrowRight className="w-4 h-4" />
             </Button>
           </div>
         </div>

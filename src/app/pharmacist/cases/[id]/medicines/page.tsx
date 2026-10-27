@@ -21,12 +21,12 @@ import {
   TableCell,
 } from "@/components/ui/Table";
 import { ClinicalTooltip } from "@/components/clinical/ClinicalTooltip";
-import { 
-  Pill, 
-  Check, 
-  AlertTriangle, 
-  ArrowRight, 
-  ShieldAlert
+import {
+  Pill,
+  Check,
+  AlertTriangle,
+  ArrowRight,
+  ShieldAlert,
 } from "lucide-react";
 
 export default function MedicineMatchingPage() {
@@ -59,10 +59,13 @@ export default function MedicineMatchingPage() {
   }, [caseId]);
 
   const hasUnresolvedItems = items.some(
-    (item) => item.matchStatus !== "CONFIRMED"
+    (item) => item.matchStatus !== "CONFIRMED",
   );
 
-  const handleUpdateItem = (index: number, updates: Partial<PrescriptionItem>) => {
+  const handleUpdateItem = (
+    index: number,
+    updates: Partial<PrescriptionItem>,
+  ) => {
     const updated = [...items];
     updated[index] = { ...updated[index], ...updates };
     setItems(updated);
@@ -72,7 +75,7 @@ export default function MedicineMatchingPage() {
     if (hasUnresolvedItems) {
       clinicalToast.warning(
         "Unconfirmed Medicines",
-        "All items must be explicitly confirmed to proceed"
+        "All items must be explicitly confirmed to proceed",
       );
       return;
     }
@@ -81,7 +84,7 @@ export default function MedicineMatchingPage() {
       await api.confirmMedicines(caseId, items);
       clinicalToast.success(
         "Medicine Mappings Saved",
-        "Verified against hospital formulary catalogue"
+        "Verified against hospital formulary catalogue",
       );
       router.push(`/pharmacist/cases/${caseId}/check`);
     } catch (err) {
@@ -103,7 +106,11 @@ export default function MedicineMatchingPage() {
             Medicine Identity & Catalogue Confirmation
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Case: <span className="font-mono font-bold text-slate-800 font-tabular">{caseId}</span> • Patient ID: {caseData?.patientId}
+            Case:{" "}
+            <span className="font-mono font-bold text-slate-800 font-tabular">
+              {caseId}
+            </span>{" "}
+            • Patient ID: {caseData?.patientId}
           </p>
         </div>
       </div>
@@ -112,16 +119,21 @@ export default function MedicineMatchingPage() {
       {hasUnresolvedItems ? (
         <Alert variant="destructive" className="shadow-subtle">
           <ShieldAlert className="h-4 w-4 text-rose-700" />
-          <AlertTitle className="font-bold text-rose-950">Safety Blocker (REQ-SAFE-002): Ambiguous Item Detected</AlertTitle>
+          <AlertTitle className="font-bold text-rose-950">
+            Safety Blocker (REQ-SAFE-002): Ambiguous Item Detected
+          </AlertTitle>
           <AlertDescription className="text-rose-900 mt-1 text-xs">
-            Unmapped or ambiguous medicines cannot advance to rule evaluation. Confirm all ingredients and dosage forms below
-            to clear this gate.
+            Unmapped or ambiguous medicines cannot advance to rule evaluation.
+            Confirm all ingredients and dosage forms below to clear this gate.
           </AlertDescription>
         </Alert>
       ) : (
         <div className="p-3.5 rounded-lg bg-teal-50/50 border border-teal-200 text-xs text-teal-950 flex items-center gap-2 shadow-2xs">
           <Check className="w-4 h-4 text-teal-700 shrink-0" />
-          <span className="font-medium">All prescription items have been successfully mapped to verified catalogue ingredients. Ready for deterministic safety check.</span>
+          <span className="font-medium">
+            All prescription items have been successfully mapped to verified
+            catalogue ingredients. Ready for deterministic safety check.
+          </span>
         </div>
       )}
 
@@ -148,20 +160,28 @@ export default function MedicineMatchingPage() {
               </TableHeader>
               <TableBody>
                 {items.map((item, idx) => (
-                  <TableRow key={idx} className="hover:bg-slate-50/70 transition-colors">
+                  <TableRow
+                    key={idx}
+                    className="hover:bg-slate-50/70 transition-colors"
+                  >
                     <TableCell className="font-mono text-slate-900">
-                      <div className="text-xs font-semibold">{item.rawExtractedText}</div>
+                      <div className="text-xs font-semibold">
+                        {item.rawExtractedText}
+                      </div>
                     </TableCell>
 
                     <TableCell>
                       <select
                         value={item.catalogueItemId || ""}
                         onChange={(e) => {
-                          const selected = catalogue.find((c) => c.id === e.target.value);
+                          const selected = catalogue.find(
+                            (c) => c.id === e.target.value,
+                          );
                           if (selected) {
                             handleUpdateItem(idx, {
                               catalogueItemId: selected.id,
-                              canonicalIngredientIds: selected.canonicalIngredientIds,
+                              canonicalIngredientIds:
+                                selected.canonicalIngredientIds,
                               matchStatus: "CONFIRMED",
                             });
                           }
@@ -186,28 +206,44 @@ export default function MedicineMatchingPage() {
                           type="number"
                           value={item.strengthValue || ""}
                           onChange={(e) =>
-                            handleUpdateItem(idx, { strengthValue: parseFloat(e.target.value) || 0 })
+                            handleUpdateItem(idx, {
+                              strengthValue: parseFloat(e.target.value) || 0,
+                            })
                           }
                           className="w-14 px-1.5 py-1 text-xs font-mono rounded border border-slate-300 font-tabular bg-white"
                         />
-                        <span className="text-xs font-mono text-slate-500">{item.strengthUnit || "mg"}</span>
+                        <span className="text-xs font-mono text-slate-500">
+                          {item.strengthUnit || "mg"}
+                        </span>
                         <input
                           type="text"
                           value={item.dosageForm || "Tablet"}
-                          onChange={(e) => handleUpdateItem(idx, { dosageForm: e.target.value })}
+                          onChange={(e) =>
+                            handleUpdateItem(idx, {
+                              dosageForm: e.target.value,
+                            })
+                          }
                           className="w-20 px-1.5 py-1 text-xs rounded border border-slate-300 bg-white"
                         />
                       </div>
                     </TableCell>
 
                     <TableCell>
-                      <div className="text-xs font-medium text-slate-900">{item.frequency || "Once Daily"}</div>
-                      <div className="text-[11px] text-slate-500 font-mono font-tabular">{item.durationValue} {item.durationUnit}</div>
+                      <div className="text-xs font-medium text-slate-900">
+                        {item.frequency || "Once Daily"}
+                      </div>
+                      <div className="text-[11px] text-slate-500 font-mono font-tabular">
+                        {item.durationValue} {item.durationUnit}
+                      </div>
                     </TableCell>
 
                     <TableCell>
                       <Badge
-                        variant={item.matchStatus === "CONFIRMED" ? "authorized" : "incomplete"}
+                        variant={
+                          item.matchStatus === "CONFIRMED"
+                            ? "authorized"
+                            : "incomplete"
+                        }
                         className="text-[10px] py-0.5"
                       >
                         {item.matchStatus}
@@ -222,13 +258,20 @@ export default function MedicineMatchingPage() {
           {/* Mobile Card View */}
           <div className="md:hidden space-y-4">
             {items.map((item, idx) => (
-              <div key={idx} className="bg-white p-4 rounded-lg border border-slate-200 shadow-subtle space-y-3">
+              <div
+                key={idx}
+                className="bg-white p-4 rounded-lg border border-slate-200 shadow-subtle space-y-3"
+              >
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-xs text-slate-900 font-mono">
                     Item {idx + 1}
                   </span>
                   <Badge
-                    variant={item.matchStatus === "CONFIRMED" ? "authorized" : "incomplete"}
+                    variant={
+                      item.matchStatus === "CONFIRMED"
+                        ? "authorized"
+                        : "incomplete"
+                    }
                     className="text-[10px]"
                   >
                     {item.matchStatus}
@@ -246,11 +289,14 @@ export default function MedicineMatchingPage() {
                   <select
                     value={item.catalogueItemId || ""}
                     onChange={(e) => {
-                      const selected = catalogue.find((c) => c.id === e.target.value);
+                      const selected = catalogue.find(
+                        (c) => c.id === e.target.value,
+                      );
                       if (selected) {
                         handleUpdateItem(idx, {
                           catalogueItemId: selected.id,
-                          canonicalIngredientIds: selected.canonicalIngredientIds,
+                          canonicalIngredientIds:
+                            selected.canonicalIngredientIds,
                           matchStatus: "CONFIRMED",
                         });
                       }
@@ -268,25 +314,35 @@ export default function MedicineMatchingPage() {
 
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div>
-                    <span className="text-[10px] text-slate-500 uppercase block mb-1">Strength</span>
+                    <span className="text-[10px] text-slate-500 uppercase block mb-1">
+                      Strength
+                    </span>
                     <div className="flex items-center gap-1">
                       <input
                         type="number"
                         value={item.strengthValue || ""}
                         onChange={(e) =>
-                          handleUpdateItem(idx, { strengthValue: parseFloat(e.target.value) || 0 })
+                          handleUpdateItem(idx, {
+                            strengthValue: parseFloat(e.target.value) || 0,
+                          })
                         }
                         className="w-16 p-1 rounded border border-slate-300 text-xs font-mono"
                       />
-                      <span className="font-mono text-slate-500">{item.strengthUnit || "mg"}</span>
+                      <span className="font-mono text-slate-500">
+                        {item.strengthUnit || "mg"}
+                      </span>
                     </div>
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-500 uppercase block mb-1">Dosage Form</span>
+                    <span className="text-[10px] text-slate-500 uppercase block mb-1">
+                      Dosage Form
+                    </span>
                     <input
                       type="text"
                       value={item.dosageForm || "Tablet"}
-                      onChange={(e) => handleUpdateItem(idx, { dosageForm: e.target.value })}
+                      onChange={(e) =>
+                        handleUpdateItem(idx, { dosageForm: e.target.value })
+                      }
                       className="w-full p-1 rounded border border-slate-300 text-xs"
                     />
                   </div>
@@ -311,7 +367,8 @@ export default function MedicineMatchingPage() {
           onClick={handleProceed}
           className="gap-2 text-xs w-full sm:w-auto bg-slate-900 hover:bg-slate-800"
         >
-          <Check className="w-4 h-4 text-emerald-400" /> Confirm Medicines & Run Safety Check <ArrowRight className="w-4 h-4" />
+          <Check className="w-4 h-4 text-emerald-400" /> Confirm Medicines & Run
+          Safety Check <ArrowRight className="w-4 h-4" />
         </Button>
       </div>
     </div>

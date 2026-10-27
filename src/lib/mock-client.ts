@@ -60,7 +60,8 @@ interface PersistedState {
 }
 
 class MockEngine {
-  private currentUser: FixtureUser | null = FIXTURE_USERS["pharma@metro-general.invalid"];
+  private currentUser: FixtureUser | null =
+    FIXTURE_USERS["pharma@metro-general.invalid"];
   private hospital: Hospital = { ...FIXTURE_HOSPITAL };
   private patient: PatientRecord = { ...FIXTURE_PATIENT };
   private patients: PatientRecord[] = [...FIXTURE_PATIENTS];
@@ -88,22 +89,40 @@ class MockEngine {
       this.activeCases = new Map(loaded.activeCases);
       this.memberships = loaded.memberships;
       this.appointments = loaded.appointments;
-      this.notifications = loaded.notifications || JSON.parse(JSON.stringify(INITIAL_FIXTURE_NOTIFICATIONS));
-      this.medicationOrders = loaded.medicationOrders || JSON.parse(JSON.stringify(INITIAL_MEDICATION_ORDERS));
-      this.auditEvents = loaded.auditEvents || JSON.parse(JSON.stringify(INITIAL_AUDIT_EVENTS));
+      this.notifications =
+        loaded.notifications ||
+        JSON.parse(JSON.stringify(INITIAL_FIXTURE_NOTIFICATIONS));
+      this.medicationOrders =
+        loaded.medicationOrders ||
+        JSON.parse(JSON.stringify(INITIAL_MEDICATION_ORDERS));
+      this.auditEvents =
+        loaded.auditEvents || JSON.parse(JSON.stringify(INITIAL_AUDIT_EVENTS));
       this.ruleSets = JSON.parse(JSON.stringify(INITIAL_RULE_SETS));
-      this.allergies = loaded.allergies || JSON.parse(JSON.stringify(INITIAL_PATIENT_ALLERGIES));
-      this.medicationHistory = loaded.medicationHistory || JSON.parse(JSON.stringify(INITIAL_PATIENT_MED_HISTORY));
+      this.allergies =
+        loaded.allergies ||
+        JSON.parse(JSON.stringify(INITIAL_PATIENT_ALLERGIES));
+      this.medicationHistory =
+        loaded.medicationHistory ||
+        JSON.parse(JSON.stringify(INITIAL_PATIENT_MED_HISTORY));
     } else {
       this.activeCases = new Map([
-        [INITIAL_FIXTURE_CASE.id, JSON.parse(JSON.stringify(INITIAL_FIXTURE_CASE))],
+        [
+          INITIAL_FIXTURE_CASE.id,
+          JSON.parse(JSON.stringify(INITIAL_FIXTURE_CASE)),
+        ],
       ]);
-      this.notifications = JSON.parse(JSON.stringify(INITIAL_FIXTURE_NOTIFICATIONS));
-      this.medicationOrders = JSON.parse(JSON.stringify(INITIAL_MEDICATION_ORDERS));
+      this.notifications = JSON.parse(
+        JSON.stringify(INITIAL_FIXTURE_NOTIFICATIONS),
+      );
+      this.medicationOrders = JSON.parse(
+        JSON.stringify(INITIAL_MEDICATION_ORDERS),
+      );
       this.auditEvents = JSON.parse(JSON.stringify(INITIAL_AUDIT_EVENTS));
       this.ruleSets = JSON.parse(JSON.stringify(INITIAL_RULE_SETS));
       this.allergies = JSON.parse(JSON.stringify(INITIAL_PATIENT_ALLERGIES));
-      this.medicationHistory = JSON.parse(JSON.stringify(INITIAL_PATIENT_MED_HISTORY));
+      this.medicationHistory = JSON.parse(
+        JSON.stringify(INITIAL_PATIENT_MED_HISTORY),
+      );
       this.memberships = [
         {
           id: "mem_01",
@@ -174,7 +193,9 @@ class MockEngine {
     const user = FIXTURE_USERS[email.toLowerCase()];
     if (!user) {
       // Check if user is a dynamically registered pending applicant
-      const dynMem = this.memberships.find((m) => m.email.toLowerCase() === email.toLowerCase());
+      const dynMem = this.memberships.find(
+        (m) => m.email.toLowerCase() === email.toLowerCase(),
+      );
       if (dynMem) {
         this.currentUser = {
           id: dynMem.userId,
@@ -188,8 +209,10 @@ class MockEngine {
       }
 
       const err = new Error("Invalid email or password");
-      (err as unknown as { code: string; requestId: string }).code = "UNAUTHENTICATED";
-      (err as unknown as { code: string; requestId: string }).requestId = "req_mock_auth_fail";
+      (err as unknown as { code: string; requestId: string }).code =
+        "UNAUTHENTICATED";
+      (err as unknown as { code: string; requestId: string }).requestId =
+        "req_mock_auth_fail";
       throw err;
     }
     this.currentUser = user;
@@ -203,8 +226,10 @@ class MockEngine {
   async getCurrentUser(): Promise<CurrentUserResponse> {
     if (!this.currentUser) {
       const err = new Error("No active session found.");
-      (err as unknown as { code: string; requestId: string }).code = "UNAUTHENTICATED";
-      (err as unknown as { code: string; requestId: string }).requestId = "req_mock_no_session";
+      (err as unknown as { code: string; requestId: string }).code =
+        "UNAUTHENTICATED";
+      (err as unknown as { code: string; requestId: string }).requestId =
+        "req_mock_no_session";
       throw err;
     }
     return {
@@ -228,7 +253,9 @@ class MockEngine {
   }
 
   // Fast Persona Switcher (Demo Accelerator)
-  switchPersona(role: "PHARMACIST" | "DOCTOR" | "PATIENT" | "HOSPITAL_ADMIN"): void {
+  switchPersona(
+    role: "PHARMACIST" | "DOCTOR" | "PATIENT" | "HOSPITAL_ADMIN",
+  ): void {
     const emailMap: Record<string, string> = {
       PHARMACIST: "pharma@metro-general.invalid",
       DOCTOR: "doctor@metro-general.invalid",
@@ -267,18 +294,19 @@ class MockEngine {
       (p) =>
         p.syntheticHospitalPatientId.toLowerCase().includes(q) ||
         (p.displayName && p.displayName.toLowerCase().includes(q)) ||
-        (p.contactPhone && p.contactPhone.toLowerCase().includes(q))
+        (p.contactPhone && p.contactPhone.toLowerCase().includes(q)),
     );
   }
 
   async getPatient(id: string): Promise<PatientRecord> {
     const p = this.patients.find(
-      (pat) => pat.id === id || pat.syntheticHospitalPatientId === id
+      (pat) => pat.id === id || pat.syntheticHospitalPatientId === id,
     );
     if (p) return p;
     const err = new Error(`Patient ${id} not found.`);
     (err as unknown as { code: string; requestId: string }).code = "NOT_FOUND";
-    (err as unknown as { code: string; requestId: string }).requestId = "req_mock_pat_404";
+    (err as unknown as { code: string; requestId: string }).requestId =
+      "req_mock_pat_404";
     throw err;
   }
 
@@ -289,7 +317,7 @@ class MockEngine {
     return FIXTURE_CATALOGUE.filter(
       (m) =>
         (m.displayName && m.displayName.toLowerCase().includes(q)) ||
-        m.canonicalIngredientIds.some((ing) => ing.toLowerCase().includes(q))
+        m.canonicalIngredientIds.some((ing) => ing.toLowerCase().includes(q)),
     );
   }
 
@@ -302,14 +330,19 @@ class MockEngine {
     const c = this.activeCases.get(id);
     if (!c) {
       const err = new Error(`Case ${id} not found.`);
-      (err as unknown as { code: string; requestId: string }).code = "NOT_FOUND";
-      (err as unknown as { code: string; requestId: string }).requestId = "req_mock_case_404";
+      (err as unknown as { code: string; requestId: string }).code =
+        "NOT_FOUND";
+      (err as unknown as { code: string; requestId: string }).requestId =
+        "req_mock_case_404";
       throw err;
     }
     return JSON.parse(JSON.stringify(c));
   }
 
-  async createCapture(patientId: string, rawText: string): Promise<FixtureCase> {
+  async createCapture(
+    patientId: string,
+    rawText: string,
+  ): Promise<FixtureCase> {
     const id = `case_rx_${Date.now()}`;
     const newCase: FixtureCase = {
       id,
@@ -336,7 +369,7 @@ class MockEngine {
 
   async updateExtractedText(
     caseId: string,
-    lines: Array<{ id: number; text: string; confidence: number }>
+    lines: Array<{ id: number; text: string; confidence: number }>,
   ): Promise<FixtureCase> {
     const c = await this.getCase(caseId);
     c.extractedRawText = lines.map((l) => l.text).join("\n");
@@ -346,7 +379,10 @@ class MockEngine {
     return c;
   }
 
-  async confirmMedicines(caseId: string, items: PrescriptionItem[]): Promise<FixtureCase> {
+  async confirmMedicines(
+    caseId: string,
+    items: PrescriptionItem[],
+  ): Promise<FixtureCase> {
     const c = await this.getCase(caseId);
     c.items = items;
     c.status = "MEDICINES_CONFIRMED";
@@ -359,13 +395,21 @@ class MockEngine {
   async runCheck(caseId: string): Promise<CheckEnvelope> {
     const c = await this.getCase(caseId);
     // Determine outcome based on items
-    const hasWarfarin = c.items.some((i) =>
-      i.canonicalIngredientIds.some((ing) => ing.toLowerCase().includes("warfarin")) ||
-      (i.rawExtractedText && i.rawExtractedText.toLowerCase().includes("warfarin"))
+    const hasWarfarin = c.items.some(
+      (i) =>
+        i.canonicalIngredientIds.some((ing) =>
+          ing.toLowerCase().includes("warfarin"),
+        ) ||
+        (i.rawExtractedText &&
+          i.rawExtractedText.toLowerCase().includes("warfarin")),
     );
-    const hasAspirin = c.items.some((i) =>
-      i.canonicalIngredientIds.some((ing) => ing.toLowerCase().includes("aspirin")) ||
-      (i.rawExtractedText && i.rawExtractedText.toLowerCase().includes("aspirin"))
+    const hasAspirin = c.items.some(
+      (i) =>
+        i.canonicalIngredientIds.some((ing) =>
+          ing.toLowerCase().includes("aspirin"),
+        ) ||
+        (i.rawExtractedText &&
+          i.rawExtractedText.toLowerCase().includes("aspirin")),
     );
 
     let outcome: CheckEnvelope["data"]["outcome"] = "NO_MATCHING_RULE";
@@ -389,7 +433,8 @@ class MockEngine {
         evidenceReferences: [
           {
             sourceId: "SRC-NFI-2026",
-            title: "National Formulary of India (NFI) — Antithrombotic Interactions",
+            title:
+              "National Formulary of India (NFI) — Antithrombotic Interactions",
             publisher: "Indian Pharmacopoeia Commission (IPC)",
             url: "https://ipc.gov.in/mandates/nfi.html",
             locator: "Section 10.2: Antithrombotic Agents",
@@ -419,7 +464,10 @@ class MockEngine {
         alerts,
         coverageByCategory: {
           drugDrug: {
-            status: outcome === "FLAGGED" ? "EVALUATED_WITH_MATCHES" : "NO_MATCHING_SEEDED_RULE",
+            status:
+              outcome === "FLAGGED"
+                ? "EVALUATED_WITH_MATCHES"
+                : "NO_MATCHING_SEEDED_RULE",
             limitation:
               outcome === "FLAGGED"
                 ? "1 illustrative drug-drug interaction rule matched."
@@ -428,12 +476,14 @@ class MockEngine {
           },
           allergy: {
             status: "NO_MATCHING_SEEDED_RULE",
-            limitation: "No matching allergen detected against confirmed patient allergy profile.",
+            limitation:
+              "No matching allergen detected against confirmed patient allergy profile.",
             evaluatedInputsCount: c.items.length,
           },
           foodDrink: {
             status: "NOT_EVALUATED",
-            limitation: "Food/drink interaction evaluation not supported in current illustrative ruleset.",
+            limitation:
+              "Food/drink interaction evaluation not supported in current illustrative ruleset.",
           },
         },
       },
@@ -450,14 +500,18 @@ class MockEngine {
   // Doctor Tasks & Disposition
   async recordDisposition(
     alertId: string,
-    dispositionType: "CHANGE_REQUIRED" | "CLINICALLY_REVIEWED" | "OTHER_DOCUMENTED",
-    rationale: string
+    dispositionType:
+      "CHANGE_REQUIRED" | "CLINICALLY_REVIEWED" | "OTHER_DOCUMENTED",
+    rationale: string,
   ): Promise<void> {
     const cases = Array.from(this.activeCases.values());
     for (const c of cases) {
       const alert = c.alerts?.find((a: AlertSummary) => a.id === alertId);
       if (alert) {
-        alert.status = dispositionType === "CHANGE_REQUIRED" ? "CHANGE_REQUIRED" : "CLINICAL_DISPOSITION_RECORDED";
+        alert.status =
+          dispositionType === "CHANGE_REQUIRED"
+            ? "CHANGE_REQUIRED"
+            : "CLINICAL_DISPOSITION_RECORDED";
         alert.rationale = rationale;
         if (dispositionType === "CHANGE_REQUIRED") {
           c.status = "DOCTOR_REVIEW";
@@ -476,7 +530,7 @@ class MockEngine {
   async createRevision(
     caseId: string,
     prescribedItems: PrescriptionItem[],
-    changeReason: string
+    changeReason: string,
   ): Promise<FixtureCase> {
     const c = await this.getCase(caseId);
     const newRevNum = c.currentRevisionNumber + 1;
@@ -499,25 +553,44 @@ class MockEngine {
   }
 
   // Dispensing Authorization Gate
-  async authorizeDispensing(caseId: string, expectedVersion: number): Promise<void> {
+  async authorizeDispensing(
+    caseId: string,
+    expectedVersion: number,
+  ): Promise<void> {
     const c = await this.getCase(caseId);
     // Gate validation
     if (c.currentRevisionNumber !== expectedVersion) {
-      const err = new Error("Stale revision version detected. Reload and review latest version.");
+      const err = new Error(
+        "Stale revision version detected. Reload and review latest version.",
+      );
       (err as unknown as { code: string; requestId: string }).code = "CONFLICT";
-      (err as unknown as { code: string; requestId: string }).requestId = "req_mock_disp_409";
+      (err as unknown as { code: string; requestId: string }).requestId =
+        "req_mock_disp_409";
       throw err;
     }
-    if (c.alerts && c.alerts.some((a) => a.status === "OPEN" || a.status === "CHANGE_REQUIRED")) {
-      const err = new Error("Cannot authorize dispensing with unresolved clinical alerts.");
-      (err as unknown as { code: string; requestId: string }).code = "INVALID_STATE_TRANSITION";
-      (err as unknown as { code: string; requestId: string }).requestId = "req_mock_disp_alerts_open";
+    if (
+      c.alerts &&
+      c.alerts.some(
+        (a) => a.status === "OPEN" || a.status === "CHANGE_REQUIRED",
+      )
+    ) {
+      const err = new Error(
+        "Cannot authorize dispensing with unresolved clinical alerts.",
+      );
+      (err as unknown as { code: string; requestId: string }).code =
+        "INVALID_STATE_TRANSITION";
+      (err as unknown as { code: string; requestId: string }).requestId =
+        "req_mock_disp_alerts_open";
       throw err;
     }
     if (!c.checkResult || c.checkResult.data.outcome !== "NO_MATCHING_RULE") {
-      const err = new Error("Cannot authorize dispensing: Check outcome must be verified clear.");
-      (err as unknown as { code: string; requestId: string }).code = "INVALID_STATE_TRANSITION";
-      (err as unknown as { code: string; requestId: string }).requestId = "req_mock_disp_check_invalid";
+      const err = new Error(
+        "Cannot authorize dispensing: Check outcome must be verified clear.",
+      );
+      (err as unknown as { code: string; requestId: string }).code =
+        "INVALID_STATE_TRANSITION";
+      (err as unknown as { code: string; requestId: string }).requestId =
+        "req_mock_disp_check_invalid";
       throw err;
     }
 
@@ -540,7 +613,7 @@ class MockEngine {
   async updateMembershipStatus(
     id: string,
     status: "ACTIVE" | "PENDING" | "SUSPENDED" | "REVOKED",
-    role?: "PATIENT" | "DOCTOR" | "PHARMACIST" | "HOSPITAL_ADMIN"
+    role?: "PATIENT" | "DOCTOR" | "PHARMACIST" | "HOSPITAL_ADMIN",
   ) {
     const mem = this.memberships.find((m) => m.id === id);
     if (mem) {
@@ -551,11 +624,16 @@ class MockEngine {
   }
 
   // Appointment Operations
-  async listAppointments(filter?: { patientId?: string; clinicianId?: string }): Promise<AppointmentRecord[]> {
+  async listAppointments(filter?: {
+    patientId?: string;
+    clinicianId?: string;
+  }): Promise<AppointmentRecord[]> {
     let result = [...this.appointments];
     if (filter?.patientId) {
       const pid = filter.patientId;
-      result = result.filter((a) => a.patientId === pid || a.patientDisplayName.includes(pid));
+      result = result.filter(
+        (a) => a.patientId === pid || a.patientDisplayName.includes(pid),
+      );
     }
     if (filter?.clinicianId) {
       result = result.filter((a) => a.clinicianUserId === filter.clinicianId);
@@ -595,7 +673,8 @@ class MockEngine {
     const target = this.appointments.find((a) => a.id === appointmentId);
     if (!target) {
       const err = new Error(`Appointment ${appointmentId} not found.`);
-      (err as unknown as { code: string; requestId: string }).code = "NOT_FOUND";
+      (err as unknown as { code: string; requestId: string }).code =
+        "NOT_FOUND";
       throw err;
     }
     target.status = "CANCELLED";
@@ -623,7 +702,8 @@ class MockEngine {
     }
 
     return [...list].sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
   }
 
@@ -631,7 +711,8 @@ class MockEngine {
     const target = this.notifications.find((n) => n.id === id);
     if (!target) {
       const err = new Error(`Notification ${id} not found.`);
-      (err as unknown as { code: string; requestId: string }).code = "NOT_FOUND";
+      (err as unknown as { code: string; requestId: string }).code =
+        "NOT_FOUND";
       throw err;
     }
     target.read = true;
@@ -647,16 +728,25 @@ class MockEngine {
       }
     }
     this.activeCases.clear();
-    this.activeCases.set(INITIAL_FIXTURE_CASE.id, JSON.parse(JSON.stringify(INITIAL_FIXTURE_CASE)));
+    this.activeCases.set(
+      INITIAL_FIXTURE_CASE.id,
+      JSON.parse(JSON.stringify(INITIAL_FIXTURE_CASE)),
+    );
     this.patient = { ...FIXTURE_PATIENT };
     this.patients = [...FIXTURE_PATIENTS];
     this.appointments = [...INITIAL_FIXTURE_APPOINTMENTS];
-    this.notifications = JSON.parse(JSON.stringify(INITIAL_FIXTURE_NOTIFICATIONS));
-    this.medicationOrders = JSON.parse(JSON.stringify(INITIAL_MEDICATION_ORDERS));
+    this.notifications = JSON.parse(
+      JSON.stringify(INITIAL_FIXTURE_NOTIFICATIONS),
+    );
+    this.medicationOrders = JSON.parse(
+      JSON.stringify(INITIAL_MEDICATION_ORDERS),
+    );
     this.auditEvents = JSON.parse(JSON.stringify(INITIAL_AUDIT_EVENTS));
     this.ruleSets = JSON.parse(JSON.stringify(INITIAL_RULE_SETS));
     this.allergies = JSON.parse(JSON.stringify(INITIAL_PATIENT_ALLERGIES));
-    this.medicationHistory = JSON.parse(JSON.stringify(INITIAL_PATIENT_MED_HISTORY));
+    this.medicationHistory = JSON.parse(
+      JSON.stringify(INITIAL_PATIENT_MED_HISTORY),
+    );
     this.memberships = [
       {
         id: "mem_01",
@@ -706,7 +796,7 @@ class MockEngine {
       list = list.filter(
         (o) =>
           o.patientId.toLowerCase().includes(q) ||
-          o.patientName?.toLowerCase().includes(q)
+          o.patientName?.toLowerCase().includes(q),
       );
     }
     if (filter?.status && filter.status !== "ALL") {
@@ -723,11 +813,12 @@ class MockEngine {
     versions?: MedicationOrderVersion[];
   }> {
     const order = this.medicationOrders.find(
-      (o) => o.id === id || o.orderId === id
+      (o) => o.id === id || o.orderId === id,
     );
     if (!order) {
       const err = new Error(`Medication order ${id} not found.`);
-      (err as unknown as { code: string; requestId: string }).code = "NOT_FOUND";
+      (err as unknown as { code: string; requestId: string }).code =
+        "NOT_FOUND";
       throw err;
     }
     return {
@@ -754,7 +845,8 @@ class MockEngine {
 
     const patient = this.patients.find(
       (p) =>
-        p.syntheticHospitalPatientId === data.patientId || p.id === data.patientId
+        p.syntheticHospitalPatientId === data.patientId ||
+        p.id === data.patientId,
     );
     const patientName =
       patient?.displayName ||
@@ -768,12 +860,14 @@ class MockEngine {
       patientId: data.patientId,
       patientName,
       orderingDoctorId: this.currentUser?.id || "usr_doctor_01",
-      orderingDoctorName: this.currentUser?.displayName || "Dr. Arvind Patel, MD",
+      orderingDoctorName:
+        this.currentUser?.displayName || "Dr. Arvind Patel, MD",
       currentVersionNumber: 1,
       status: "ACTIVE",
       ward: data.ward || "Cardiology Ward 4B",
       bed: data.bed || "Bed 12",
-      scheduleFrequency: data.scheduleFrequency || data.items[0]?.frequency || "Q8H",
+      scheduleFrequency:
+        data.scheduleFrequency || data.items[0]?.frequency || "Q8H",
       route: data.route || data.items[0]?.route || "INTRAVENOUS",
       startDate: now,
       notes: data.notes,
@@ -820,14 +914,15 @@ class MockEngine {
 
   async updateMedicationOrderStatus(
     id: string,
-    status: MedicationOrderStatus
+    status: MedicationOrderStatus,
   ): Promise<InpatientMedicationOrder> {
     const target = this.medicationOrders.find(
-      (o) => o.id === id || o.orderId === id
+      (o) => o.id === id || o.orderId === id,
     );
     if (!target) {
       const err = new Error(`Medication order ${id} not found.`);
-      (err as unknown as { code: string; requestId: string }).code = "NOT_FOUND";
+      (err as unknown as { code: string; requestId: string }).code =
+        "NOT_FOUND";
       throw err;
     }
     target.status = status;
@@ -846,7 +941,8 @@ class MockEngine {
     let list = [...this.auditEvents];
     if (filter?.resourceType && filter.resourceType !== "ALL") {
       list = list.filter(
-        (e) => e.resourceType.toLowerCase() === filter.resourceType!.toLowerCase()
+        (e) =>
+          e.resourceType.toLowerCase() === filter.resourceType!.toLowerCase(),
       );
     }
     if (filter?.actorUserId) {
@@ -854,7 +950,7 @@ class MockEngine {
       list = list.filter(
         (e) =>
           e.actorUserId.toLowerCase().includes(q) ||
-          e.actorDisplayName?.toLowerCase().includes(q)
+          e.actorDisplayName?.toLowerCase().includes(q),
       );
     }
     if (filter?.limit) {
@@ -891,7 +987,7 @@ class MockEngine {
 
   async addAllergy(
     patientId: string,
-    data: Partial<PatientAllergy>
+    data: Partial<PatientAllergy>,
   ): Promise<PatientAllergy> {
     if (!data.substanceText || !data.substanceText.trim()) {
       throw new Error("Substance text is required");
@@ -915,14 +1011,14 @@ class MockEngine {
   }
 
   async getMedicationHistory(
-    patientId: string
+    patientId: string,
   ): Promise<PatientMedicationHistoryItem[]> {
     return this.medicationHistory.filter((m) => m.patientId === patientId);
   }
 
   async addMedicationHistory(
     patientId: string,
-    data: Partial<PatientMedicationHistoryItem>
+    data: Partial<PatientMedicationHistoryItem>,
   ): Promise<PatientMedicationHistoryItem> {
     if (!data.medicineName || !data.medicineName.trim()) {
       throw new Error("Medicine name is required");

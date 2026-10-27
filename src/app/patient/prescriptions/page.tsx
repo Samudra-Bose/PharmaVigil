@@ -36,7 +36,8 @@ export default function PatientPrescriptionsListPage() {
             My Prescribed Medications
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Active prescriptions and dispensing status from Metro General Hospital
+            Active prescriptions and dispensing status from Metro General
+            Hospital
           </p>
         </div>
 
@@ -54,10 +55,7 @@ export default function PatientPrescriptionsListPage() {
           {cases.map((c) => {
             const isAuthorized = c.status === "DISPENSING_AUTHORIZED";
             return (
-              <Card
-                key={c.id}
-                className="shadow-2xs"
-              >
+              <Card key={c.id} className="shadow-2xs">
                 <CardContent className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
@@ -65,22 +63,36 @@ export default function PatientPrescriptionsListPage() {
                         Prescription #{c.id}
                       </span>
                       <Badge variant={isAuthorized ? "authorized" : "moderate"}>
-                        {isAuthorized ? "Ready for Pick-up" : "Under Pharmacy Review"}
+                        {isAuthorized
+                          ? "Ready for Pick-up"
+                          : "Under Pharmacy Review"}
                       </Badge>
                     </div>
 
                     <div className="text-xs text-slate-600">
-                      <span className="font-semibold text-slate-700">Prescribed: </span>
-                      {c.items.map((i) => `${i.canonicalIngredientIds.join(", ")} ${i.strengthValue}${i.strengthUnit}`).join(" • ")}
+                      <span className="font-semibold text-slate-700">
+                        Prescribed:{" "}
+                      </span>
+                      {c.items
+                        .map(
+                          (i) =>
+                            `${i.canonicalIngredientIds.join(", ")} ${i.strengthValue}${i.strengthUnit}`,
+                        )
+                        .join(" • ")}
                     </div>
 
                     <div className="text-[11px] text-slate-500 font-mono font-tabular">
-                      Revision: {c.currentRevisionNumber} • Doctor: Dr. Arvind Patel, MD
+                      Revision: {c.currentRevisionNumber} • Doctor: Dr. Arvind
+                      Patel, MD
                     </div>
                   </div>
 
                   <Link href={`/patient/prescriptions/${c.id}`}>
-                    <Button size="sm" variant="primary" className="text-xs gap-1.5 shrink-0">
+                    <Button
+                      size="sm"
+                      variant="primary"
+                      className="text-xs gap-1.5 shrink-0"
+                    >
                       View Schedule <ArrowRight className="w-3.5 h-3.5" />
                     </Button>
                   </Link>

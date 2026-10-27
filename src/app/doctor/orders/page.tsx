@@ -38,7 +38,8 @@ export default function DoctorOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedOrder, setSelectedOrder] = useState<InpatientMedicationOrder | null>(null);
+  const [selectedOrder, setSelectedOrder] =
+    useState<InpatientMedicationOrder | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
   const fetchOrders = useCallback(async () => {
@@ -69,9 +70,10 @@ export default function DoctorOrdersPage() {
         o.patientName?.toLowerCase().includes(q) ||
         o.items.some(
           (i) =>
-            i.canonicalIngredientIds?.some((c) => c.toLowerCase().includes(q)) ||
-            i.brandName?.toLowerCase().includes(q)
-        )
+            i.canonicalIngredientIds?.some((c) =>
+              c.toLowerCase().includes(q),
+            ) || i.brandName?.toLowerCase().includes(q),
+        ),
     );
   }, [orders, searchQuery]);
 
@@ -103,16 +105,22 @@ export default function DoctorOrdersPage() {
               Inpatient Medication Orders Ledger
             </h1>
             <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
-              {filteredOrders.length} {filteredOrders.length === 1 ? "order" : "orders"}
+              {filteredOrders.length}{" "}
+              {filteredOrders.length === 1 ? "order" : "orders"}
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Hospital-scoped inpatient scheduled therapies, routes, dosages, and administration tracking.
+            Hospital-scoped inpatient scheduled therapies, routes, dosages, and
+            administration tracking.
           </p>
         </div>
 
         <Link href="/doctor/orders/new">
-          <Button size="sm" variant="primary" className="text-xs gap-1.5 shadow-xs">
+          <Button
+            size="sm"
+            variant="primary"
+            className="text-xs gap-1.5 shadow-xs"
+          >
             <Plus className="w-3.5 h-3.5" /> + Prescribe Inpatient Order
           </Button>
         </Link>
@@ -124,7 +132,9 @@ export default function DoctorOrdersPage() {
           <span className="text-xs font-semibold text-slate-500 mr-1 flex items-center gap-1">
             <Filter className="w-3.5 h-3.5" /> Status:
           </span>
-          {(["ALL", "ACTIVE", "HELD", "DISCONTINUED", "CANCELLED"] as const).map((s) => (
+          {(
+            ["ALL", "ACTIVE", "HELD", "DISCONTINUED", "CANCELLED"] as const
+          ).map((s) => (
             <button
               key={s}
               onClick={() => setStatusFilter(s)}
@@ -185,10 +195,15 @@ export default function DoctorOrdersPage() {
               </thead>
               <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
                 {filteredOrders.map((ord) => (
-                  <tr key={ord.id} className="hover:bg-slate-50/70 transition-colors">
+                  <tr
+                    key={ord.id}
+                    className="hover:bg-slate-50/70 transition-colors"
+                  >
                     {/* Order ID & Version */}
                     <td className="py-3 px-4">
-                      <div className="font-mono font-bold text-slate-900">{ord.id}</div>
+                      <div className="font-mono font-bold text-slate-900">
+                        {ord.id}
+                      </div>
                       <div className="flex items-center gap-1.5 mt-0.5">
                         <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 border border-slate-200">
                           v{ord.currentVersionNumber}
@@ -240,7 +255,9 @@ export default function DoctorOrdersPage() {
                     <td className="py-3 px-4">
                       <div className="flex flex-col gap-0.5">
                         <span className="font-semibold text-slate-900">
-                          {ord.scheduleFrequency || ord.items[0]?.frequency || "Q8H"}
+                          {ord.scheduleFrequency ||
+                            ord.items[0]?.frequency ||
+                            "Q8H"}
                         </span>
                         <span className="text-[11px] text-teal-700 font-medium">
                           {ord.route || ord.items[0]?.route || "INTRAVENOUS"}
@@ -253,7 +270,9 @@ export default function DoctorOrdersPage() {
                       <div>
                         Start:{" "}
                         <span className="text-slate-700 font-medium">
-                          {ord.startDate ? new Date(ord.startDate).toLocaleDateString() : "Immediate"}
+                          {ord.startDate
+                            ? new Date(ord.startDate).toLocaleDateString()
+                            : "Immediate"}
                         </span>
                       </div>
                       {ord.endDate && (
@@ -302,23 +321,34 @@ export default function DoctorOrdersPage() {
             {/* Summary Strip */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3 rounded-lg bg-slate-50 border border-slate-200">
               <div>
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Status</span>
-                <div className="mt-0.5">{getStatusBadge(selectedOrder.status)}</div>
+                <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                  Status
+                </span>
+                <div className="mt-0.5">
+                  {getStatusBadge(selectedOrder.status)}
+                </div>
               </div>
               <div>
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Patient</span>
+                <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                  Patient
+                </span>
                 <span className="font-semibold text-slate-900">
                   {selectedOrder.patientName} ({selectedOrder.patientId})
                 </span>
               </div>
               <div>
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Ward / Bed</span>
+                <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                  Ward / Bed
+                </span>
                 <span className="text-slate-700">
-                  {selectedOrder.ward || "Inpatient"} — {selectedOrder.bed || "Unassigned"}
+                  {selectedOrder.ward || "Inpatient"} —{" "}
+                  {selectedOrder.bed || "Unassigned"}
                 </span>
               </div>
               <div>
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Ordering Clinician</span>
+                <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                  Ordering Clinician
+                </span>
                 <span className="text-slate-700">
                   {selectedOrder.orderingDoctorName || "Dr. Arvind Patel, MD"}
                 </span>
@@ -328,11 +358,15 @@ export default function DoctorOrdersPage() {
             {/* Prescribed Medications */}
             <div>
               <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                <Pill className="w-3.5 h-3.5 text-teal-600" /> Prescribed Medications & Instructions
+                <Pill className="w-3.5 h-3.5 text-teal-600" /> Prescribed
+                Medications & Instructions
               </h3>
               <div className="space-y-2">
                 {selectedOrder.items.map((item, i) => (
-                  <div key={i} className="p-3 rounded-md bg-white border border-slate-200 shadow-2xs space-y-1">
+                  <div
+                    key={i}
+                    className="p-3 rounded-md bg-white border border-slate-200 shadow-2xs space-y-1"
+                  >
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-slate-900 text-sm">
                         {item.canonicalIngredientIds?.join(" + ")}
@@ -342,16 +376,29 @@ export default function DoctorOrdersPage() {
                       </span>
                     </div>
                     {item.brandName && (
-                      <p className="text-slate-500">Commercial Brand: {item.brandName}</p>
+                      <p className="text-slate-500">
+                        Commercial Brand: {item.brandName}
+                      </p>
                     )}
                     <div className="flex flex-wrap gap-3 text-[11px] text-slate-600 pt-1">
-                      <span><strong>Route:</strong> {item.route || selectedOrder.route}</span>
-                      <span><strong>Frequency:</strong> {item.frequency || selectedOrder.scheduleFrequency}</span>
-                      {item.duration && <span><strong>Duration:</strong> {item.duration}</span>}
+                      <span>
+                        <strong>Route:</strong>{" "}
+                        {item.route || selectedOrder.route}
+                      </span>
+                      <span>
+                        <strong>Frequency:</strong>{" "}
+                        {item.frequency || selectedOrder.scheduleFrequency}
+                      </span>
+                      {item.duration && (
+                        <span>
+                          <strong>Duration:</strong> {item.duration}
+                        </span>
+                      )}
                     </div>
                     {item.instructions && (
                       <div className="mt-1 p-2 rounded bg-slate-50 text-[11px] text-slate-700 border border-slate-150">
-                        <strong>Specific Instructions:</strong> {item.instructions}
+                        <strong>Specific Instructions:</strong>{" "}
+                        {item.instructions}
                       </div>
                     )}
                   </div>
@@ -362,7 +409,9 @@ export default function DoctorOrdersPage() {
             {/* Clinical Rationale & Notes */}
             {selectedOrder.notes && (
               <div className="p-3 rounded-md bg-amber-50/60 border border-amber-200 text-amber-900">
-                <strong className="block text-[11px] uppercase tracking-wider mb-0.5">Clinical Rationale & Notes:</strong>
+                <strong className="block text-[11px] uppercase tracking-wider mb-0.5">
+                  Clinical Rationale & Notes:
+                </strong>
                 <p className="text-xs">{selectedOrder.notes}</p>
               </div>
             )}
@@ -371,14 +420,22 @@ export default function DoctorOrdersPage() {
             {selectedOrder.versions && selectedOrder.versions.length > 0 && (
               <div>
                 <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5 text-slate-600" /> Version Lineage (Immutable Audit)
+                  <Clock className="w-3.5 h-3.5 text-slate-600" /> Version
+                  Lineage (Immutable Audit)
                 </h3>
                 <div className="space-y-1.5 max-h-40 overflow-y-auto">
                   {selectedOrder.versions.map((v) => (
-                    <div key={v.id} className="p-2 rounded bg-slate-50 border border-slate-200 flex items-center justify-between text-[11px]">
+                    <div
+                      key={v.id}
+                      className="p-2 rounded bg-slate-50 border border-slate-200 flex items-center justify-between text-[11px]"
+                    >
                       <div>
-                        <span className="font-bold font-mono text-slate-900">Version {v.versionNumber}</span>
-                        <span className="text-slate-500 ml-2">{v.changeReason || "Prescription authored"}</span>
+                        <span className="font-bold font-mono text-slate-900">
+                          Version {v.versionNumber}
+                        </span>
+                        <span className="text-slate-500 ml-2">
+                          {v.changeReason || "Prescription authored"}
+                        </span>
                       </div>
                       <div className="text-slate-400 font-mono text-[10px]">
                         {formatDateTime(v.createdAt)}
@@ -390,7 +447,11 @@ export default function DoctorOrdersPage() {
             )}
 
             <div className="pt-2 flex justify-end">
-              <Button size="sm" variant="outline" onClick={() => setModalOpen(false)}>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setModalOpen(false)}
+              >
                 Close
               </Button>
             </div>

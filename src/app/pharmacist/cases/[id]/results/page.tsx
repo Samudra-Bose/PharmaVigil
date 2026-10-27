@@ -3,7 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { api } from "@/lib/api-client";
-import { INITIAL_FIXTURE_CASE, type FixtureCase } from "@/lib/mock-data/fixtures";
+import {
+  INITIAL_FIXTURE_CASE,
+  type FixtureCase,
+} from "@/lib/mock-data/fixtures";
 import { PipelineStepper } from "@/components/clinical/PipelineStepper";
 import { RuleNoticeBanner } from "@/components/clinical/RuleNoticeBanner";
 import { CoverageMatrix } from "@/components/clinical/CoverageMatrix";
@@ -11,14 +14,14 @@ import { AlertCard } from "@/components/clinical/AlertCard";
 import { Badge, type BadgeVariant } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { AlertCardSkeleton } from "@/components/skeletons";
-import { 
-  ShieldCheck, 
-  AlertTriangle, 
-  CheckCircle2, 
+import {
+  ShieldCheck,
+  AlertTriangle,
+  CheckCircle2,
   ArrowRight,
   Stethoscope,
   Clock,
-  Info 
+  Info,
 } from "lucide-react";
 
 export default function CheckResultsPage() {
@@ -26,7 +29,9 @@ export default function CheckResultsPage() {
   const router = useRouter();
   const caseId = params.id as string;
 
-  const [caseData, setCaseData] = useState<FixtureCase | null>(INITIAL_FIXTURE_CASE);
+  const [caseData, setCaseData] = useState<FixtureCase | null>(
+    INITIAL_FIXTURE_CASE,
+  );
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -49,15 +54,30 @@ export default function CheckResultsPage() {
   const getOutcomeBadge = (): { variant: BadgeVariant; label: string } => {
     switch (outcome) {
       case "FLAGGED":
-        return { variant: "high", label: "FLAGGED — Clinical Alerts Identified" };
+        return {
+          variant: "high",
+          label: "FLAGGED — Clinical Alerts Identified",
+        };
       case "NO_MATCHING_RULE":
-        return { variant: "info", label: "NO_MATCHING_RULE — No seeded rule matched in limited dataset" };
+        return {
+          variant: "info",
+          label: "NO_MATCHING_RULE — No seeded rule matched in limited dataset",
+        };
       case "INCOMPLETE":
-        return { variant: "incomplete", label: "INCOMPLETE — Missing Required Clinical Context" };
+        return {
+          variant: "incomplete",
+          label: "INCOMPLETE — Missing Required Clinical Context",
+        };
       case "UNSUPPORTED":
-        return { variant: "incomplete", label: "UNSUPPORTED — Medicine outside supported dataset" };
+        return {
+          variant: "incomplete",
+          label: "UNSUPPORTED — Medicine outside supported dataset",
+        };
       case "FAILED":
-        return { variant: "failed", label: "FAILED — Evaluation Interrupted (Fail-Closed)" };
+        return {
+          variant: "failed",
+          label: "FAILED — Evaluation Interrupted (Fail-Closed)",
+        };
       default:
         return { variant: "neutral", label: outcome };
     }
@@ -77,7 +97,9 @@ export default function CheckResultsPage() {
             Evaluation Outcome & Evidence Findings
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Case: <span className="font-mono font-bold text-slate-800">{caseId}</span> • Revision {caseData?.currentRevisionNumber || 1}
+            Case:{" "}
+            <span className="font-mono font-bold text-slate-800">{caseId}</span>{" "}
+            • Revision {caseData?.currentRevisionNumber || 1}
           </p>
         </div>
 
@@ -88,7 +110,9 @@ export default function CheckResultsPage() {
         </div>
       </div>
 
-      <RuleNoticeBanner ruleSetVersion={caseData?.checkResult?.data.ruleSetVersion} />
+      <RuleNoticeBanner
+        ruleSetVersion={caseData?.checkResult?.data.ruleSetVersion}
+      />
 
       {loading ? (
         <AlertCardSkeleton />
@@ -99,7 +123,8 @@ export default function CheckResultsPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                  <AlertTriangle className="w-4 h-4 text-amber-600" /> Identified Clinical Concerns ({caseData?.alerts?.length})
+                  <AlertTriangle className="w-4 h-4 text-amber-600" />{" "}
+                  Identified Clinical Concerns ({caseData?.alerts?.length})
                 </h2>
                 <span className="text-[11px] text-amber-800 font-medium">
                   Dispensing Authorization Locked until Doctor Review
@@ -126,8 +151,9 @@ export default function CheckResultsPage() {
                 No matching illustrative rule triggered for this revision.
               </div>
               <p className="text-slate-600 text-[11px] leading-relaxed">
-                This indicates only that no seeded rule in the limited demonstration dataset matched the prescribed items.
-                It is not a certification that the prescription is completely free of risk.
+                This indicates only that no seeded rule in the limited
+                demonstration dataset matched the prescribed items. It is not a
+                certification that the prescription is completely free of risk.
               </p>
             </div>
           )}
@@ -155,10 +181,13 @@ export default function CheckResultsPage() {
               <Button
                 size="md"
                 variant="primary"
-                onClick={() => router.push(`/pharmacist/cases/${caseId}/authorize`)}
+                onClick={() =>
+                  router.push(`/pharmacist/cases/${caseId}/authorize`)
+                }
                 className="gap-2 text-xs w-full sm:w-auto"
               >
-                Proceed to Dispensing Authorization <ArrowRight className="w-4 h-4" />
+                Proceed to Dispensing Authorization{" "}
+                <ArrowRight className="w-4 h-4" />
               </Button>
             ) : (
               <Button
@@ -170,7 +199,9 @@ export default function CheckResultsPage() {
                 }}
                 className="gap-2 text-xs w-full sm:w-auto bg-slate-900"
               >
-                <Stethoscope className="w-4 h-4 text-emerald-400" /> Switch to Doctor Portal to Review Triage <ArrowRight className="w-4 h-4" />
+                <Stethoscope className="w-4 h-4 text-emerald-400" /> Switch to
+                Doctor Portal to Review Triage{" "}
+                <ArrowRight className="w-4 h-4" />
               </Button>
             )}
           </div>

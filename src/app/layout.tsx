@@ -11,7 +11,8 @@ import { AppFooter } from "@/components/layout/AppFooter";
 
 export const metadata: Metadata = {
   title: "PharmaVigil — Hospital Outpatient Medication Safety Platform",
-  description: "A hospital-focused medication-safety workflow prototype for prescription verification, deterministic rule checks, and clinical review routing.",
+  description:
+    "A hospital-focused medication-safety workflow prototype for prescription verification, deterministic rule checks, and clinical review routing.",
 };
 
 export default function RootLayout({

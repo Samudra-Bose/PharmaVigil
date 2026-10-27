@@ -46,7 +46,7 @@ export function SegmentedControl<T extends string = string>({
       aria-label={ariaLabel}
       className={cn(
         "inline-flex items-center p-0.5 rounded-lg bg-slate-100/90 border border-slate-200/80 gap-0.5 select-none",
-        className
+        className,
       )}
     >
       {options.map((opt, idx) => {
@@ -64,7 +64,7 @@ export function SegmentedControl<T extends string = string>({
               "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-900",
               isSelected
                 ? "bg-white text-slate-900 shadow-2xs border border-slate-200/90 font-semibold"
-                : "text-slate-500 hover:text-slate-800 hover:bg-slate-200/50 font-medium"
+                : "text-slate-500 hover:text-slate-800 hover:bg-slate-200/50 font-medium",
             )}
           >
             <span>{opt.label}</span>
@@ -74,7 +74,7 @@ export function SegmentedControl<T extends string = string>({
                   "text-[10px] font-mono px-1.5 py-0.2 rounded-full font-semibold",
                   isSelected
                     ? "bg-slate-900 text-white"
-                    : "bg-slate-200/80 text-slate-600"
+                    : "bg-slate-200/80 text-slate-600",
                 )}
               >
                 {opt.count}

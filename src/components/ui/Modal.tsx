@@ -56,12 +56,15 @@ export const Modal: React.FC<ModalProps> = ({
       <div
         className={cn(
           "w-full bg-white rounded-lg border border-slate-200 shadow-xl overflow-hidden animate-in zoom-in-95 duration-150",
-          maxWidthStyles[maxWidth]
+          maxWidthStyles[maxWidth],
         )}
       >
         <div className="flex items-start justify-between p-4 border-b border-slate-100">
           <div>
-            <h2 id="modal-title" className="text-base font-semibold text-slate-900">
+            <h2
+              id="modal-title"
+              className="text-base font-semibold text-slate-900"
+            >
               {title}
             </h2>
             {description && (

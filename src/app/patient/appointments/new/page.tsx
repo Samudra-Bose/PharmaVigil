@@ -10,7 +10,14 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { ErrorDisplay } from "@/components/ui/ErrorDisplay";
-import { Calendar, Clock, User, ArrowLeft, Check, Sparkles } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  User,
+  ArrowLeft,
+  Check,
+  Sparkles,
+} from "lucide-react";
 
 export default function BookAppointmentPage() {
   const router = useRouter();
@@ -18,7 +25,9 @@ export default function BookAppointmentPage() {
   const [department, setDepartment] = useState("Cardiology");
   const [slotDate, setSlotDate] = useState("2026-11-05");
   const [slotTime, setSlotTime] = useState("11:30");
-  const [reason, setReason] = useState("Follow-up on cardiovascular medications and anticoagulant monitoring");
+  const [reason, setReason] = useState(
+    "Follow-up on cardiovascular medications and anticoagulant monitoring",
+  );
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -49,7 +58,7 @@ export default function BookAppointmentPage() {
       });
       clinicalToast.success(
         "Appointment Scheduled",
-        `Consultation booked with ${clinicianName} in ${department}.`
+        `Consultation booked with ${clinicianName} in ${department}.`,
       );
       router.push("/patient/appointments");
     } catch (err) {
@@ -70,7 +79,8 @@ export default function BookAppointmentPage() {
             Book Clinical Consultation
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Schedule a follow-up consultation with your care team at Metro General Hospital
+            Schedule a follow-up consultation with your care team at Metro
+            General Hospital
           </p>
         </div>
 
@@ -87,7 +97,10 @@ export default function BookAppointmentPage() {
         <CardContent className="p-6">
           <form onSubmit={handleSubmit} className="space-y-4 text-xs">
             <div>
-              <label htmlFor="clinician" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+              <label
+                htmlFor="clinician"
+                className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1"
+              >
                 Select Attending Clinician & Care Team Member
               </label>
               <select
@@ -95,17 +108,28 @@ export default function BookAppointmentPage() {
                 value={clinicianUserId}
                 onChange={(e) => {
                   setClinicianUserId(e.target.value);
-                  setDepartment(e.target.value === "usr_doctor_01" ? "Cardiology" : "Clinical Pharmacy");
+                  setDepartment(
+                    e.target.value === "usr_doctor_01"
+                      ? "Cardiology"
+                      : "Clinical Pharmacy",
+                  );
                 }}
                 className="w-full p-2.5 rounded-md border border-slate-300 text-xs font-semibold text-slate-900 bg-white focus:outline-none focus:ring-1 focus:ring-slate-900"
               >
-                <option value="usr_doctor_01">Dr. Arvind Patel, MD — Cardiology (Attending Physician)</option>
-                <option value="usr_pharma_01">Priya Sharma, RPh — Outpatient Pharmacy Consultation</option>
+                <option value="usr_doctor_01">
+                  Dr. Arvind Patel, MD — Cardiology (Attending Physician)
+                </option>
+                <option value="usr_pharma_01">
+                  Priya Sharma, RPh — Outpatient Pharmacy Consultation
+                </option>
               </select>
             </div>
 
             <div>
-              <label htmlFor="dept" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+              <label
+                htmlFor="dept"
+                className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1"
+              >
                 Hospital Department
               </label>
               <Input
@@ -119,7 +143,10 @@ export default function BookAppointmentPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="date" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                <label
+                  htmlFor="date"
+                  className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1"
+                >
                   Preferred Date
                 </label>
                 <Input
@@ -133,7 +160,10 @@ export default function BookAppointmentPage() {
               </div>
 
               <div>
-                <label htmlFor="time" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                <label
+                  htmlFor="time"
+                  className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1"
+                >
                   Time Slot (30 mins)
                 </label>
                 <select
@@ -153,7 +183,10 @@ export default function BookAppointmentPage() {
             </div>
 
             <div>
-              <label htmlFor="reason" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+              <label
+                htmlFor="reason"
+                className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1"
+              >
                 Reason for Consultation / Symptoms
               </label>
               <Textarea
@@ -174,7 +207,8 @@ export default function BookAppointmentPage() {
                 loading={submitting}
                 className="gap-2 text-xs"
               >
-                <Check className="w-4 h-4 text-emerald-400" /> Confirm & Book Appointment
+                <Check className="w-4 h-4 text-emerald-400" /> Confirm & Book
+                Appointment
               </Button>
             </div>
           </form>

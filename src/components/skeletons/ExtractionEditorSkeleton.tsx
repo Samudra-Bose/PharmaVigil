@@ -5,14 +5,17 @@ interface ExtractionEditorSkeletonProps {
   className?: string;
 }
 
-export const ExtractionEditorSkeleton: React.FC<ExtractionEditorSkeletonProps> = ({
-  className,
-}) => {
+export const ExtractionEditorSkeleton: React.FC<
+  ExtractionEditorSkeletonProps
+> = ({ className }) => {
   return (
     <div
       role="status"
       aria-label="Loading prescription extraction editor..."
-      className={cn("grid grid-cols-1 lg:grid-cols-2 gap-6 select-none", className)}
+      className={cn(
+        "grid grid-cols-1 lg:grid-cols-2 gap-6 select-none",
+        className,
+      )}
     >
       {/* Left Card: Prescription Scan Source Placeholder */}
       <div className="bg-white rounded-lg border border-slate-200 overflow-hidden shadow-xs flex flex-col">

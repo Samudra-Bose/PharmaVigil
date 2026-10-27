@@ -1,7 +1,12 @@
 import React from "react";
 import type { AlertSummary } from "@/types";
 import { Badge, type BadgeVariant } from "@/components/ui/Badge";
-import { AlertTriangle, BookOpen, ExternalLink, ArrowRight } from "lucide-react";
+import {
+  AlertTriangle,
+  BookOpen,
+  ExternalLink,
+  ArrowRight,
+} from "lucide-react";
 
 interface AlertCardProps {
   alert: AlertSummary;
@@ -39,7 +44,11 @@ export const AlertCard: React.FC<AlertCardProps> = ({
             {alert.ruleId} (v{alert.ruleVersion})
           </span>
         </div>
-        <Badge variant="moderate" icon={false} className="text-[10px] uppercase font-mono">
+        <Badge
+          variant="moderate"
+          icon={false}
+          className="text-[10px] uppercase font-mono"
+        >
           Status: {alert.status}
         </Badge>
       </div>
@@ -59,7 +68,8 @@ export const AlertCard: React.FC<AlertCardProps> = ({
         {alert.evidenceReferences && alert.evidenceReferences.length > 0 && (
           <div className="p-3 bg-slate-50 rounded-md border border-slate-200 space-y-2">
             <div className="flex items-center gap-1.5 font-bold text-slate-700 uppercase tracking-wider text-[11px]">
-              <BookOpen className="w-3.5 h-3.5 text-slate-600" /> Evidence Provenance
+              <BookOpen className="w-3.5 h-3.5 text-slate-600" /> Evidence
+              Provenance
             </div>
             {alert.evidenceReferences.map((ref) => (
               <div key={ref.sourceId} className="space-y-1">
@@ -77,10 +87,14 @@ export const AlertCard: React.FC<AlertCardProps> = ({
                   )}
                 </div>
                 {ref.publisher && (
-                  <div className="text-slate-600">Publisher: {ref.publisher}</div>
+                  <div className="text-slate-600">
+                    Publisher: {ref.publisher}
+                  </div>
                 )}
                 {ref.locator && (
-                  <div className="text-slate-500 font-mono text-[11px]">Locator: {ref.locator}</div>
+                  <div className="text-slate-500 font-mono text-[11px]">
+                    Locator: {ref.locator}
+                  </div>
                 )}
                 <div className="flex items-center gap-2 pt-0.5">
                   <span className="text-slate-400">Strength:</span>
@@ -111,7 +125,10 @@ export const AlertCard: React.FC<AlertCardProps> = ({
         <div className="pt-2 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="text-amber-900 font-medium text-xs flex items-center gap-1.5">
             <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
-            <span>Doctor review required. This alert prevents dispensing authorization.</span>
+            <span>
+              Doctor review required. This alert prevents dispensing
+              authorization.
+            </span>
           </div>
 
           {onAction && actionLabel && (

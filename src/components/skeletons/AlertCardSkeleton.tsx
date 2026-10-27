@@ -5,14 +5,16 @@ interface AlertCardSkeletonProps {
   className?: string;
 }
 
-export const AlertCardSkeleton: React.FC<AlertCardSkeletonProps> = ({ className }) => {
+export const AlertCardSkeleton: React.FC<AlertCardSkeletonProps> = ({
+  className,
+}) => {
   return (
     <div
       role="status"
       aria-label="Loading clinical alert..."
       className={cn(
         "bg-white rounded-lg border-2 border-slate-200/90 shadow-xs overflow-hidden select-none",
-        className
+        className,
       )}
     >
       {/* Alert Header Skeleton */}

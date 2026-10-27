@@ -37,7 +37,7 @@ export const GridPattern: React.FC<GridPatternProps> = ({
       className={cn(
         "pointer-events-none absolute inset-0 h-full w-full fill-slate-300/40 stroke-slate-300/30",
         "[mask-image:radial-gradient(ellipse_at_center,white,transparent_80%)]",
-        className
+        className,
       )}
       {...props}
     >

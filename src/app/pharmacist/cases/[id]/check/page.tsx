@@ -8,7 +8,13 @@ import type { FixtureCase } from "@/lib/mock-data/fixtures";
 import { PipelineStepper } from "@/components/clinical/PipelineStepper";
 import { RuleNoticeBanner } from "@/components/clinical/RuleNoticeBanner";
 import { Button } from "@/components/ui/Button";
-import { ShieldCheck, Play, RefreshCw, AlertCircle, Loader2 } from "lucide-react";
+import {
+  ShieldCheck,
+  Play,
+  RefreshCw,
+  AlertCircle,
+  Loader2,
+} from "lucide-react";
 
 export default function RunCheckPage() {
   const params = useParams();
@@ -41,18 +47,21 @@ export default function RunCheckPage() {
       if (res.data.outcome === "FLAGGED") {
         clinicalToast.warning(
           "Safety Engine: Alerts Flagged",
-          `Engine evaluated ruleset (${res.data.ruleSetVersion}). Physician review required.`
+          `Engine evaluated ruleset (${res.data.ruleSetVersion}). Physician review required.`,
         );
       } else {
         clinicalToast.success(
           "Safety Engine: Clear",
-          "No matching safety rules triggered. Ready for dispensing authorization."
+          "No matching safety rules triggered. Ready for dispensing authorization.",
         );
       }
       router.push(`/pharmacist/cases/${caseId}/results`);
     } catch (err) {
       clinicalToast.error(err, "Safety Engine Evaluation Failed");
-      setError((err as Error).message || "Rule engine execution failed. Fail-closed: No authorization permitted.");
+      setError(
+        (err as Error).message ||
+          "Rule engine execution failed. Fail-closed: No authorization permitted.",
+      );
     } finally {
       setEvaluating(false);
     }
@@ -68,7 +77,9 @@ export default function RunCheckPage() {
           Deterministic Illustrative Safety Check
         </h1>
         <p className="text-xs text-slate-500 mt-0.5">
-          Case: <span className="font-mono font-bold text-slate-800">{caseId}</span> • Revision {caseData?.currentRevisionNumber || 1}
+          Case:{" "}
+          <span className="font-mono font-bold text-slate-800">{caseId}</span> •
+          Revision {caseData?.currentRevisionNumber || 1}
         </p>
       </div>
 
@@ -82,15 +93,21 @@ export default function RunCheckPage() {
 
         <div className="space-y-2 text-xs divide-y divide-slate-100">
           <div className="pt-2 flex justify-between items-center">
-            <span className="text-slate-600">Confirmed Prescription Items:</span>
+            <span className="text-slate-600">
+              Confirmed Prescription Items:
+            </span>
             <span className="font-mono font-semibold text-slate-900">
               {caseData?.items.length || 2} items (Warfarin, Aspirin)
             </span>
           </div>
 
           <div className="pt-2 flex justify-between items-center">
-            <span className="text-slate-600">Patient Allergy Profile Checked:</span>
-            <span className="font-semibold text-slate-900">Penicillin, Sulfa</span>
+            <span className="text-slate-600">
+              Patient Allergy Profile Checked:
+            </span>
+            <span className="font-semibold text-slate-900">
+              Penicillin, Sulfa
+            </span>
           </div>
 
           <div className="pt-2 flex justify-between items-center">
@@ -127,7 +144,8 @@ export default function RunCheckPage() {
               <>Evaluating Seeded Rules...</>
             ) : (
               <>
-                <Play className="w-4 h-4 text-emerald-400" /> Execute Illustrative Check
+                <Play className="w-4 h-4 text-emerald-400" /> Execute
+                Illustrative Check
               </>
             )}
           </Button>

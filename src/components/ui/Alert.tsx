@@ -1,14 +1,21 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
-import { AlertCircle, AlertTriangle, Info, AlertOctagon, ShieldAlert } from "lucide-react";
+import {
+  AlertCircle,
+  AlertTriangle,
+  Info,
+  AlertOctagon,
+  ShieldAlert,
+} from "lucide-react";
 
 const alertVariants = cva(
   "relative w-full rounded-lg border p-4 text-xs [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground",
   {
     variants: {
       variant: {
-        default: "bg-slate-50 text-slate-900 border-slate-200 [&>svg]:text-slate-700",
+        default:
+          "bg-slate-50 text-slate-900 border-slate-200 [&>svg]:text-slate-700",
         destructive:
           "border-rose-300 bg-rose-50/70 text-rose-950 [&>svg]:text-rose-700",
         warning:
@@ -20,7 +27,7 @@ const alertVariants = cva(
     defaultVariants: {
       variant: "default",
     },
-  }
+  },
 );
 
 const Alert = React.forwardRef<
@@ -42,7 +49,10 @@ const AlertTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <h5
     ref={ref}
-    className={cn("mb-1 font-semibold leading-none tracking-tight text-slate-900", className)}
+    className={cn(
+      "mb-1 font-semibold leading-none tracking-tight text-slate-900",
+      className,
+    )}
     {...props}
   />
 ));
@@ -54,7 +64,10 @@ const AlertDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("text-xs leading-relaxed [&_p]:leading-relaxed text-slate-700", className)}
+    className={cn(
+      "text-xs leading-relaxed [&_p]:leading-relaxed text-slate-700",
+      className,
+    )}
     {...props}
   />
 ));

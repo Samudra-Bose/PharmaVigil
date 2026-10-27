@@ -6,17 +6,16 @@ interface CossMetricStripSkeletonProps {
   className?: string;
 }
 
-export const CossMetricStripSkeleton: React.FC<CossMetricStripSkeletonProps> = ({
-  columnCount = 4,
-  className,
-}) => {
+export const CossMetricStripSkeleton: React.FC<
+  CossMetricStripSkeletonProps
+> = ({ columnCount = 4, className }) => {
   return (
     <section
       role="status"
       aria-label="Loading operational metrics..."
       className={cn(
         "bg-white border border-slate-200/80 rounded-lg shadow-2xs divide-y sm:divide-y-0 sm:divide-x divide-slate-100 flex flex-col sm:flex-row items-stretch select-none",
-        className
+        className,
       )}
     >
       {Array.from({ length: columnCount }).map((_, idx) => (

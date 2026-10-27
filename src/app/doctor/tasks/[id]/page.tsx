@@ -10,7 +10,10 @@ import { PatientIdentityCard } from "@/components/clinical/PatientIdentityCard";
 import { AlertCard } from "@/components/clinical/AlertCard";
 import { RuleNoticeBanner } from "@/components/clinical/RuleNoticeBanner";
 import { Button } from "@/components/ui/Button";
-import { PatientIdentityCardSkeleton, AlertCardSkeleton } from "@/components/skeletons";
+import {
+  PatientIdentityCardSkeleton,
+  AlertCardSkeleton,
+} from "@/components/skeletons";
 import { Stethoscope, ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 
 function DoctorTaskDetailContent() {
@@ -39,7 +42,8 @@ function DoctorTaskDetailContent() {
     loadData();
   }, [caseId]);
 
-  const targetAlert = caseData?.alerts?.find((a) => a.id === alertId) || caseData?.alerts?.[0];
+  const targetAlert =
+    caseData?.alerts?.find((a) => a.id === alertId) || caseData?.alerts?.[0];
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -51,7 +55,9 @@ function DoctorTaskDetailContent() {
             Clinical Concern Case Review
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Case: <span className="font-mono font-bold text-slate-800">{caseId}</span> • Alert ID: {alertId}
+            Case:{" "}
+            <span className="font-mono font-bold text-slate-800">{caseId}</span>{" "}
+            • Alert ID: {alertId}
           </p>
         </div>
 
@@ -78,22 +84,38 @@ function DoctorTaskDetailContent() {
           <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-xs space-y-3">
             <div className="flex items-center justify-between border-b border-slate-100 pb-2">
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                Prescribed Medications Under Evaluation (Revision {caseData?.currentRevisionNumber})
+                Prescribed Medications Under Evaluation (Revision{" "}
+                {caseData?.currentRevisionNumber})
               </h3>
-              <span className="font-mono text-[11px] text-slate-500">{caseData?.items.length} item(s)</span>
+              <span className="font-mono text-[11px] text-slate-500">
+                {caseData?.items.length} item(s)
+              </span>
             </div>
 
             <div className="space-y-2">
               {caseData?.items.map((item, idx) => (
-                <div key={idx} className="p-2.5 rounded bg-slate-50 border border-slate-200 text-xs flex justify-between items-center">
+                <div
+                  key={idx}
+                  className="p-2.5 rounded bg-slate-50 border border-slate-200 text-xs flex justify-between items-center"
+                >
                   <div>
-                    <span className="font-bold text-slate-900">{item.canonicalIngredientIds.join(", ")}</span>
-                    {item.brandText && <span className="text-slate-500"> ({item.brandText})</span>}
+                    <span className="font-bold text-slate-900">
+                      {item.canonicalIngredientIds.join(", ")}
+                    </span>
+                    {item.brandText && (
+                      <span className="text-slate-500">
+                        {" "}
+                        ({item.brandText})
+                      </span>
+                    )}
                     <div className="text-[11px] text-slate-600 font-mono">
-                      {item.strengthValue}{item.strengthUnit} • {item.dosageForm} • {item.frequency}
+                      {item.strengthValue}
+                      {item.strengthUnit} • {item.dosageForm} • {item.frequency}
                     </div>
                   </div>
-                  <span className="text-[11px] font-mono text-slate-500">{item.durationValue} {item.durationUnit}</span>
+                  <span className="text-[11px] font-mono text-slate-500">
+                    {item.durationValue} {item.durationUnit}
+                  </span>
                 </div>
               ))}
             </div>
@@ -105,7 +127,9 @@ function DoctorTaskDetailContent() {
               alert={targetAlert}
               actionLabel="Proceed to Record Clinical Disposition"
               onAction={() =>
-                router.push(`/doctor/tasks/${alertId}/disposition?caseId=${caseId}`)
+                router.push(
+                  `/doctor/tasks/${alertId}/disposition?caseId=${caseId}`,
+                )
               }
             />
           )}

@@ -3,7 +3,10 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { api } from "@/lib/api-client";
-import { INITIAL_FIXTURE_CASE, type FixtureCase } from "@/lib/mock-data/fixtures";
+import {
+  INITIAL_FIXTURE_CASE,
+  type FixtureCase,
+} from "@/lib/mock-data/fixtures";
 import { Badge, type BadgeVariant } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PrescriptionTableSkeleton } from "@/components/skeletons";
@@ -57,7 +60,9 @@ export default function PharmacistDashboard() {
     loadCases();
   }, []);
 
-  const getStatusBadge = (status: FixtureCase["status"]): { variant: BadgeVariant; label: string } => {
+  const getStatusBadge = (
+    status: FixtureCase["status"],
+  ): { variant: BadgeVariant; label: string } => {
     switch (status) {
       case "CHECK_FLAGGED":
         return { variant: "high", label: "Flagged Concerns (DDI)" };
@@ -78,14 +83,21 @@ export default function PharmacistDashboard() {
     }
   };
 
-  const countFlagged = cases.filter((c) => c.status === "CHECK_FLAGGED" || c.status === "REVISED").length;
+  const countFlagged = cases.filter(
+    (c) => c.status === "CHECK_FLAGGED" || c.status === "REVISED",
+  ).length;
   const countReady = cases.filter((c) => c.status === "CHECK_PASSED").length;
-  const countAuthorized = cases.filter((c) => c.status === "DISPENSING_AUTHORIZED").length;
+  const countAuthorized = cases.filter(
+    (c) => c.status === "DISPENSING_AUTHORIZED",
+  ).length;
 
   const filteredCases = cases.filter((c) => {
     let matchesStatus = true;
     if (filter === "NEEDS_ACTION") {
-      matchesStatus = c.status === "CHECK_FLAGGED" || c.status === "DRAFT_CAPTURE" || c.status === "REVISED";
+      matchesStatus =
+        c.status === "CHECK_FLAGGED" ||
+        c.status === "DRAFT_CAPTURE" ||
+        c.status === "REVISED";
     } else if (filter === "READY") {
       matchesStatus = c.status === "CHECK_PASSED";
     } else if (filter === "AUTHORIZED") {
@@ -100,8 +112,10 @@ export default function PharmacistDashboard() {
       const matchPatient = c.patientId.toLowerCase().includes(q);
       const matchMed = c.items.some(
         (i) =>
-          i.canonicalIngredientIds.some((ing) => ing.toLowerCase().includes(q)) ||
-          (i.brandText && i.brandText.toLowerCase().includes(q))
+          i.canonicalIngredientIds.some((ing) =>
+            ing.toLowerCase().includes(q),
+          ) ||
+          (i.brandText && i.brandText.toLowerCase().includes(q)),
       );
       return matchId || matchPatient || matchMed;
     }
@@ -109,7 +123,9 @@ export default function PharmacistDashboard() {
     return true;
   });
 
-  const activeFlaggedCase = cases.find((c) => c.status === "CHECK_FLAGGED" || c.status === "REVISED");
+  const activeFlaggedCase = cases.find(
+    (c) => c.status === "CHECK_FLAGGED" || c.status === "REVISED",
+  );
 
   return (
     <div className="space-y-5 max-w-7xl mx-auto pb-10">
@@ -123,7 +139,8 @@ export default function PharmacistDashboard() {
             </span>
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Deterministic clinical safety verification, drug-drug interaction screening, and gated dispensing authorization.
+            Deterministic clinical safety verification, drug-drug interaction
+            screening, and gated dispensing authorization.
           </p>
         </div>
 
@@ -169,32 +186,54 @@ export default function PharmacistDashboard() {
                     <div className="text-base font-bold text-slate-900 flex items-center gap-2">
                       <span className="font-mono">{activeFlaggedCase.id}</span>
                       <span className="text-slate-300">•</span>
-                      <span>Patient: Rajan Sharma ({activeFlaggedCase.patientId})</span>
+                      <span>
+                        Patient: Rajan Sharma ({activeFlaggedCase.patientId})
+                      </span>
                     </div>
                     <div className="text-xs text-slate-500 mt-0.5">
-                      Cardiology Outpatient • Attending: Dr. Sarah Chen • Revision {activeFlaggedCase.currentRevisionNumber}
+                      Cardiology Outpatient • Attending: Dr. Sarah Chen •
+                      Revision {activeFlaggedCase.currentRevisionNumber}
                     </div>
                   </div>
 
-                  <Badge variant="high" className="text-xs shrink-0 self-start sm:self-auto">
+                  <Badge
+                    variant="high"
+                    className="text-xs shrink-0 self-start sm:self-auto"
+                  >
                     Severe DDI Hazard
                   </Badge>
                 </div>
 
                 <div className="p-3 bg-slate-50/80 rounded-xl border border-slate-100 text-xs text-slate-700 leading-relaxed">
-                  <span className="font-semibold text-slate-900">Pharmacological Conflict:</span>{" "}
-                  Concurrent administration of <span className="font-semibold text-slate-900">Atorvastatin 40mg</span> and{" "}
-                  <span className="font-semibold text-slate-900">Clarithromycin 500mg</span> causes potent CYP3A4 enzyme inhibition, markedly increasing statin systemic exposure and rhabdomyolysis hazard.
+                  <span className="font-semibold text-slate-900">
+                    Pharmacological Conflict:
+                  </span>{" "}
+                  Concurrent administration of{" "}
+                  <span className="font-semibold text-slate-900">
+                    Atorvastatin 40mg
+                  </span>{" "}
+                  and{" "}
+                  <span className="font-semibold text-slate-900">
+                    Clarithromycin 500mg
+                  </span>{" "}
+                  causes potent CYP3A4 enzyme inhibition, markedly increasing
+                  statin systemic exposure and rhabdomyolysis hazard.
                 </div>
               </div>
 
               <div className="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2 text-xs text-amber-700 font-medium">
                   <Lock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                  <span>Dispensing Authorization Locked: Requires Attending Physician Disposition</span>
+                  <span>
+                    Dispensing Authorization Locked: Requires Attending
+                    Physician Disposition
+                  </span>
                 </div>
 
-                <Link href={`/pharmacist/cases/${activeFlaggedCase.id}/results`} className="shrink-0">
+                <Link
+                  href={`/pharmacist/cases/${activeFlaggedCase.id}/results`}
+                  className="shrink-0"
+                >
                   <button className="h-8 px-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs shadow-2xs flex items-center gap-1.5 transition-all">
                     <span>Review Contraindication</span>
                     <ArrowRight className="w-3 h-3 text-emerald-300" />
@@ -209,8 +248,13 @@ export default function PharmacistDashboard() {
                   <CheckCircle2 className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900">Safety Queue Clear</h3>
-                  <p className="text-xs text-slate-500">All prescription cases are processed or cleared for outpatient dispensing.</p>
+                  <h3 className="text-sm font-bold text-slate-900">
+                    Safety Queue Clear
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    All prescription cases are processed or cleared for
+                    outpatient dispensing.
+                  </p>
                 </div>
               </div>
             </div>
@@ -222,9 +266,12 @@ export default function PharmacistDashboard() {
           <div>
             <div className="flex items-center justify-between pb-2.5 border-b border-slate-100 text-xs">
               <span className="font-bold text-slate-700 uppercase tracking-wider text-[11px] font-mono flex items-center gap-1.5">
-                <Activity className="w-3.5 h-3.5 text-forest-900" /> Queue Summary
+                <Activity className="w-3.5 h-3.5 text-forest-900" /> Queue
+                Summary
               </span>
-              <span className="text-[10px] font-mono text-slate-400">v1.0.0-illustrative</span>
+              <span className="text-[10px] font-mono text-slate-400">
+                v1.0.0-illustrative
+              </span>
             </div>
 
             <div className="divide-y divide-slate-100 text-xs">
@@ -272,7 +319,9 @@ export default function PharmacistDashboard() {
 
           <div className="pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-mono">
             <span>Safety Isolation:</span>
-            <span className="font-semibold text-emerald-700">100% Gated RBAC</span>
+            <span className="font-semibold text-emerald-700">
+              100% Gated RBAC
+            </span>
           </div>
         </div>
       </div>
@@ -353,7 +402,9 @@ export default function PharmacistDashboard() {
           title="No prescription cases match this filter"
           description="Search for a synthetic patient or create a new capture to begin the outpatient safety workflow."
           actionLabel="Search Patient (P-9021)"
-          onAction={() => (window.location.href = "/pharmacist/patients/search")}
+          onAction={() =>
+            (window.location.href = "/pharmacist/patients/search")
+          }
         />
       ) : (
         <>
@@ -406,10 +457,15 @@ export default function PharmacistDashboard() {
                       <TableCell className="py-3.5 align-middle">
                         <div className="text-xs font-semibold text-slate-900 flex items-center gap-1.5">
                           <Pill className="w-3.5 h-3.5 text-slate-400" />
-                          <span>{c.items.length} prescribed medication{c.items.length !== 1 ? "s" : ""}</span>
+                          <span>
+                            {c.items.length} prescribed medication
+                            {c.items.length !== 1 ? "s" : ""}
+                          </span>
                         </div>
                         <div className="text-[11px] text-slate-600 truncate max-w-xs md:max-w-md font-mono mt-0.5">
-                          {c.items.map((i) => i.canonicalIngredientIds.join(", ")).join("; ")}
+                          {c.items
+                            .map((i) => i.canonicalIngredientIds.join(", "))
+                            .join("; ")}
                         </div>
                       </TableCell>
 
@@ -418,7 +474,10 @@ export default function PharmacistDashboard() {
                       </TableCell>
 
                       <TableCell className="py-3.5 align-middle">
-                        <Badge variant={statusInfo.variant} className="text-[11px] whitespace-nowrap">
+                        <Badge
+                          variant={statusInfo.variant}
+                          className="text-[11px] whitespace-nowrap"
+                        >
                           {statusInfo.label}
                         </Badge>
                       </TableCell>
@@ -433,8 +492,8 @@ export default function PharmacistDashboard() {
                             c.status === "CHECK_PASSED"
                               ? `/pharmacist/cases/${c.id}/authorize`
                               : c.status === "CHECK_FLAGGED"
-                              ? `/pharmacist/cases/${c.id}/results`
-                              : `/pharmacist/cases/${c.id}/medicines`
+                                ? `/pharmacist/cases/${c.id}/results`
+                                : `/pharmacist/cases/${c.id}/medicines`
                           }
                         >
                           <button className="h-8 px-3 rounded-xl bg-forest-900 hover:bg-forest-800 text-white font-medium text-xs shadow-2xs flex items-center gap-1 ml-auto transition-all">
@@ -480,10 +539,13 @@ export default function PharmacistDashboard() {
 
                   <div className="text-xs text-slate-700 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
                     <div className="font-medium text-slate-800">
-                      {c.items.length} prescribed medication{c.items.length !== 1 ? "s" : ""}
+                      {c.items.length} prescribed medication
+                      {c.items.length !== 1 ? "s" : ""}
                     </div>
                     <div className="text-[11px] text-slate-500 truncate mt-0.5 font-mono">
-                      {c.items.map((i) => i.canonicalIngredientIds.join(", ")).join("; ")}
+                      {c.items
+                        .map((i) => i.canonicalIngredientIds.join(", "))
+                        .join("; ")}
                     </div>
                   </div>
 
@@ -492,8 +554,8 @@ export default function PharmacistDashboard() {
                       c.status === "CHECK_PASSED"
                         ? `/pharmacist/cases/${c.id}/authorize`
                         : c.status === "CHECK_FLAGGED"
-                        ? `/pharmacist/cases/${c.id}/results`
-                        : `/pharmacist/cases/${c.id}/medicines`
+                          ? `/pharmacist/cases/${c.id}/results`
+                          : `/pharmacist/cases/${c.id}/medicines`
                     }
                     className="block"
                   >
@@ -511,7 +573,9 @@ export default function PharmacistDashboard() {
 
       {/* 5. Minimalist Quick Synthetic Presets */}
       <div className="pt-2 border-t border-slate-200/60 flex flex-wrap items-center justify-between text-xs text-slate-500 gap-2">
-        <span className="text-[11px] text-slate-400 font-mono">Synthetic Patient Records:</span>
+        <span className="text-[11px] text-slate-400 font-mono">
+          Synthetic Patient Records:
+        </span>
         <div className="flex flex-wrap items-center gap-2">
           <Link
             href="/pharmacist/patients/confirm?id=P-9021"

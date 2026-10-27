@@ -15,7 +15,15 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/Table";
-import { UserCheck, ArrowRight, ArrowLeft, CheckCircle2, Ban, Mail, Shield } from "lucide-react";
+import {
+  UserCheck,
+  ArrowRight,
+  ArrowLeft,
+  CheckCircle2,
+  Ban,
+  Mail,
+  Shield,
+} from "lucide-react";
 
 export default function AdminMembershipsPage() {
   const [memberships, setMemberships] = useState<any[]>([]);
@@ -36,13 +44,17 @@ export default function AdminMembershipsPage() {
     loadData();
   }, []);
 
-  const handleQuickStatusChange = async (id: string, newStatus: "ACTIVE" | "SUSPENDED" | "PENDING", currentRole: any) => {
+  const handleQuickStatusChange = async (
+    id: string,
+    newStatus: "ACTIVE" | "SUSPENDED" | "PENDING",
+    currentRole: any,
+  ) => {
     setActionLoading(id);
     try {
       await api.updateMembershipStatus(id, newStatus, currentRole);
       clinicalToast.success(
         "Membership Updated",
-        `Staff status updated to ${newStatus}.`
+        `Staff status updated to ${newStatus}.`,
       );
       const updated = await api.getMemberships();
       setMemberships(updated);
@@ -91,14 +103,27 @@ export default function AdminMembershipsPage() {
               </TableHeader>
               <TableBody>
                 {memberships.map((m) => (
-                  <TableRow key={m.id} className="hover:bg-slate-50/80 transition-colors">
-                    <TableCell className="font-bold text-slate-900">{m.displayName}</TableCell>
-                    <TableCell className="font-mono text-slate-600 text-xs">{m.email}</TableCell>
-                    <TableCell>
-                      <span className="font-semibold text-slate-800 text-xs">{m.role}</span>
+                  <TableRow
+                    key={m.id}
+                    className="hover:bg-slate-50/80 transition-colors"
+                  >
+                    <TableCell className="font-bold text-slate-900">
+                      {m.displayName}
+                    </TableCell>
+                    <TableCell className="font-mono text-slate-600 text-xs">
+                      {m.email}
                     </TableCell>
                     <TableCell>
-                      <Badge variant={m.status === "ACTIVE" ? "authorized" : "moderate"}>
+                      <span className="font-semibold text-slate-800 text-xs">
+                        {m.role}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          m.status === "ACTIVE" ? "authorized" : "moderate"
+                        }
+                      >
                         {m.status}
                       </Badge>
                     </TableCell>
@@ -109,7 +134,9 @@ export default function AdminMembershipsPage() {
                             size="sm"
                             variant="primary"
                             loading={actionLoading === m.id}
-                            onClick={() => handleQuickStatusChange(m.id, "ACTIVE", m.role)}
+                            onClick={() =>
+                              handleQuickStatusChange(m.id, "ACTIVE", m.role)
+                            }
                             className="text-[11px] h-7 px-2 bg-emerald-700 hover:bg-emerald-800"
                             title="Approve applicant credentials"
                           >
@@ -121,7 +148,9 @@ export default function AdminMembershipsPage() {
                             size="sm"
                             variant="outline"
                             loading={actionLoading === m.id}
-                            onClick={() => handleQuickStatusChange(m.id, "SUSPENDED", m.role)}
+                            onClick={() =>
+                              handleQuickStatusChange(m.id, "SUSPENDED", m.role)
+                            }
                             className="text-[11px] h-7 px-2 text-rose-700 border-rose-200 hover:bg-rose-50"
                             title="Suspend role access"
                           >
@@ -133,7 +162,9 @@ export default function AdminMembershipsPage() {
                             size="sm"
                             variant="outline"
                             loading={actionLoading === m.id}
-                            onClick={() => handleQuickStatusChange(m.id, "ACTIVE", m.role)}
+                            onClick={() =>
+                              handleQuickStatusChange(m.id, "ACTIVE", m.role)
+                            }
                             className="text-[11px] h-7 px-2 text-emerald-700 border-emerald-200 hover:bg-emerald-50"
                             title="Reactivate membership"
                           >
@@ -141,7 +172,11 @@ export default function AdminMembershipsPage() {
                           </Button>
                         )}
                         <Link href={`/admin/memberships/${m.id}`}>
-                          <Button size="sm" variant="outline" className="text-xs gap-1 h-7">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="text-xs gap-1 h-7"
+                          >
                             Manage <ArrowRight className="w-3 h-3" />
                           </Button>
                         </Link>
@@ -161,8 +196,12 @@ export default function AdminMembershipsPage() {
                 className="bg-white p-4 rounded-lg border border-slate-200 shadow-subtle space-y-3"
               >
                 <div className="flex items-center justify-between">
-                  <div className="font-bold text-slate-900 text-sm">{m.displayName}</div>
-                  <Badge variant={m.status === "ACTIVE" ? "authorized" : "moderate"}>
+                  <div className="font-bold text-slate-900 text-sm">
+                    {m.displayName}
+                  </div>
+                  <Badge
+                    variant={m.status === "ACTIVE" ? "authorized" : "moderate"}
+                  >
                     {m.status}
                   </Badge>
                 </div>
@@ -174,7 +213,8 @@ export default function AdminMembershipsPage() {
 
                 <div className="text-xs text-slate-700 flex items-center gap-1.5">
                   <Shield className="w-3.5 h-3.5 text-slate-400" />
-                  Role: <span className="font-bold text-slate-900">{m.role}</span>
+                  Role:{" "}
+                  <span className="font-bold text-slate-900">{m.role}</span>
                 </div>
 
                 <div className="pt-2 border-t border-slate-100 flex items-center justify-end gap-2">
@@ -183,7 +223,9 @@ export default function AdminMembershipsPage() {
                       size="sm"
                       variant="primary"
                       loading={actionLoading === m.id}
-                      onClick={() => handleQuickStatusChange(m.id, "ACTIVE", m.role)}
+                      onClick={() =>
+                        handleQuickStatusChange(m.id, "ACTIVE", m.role)
+                      }
                       className="text-xs h-8 bg-emerald-700 hover:bg-emerald-800"
                     >
                       <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Approve
@@ -194,7 +236,9 @@ export default function AdminMembershipsPage() {
                       size="sm"
                       variant="outline"
                       loading={actionLoading === m.id}
-                      onClick={() => handleQuickStatusChange(m.id, "SUSPENDED", m.role)}
+                      onClick={() =>
+                        handleQuickStatusChange(m.id, "SUSPENDED", m.role)
+                      }
                       className="text-xs h-8 text-rose-700 border-rose-200 hover:bg-rose-50"
                     >
                       <Ban className="w-3.5 h-3.5 mr-1" /> Suspend
@@ -205,14 +249,20 @@ export default function AdminMembershipsPage() {
                       size="sm"
                       variant="outline"
                       loading={actionLoading === m.id}
-                      onClick={() => handleQuickStatusChange(m.id, "ACTIVE", m.role)}
+                      onClick={() =>
+                        handleQuickStatusChange(m.id, "ACTIVE", m.role)
+                      }
                       className="text-xs h-8 text-emerald-700 border-emerald-200 hover:bg-emerald-50"
                     >
                       <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Reactivate
                     </Button>
                   )}
                   <Link href={`/admin/memberships/${m.id}`}>
-                    <Button size="sm" variant="outline" className="text-xs gap-1 h-8">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="text-xs gap-1 h-8"
+                    >
                       Manage <ArrowRight className="w-3.5 h-3.5" />
                     </Button>
                   </Link>

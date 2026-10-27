@@ -13,8 +13,9 @@ export default function NotFound() {
           Record or Page Not Found (404)
         </h1>
         <p className="mt-2 text-xs text-slate-600 leading-relaxed">
-          The requested clinical record or page could not be located in this workspace.
-          This system enforces hospital tenancy and does not disclose foreign tenant existence.
+          The requested clinical record or page could not be located in this
+          workspace. This system enforces hospital tenancy and does not disclose
+          foreign tenant existence.
         </p>
         <div className="mt-6 pt-4 border-t border-slate-100 flex justify-center">
           <Link href="/">

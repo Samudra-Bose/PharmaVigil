@@ -91,7 +91,7 @@ export default function AdminAuditPage() {
         e.actorDisplayName?.toLowerCase().includes(q) ||
         e.action.toLowerCase().includes(q) ||
         e.resourceId.toLowerCase().includes(q) ||
-        e.requestId?.toLowerCase().includes(q)
+        e.requestId?.toLowerCase().includes(q),
     );
   }, [events, actorQuery]);
 
@@ -111,21 +111,33 @@ export default function AdminAuditPage() {
   };
 
   const getActionBadge = (action: string) => {
-    if (action.includes("CREATE") || action.includes("AUTHORIZE") || action.includes("APPROVE")) {
+    if (
+      action.includes("CREATE") ||
+      action.includes("AUTHORIZE") ||
+      action.includes("APPROVE")
+    ) {
       return (
         <span className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
           {action}
         </span>
       );
     }
-    if (action.includes("DISPOSITION") || action.includes("CHECK") || action.includes("UPDATE")) {
+    if (
+      action.includes("DISPOSITION") ||
+      action.includes("CHECK") ||
+      action.includes("UPDATE")
+    ) {
       return (
         <span className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-sky-50 text-sky-800 border border-sky-200">
           {action}
         </span>
       );
     }
-    if (action.includes("RESET") || action.includes("CANCEL") || action.includes("REVOKE")) {
+    if (
+      action.includes("RESET") ||
+      action.includes("CANCEL") ||
+      action.includes("REVOKE")
+    ) {
       return (
         <span className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
           {action}
@@ -156,7 +168,8 @@ export default function AdminAuditPage() {
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Immutable, hospital-scoped audit records of clinical determinations, medication revisions, and safety actions.
+            Immutable, hospital-scoped audit records of clinical determinations,
+            medication revisions, and safety actions.
           </p>
         </div>
 
@@ -183,7 +196,9 @@ export default function AdminAuditPage() {
               className="h-7 px-2 text-xs rounded border border-slate-200 bg-white font-medium text-slate-800"
             >
               {RESOURCE_TYPES.map((rt) => (
-                <option key={rt} value={rt}>{rt === "ALL" ? "All Resources" : rt}</option>
+                <option key={rt} value={rt}>
+                  {rt === "ALL" ? "All Resources" : rt}
+                </option>
               ))}
             </select>
           </div>
@@ -254,7 +269,10 @@ export default function AdminAuditPage() {
               </thead>
               <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
                 {paginatedEvents.map((evt) => (
-                  <tr key={evt.id} className="hover:bg-slate-50/70 transition-colors">
+                  <tr
+                    key={evt.id}
+                    className="hover:bg-slate-50/70 transition-colors"
+                  >
                     {/* Timestamp */}
                     <td className="py-3 px-4 font-mono text-[11px] text-slate-600 whitespace-nowrap">
                       {formatDateTime(evt.timestamp)}
@@ -266,7 +284,9 @@ export default function AdminAuditPage() {
                         {evt.actorDisplayName || "System Actor"}
                       </div>
                       <div className="flex items-center gap-1.5 text-[10px] mt-0.5">
-                        <span className="font-mono text-slate-400">{evt.actorUserId}</span>
+                        <span className="font-mono text-slate-400">
+                          {evt.actorUserId}
+                        </span>
                         {evt.actorRole && (
                           <span className="px-1 py-0.2 rounded bg-slate-100 text-slate-600 font-mono">
                             {evt.actorRole}
@@ -281,7 +301,9 @@ export default function AdminAuditPage() {
                     {/* Resource Target */}
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-1.5">
-                        <span className="font-semibold text-slate-800">{evt.resourceType}</span>
+                        <span className="font-semibold text-slate-800">
+                          {evt.resourceType}
+                        </span>
                       </div>
                       <span className="font-mono text-[10px] text-slate-500 block truncate max-w-[160px]">
                         #{evt.resourceId}
@@ -317,7 +339,8 @@ export default function AdminAuditPage() {
           {totalPages > 1 && (
             <div className="flex items-center justify-between p-3 border-t border-slate-200 bg-slate-50/60 text-xs">
               <span className="text-slate-500">
-                Showing page <strong>{page}</strong> of <strong>{totalPages}</strong> ({filteredEvents.length} total)
+                Showing page <strong>{page}</strong> of{" "}
+                <strong>{totalPages}</strong> ({filteredEvents.length} total)
               </span>
 
               <div className="flex items-center gap-1">
@@ -357,20 +380,36 @@ export default function AdminAuditPage() {
             {/* Context Summary */}
             <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-2">
               <div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase block">Action</span>
-                <span className="font-mono font-bold text-slate-900">{selectedEvent.action}</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase block">
+                  Action
+                </span>
+                <span className="font-mono font-bold text-slate-900">
+                  {selectedEvent.action}
+                </span>
               </div>
               <div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase block">Resource</span>
-                <span className="font-semibold text-slate-800">{selectedEvent.resourceType}</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase block">
+                  Resource
+                </span>
+                <span className="font-semibold text-slate-800">
+                  {selectedEvent.resourceType}
+                </span>
               </div>
               <div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase block">Actor</span>
-                <span className="text-slate-700">{selectedEvent.actorDisplayName || selectedEvent.actorUserId}</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase block">
+                  Actor
+                </span>
+                <span className="text-slate-700">
+                  {selectedEvent.actorDisplayName || selectedEvent.actorUserId}
+                </span>
               </div>
               <div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase block">Timestamp</span>
-                <span className="font-mono text-slate-600">{formatDateTime(selectedEvent.timestamp)}</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase block">
+                  Timestamp
+                </span>
+                <span className="font-mono text-slate-600">
+                  {formatDateTime(selectedEvent.timestamp)}
+                </span>
               </div>
             </div>
 
@@ -378,14 +417,19 @@ export default function AdminAuditPage() {
             <div className="relative">
               <div className="flex items-center justify-between px-3 py-1.5 rounded-t-lg bg-slate-800 text-slate-200 font-mono text-[11px]">
                 <span className="flex items-center gap-1.5">
-                  <Terminal className="w-3.5 h-3.5 text-teal-400" /> Raw Audit Event Document
+                  <Terminal className="w-3.5 h-3.5 text-teal-400" /> Raw Audit
+                  Event Document
                 </span>
                 <button
                   type="button"
                   onClick={handleCopyJson}
                   className="flex items-center gap-1 text-[10px] hover:text-white transition-colors"
                 >
-                  {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                  {copied ? (
+                    <Check className="w-3 h-3 text-emerald-400" />
+                  ) : (
+                    <Copy className="w-3 h-3" />
+                  )}
                   <span>{copied ? "Copied" : "Copy JSON"}</span>
                 </button>
               </div>
@@ -395,7 +439,11 @@ export default function AdminAuditPage() {
             </div>
 
             <div className="flex justify-end pt-2">
-              <Button size="sm" variant="outline" onClick={() => setInspectorOpen(false)}>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setInspectorOpen(false)}
+              >
                 Close
               </Button>
             </div>

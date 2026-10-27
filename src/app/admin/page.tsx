@@ -83,14 +83,16 @@ export default function AdminDashboardPage() {
             </span>
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Role-based access control, clinician credentialing, and multi-tenant security isolation.
+            Role-based access control, clinician credentialing, and multi-tenant
+            security isolation.
           </p>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
           <Link href="/admin/demo-reset">
             <button className="h-8 sm:h-9 px-3.5 rounded-xl bg-white hover:bg-rose-50 text-rose-800 font-semibold text-xs border border-rose-200/90 shadow-2xs flex items-center gap-1.5 transition-all whitespace-nowrap">
-              <RotateCcw className="w-3.5 h-3.5 text-rose-600" /> Scoped Demo Reset
+              <RotateCcw className="w-3.5 h-3.5 text-rose-600" /> Scoped Demo
+              Reset
             </button>
           </Link>
         </div>
@@ -119,26 +121,40 @@ export default function AdminDashboardPage() {
                   <div className="text-base font-bold text-slate-900 flex items-center gap-2">
                     <span>{pendingMember.displayName}</span>
                     <span className="text-slate-300">•</span>
-                    <span className="text-xs font-mono text-slate-500">{pendingMember.email}</span>
+                    <span className="text-xs font-mono text-slate-500">
+                      {pendingMember.email}
+                    </span>
                   </div>
                   <div className="text-xs text-slate-500 mt-0.5 font-mono">
-                    Applicant ID: {pendingMember.userId} • Applied: {new Date(pendingMember.createdAt).toLocaleDateString()}
+                    Applicant ID: {pendingMember.userId} • Applied:{" "}
+                    {new Date(pendingMember.createdAt).toLocaleDateString()}
                   </div>
                 </div>
 
                 <div className="p-3 bg-slate-50/80 rounded-xl border border-slate-100 text-xs text-slate-700 leading-relaxed">
-                  <span className="font-semibold text-slate-900">Credential Verification Protocol:</span>{" "}
-                  Applicant has requested <span className="font-semibold text-slate-900">DOCTOR</span> privileges with clinical prescription revision and triage authority. Administrator confirmation required to assign active tenancy membership.
+                  <span className="font-semibold text-slate-900">
+                    Credential Verification Protocol:
+                  </span>{" "}
+                  Applicant has requested{" "}
+                  <span className="font-semibold text-slate-900">DOCTOR</span>{" "}
+                  privileges with clinical prescription revision and triage
+                  authority. Administrator confirmation required to assign
+                  active tenancy membership.
                 </div>
               </div>
 
               <div className="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2 text-xs text-slate-500">
                   <Lock className="w-3.5 h-3.5 text-slate-400" />
-                  <span>Unapproved accounts are locked out from patient records.</span>
+                  <span>
+                    Unapproved accounts are locked out from patient records.
+                  </span>
                 </div>
 
-                <Link href={`/admin/memberships/${pendingMember.id}`} className="shrink-0">
+                <Link
+                  href={`/admin/memberships/${pendingMember.id}`}
+                  className="shrink-0"
+                >
                   <button className="h-8 px-3.5 rounded-xl bg-forest-900 hover:bg-forest-800 text-white font-medium text-xs shadow-2xs flex items-center gap-1.5 transition-all">
                     <span>Review Credentials</span>
                     <ArrowRight className="w-3 h-3 text-emerald-300" />
@@ -153,8 +169,13 @@ export default function AdminDashboardPage() {
                   <CheckCircle2 className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900">No Pending Applications</h3>
-                  <p className="text-xs text-slate-500">All registered clinicians have been verified and assigned active roles.</p>
+                  <h3 className="text-sm font-bold text-slate-900">
+                    No Pending Applications
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    All registered clinicians have been verified and assigned
+                    active roles.
+                  </p>
                 </div>
               </div>
             </div>
@@ -166,9 +187,12 @@ export default function AdminDashboardPage() {
           <div>
             <div className="flex items-center justify-between pb-2.5 border-b border-slate-100 text-xs">
               <span className="font-bold text-slate-700 uppercase tracking-wider text-[11px] font-mono flex items-center gap-1.5">
-                <Activity className="w-3.5 h-3.5 text-forest-900" /> Tenancy Telemetry
+                <Activity className="w-3.5 h-3.5 text-forest-900" /> Tenancy
+                Telemetry
               </span>
-              <span className="text-[10px] font-mono text-slate-400">OpenAPI 3.1.1</span>
+              <span className="text-[10px] font-mono text-slate-400">
+                OpenAPI 3.1.1
+              </span>
             </div>
 
             <div className="divide-y divide-slate-100 text-xs">
@@ -217,10 +241,12 @@ export default function AdminDashboardPage() {
           <div className="p-4 bg-white rounded-2xl border border-slate-100 shadow-lux group-hover:border-slate-200 transition-colors flex items-center justify-between">
             <div>
               <div className="text-xs font-bold text-slate-900 flex items-center gap-2">
-                <Users className="w-4 h-4 text-emerald-700" /> Clinician Directory
+                <Users className="w-4 h-4 text-emerald-700" /> Clinician
+                Directory
               </div>
               <p className="text-[11px] text-slate-500 mt-1">
-                Audit active staff licenses, hospital roles, and credential status.
+                Audit active staff licenses, hospital roles, and credential
+                status.
               </p>
             </div>
             <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
@@ -231,7 +257,8 @@ export default function AdminDashboardPage() {
           <div className="p-4 bg-white rounded-2xl border border-slate-100 shadow-lux group-hover:border-slate-200 transition-colors flex items-center justify-between">
             <div>
               <div className="text-xs font-bold text-slate-900 flex items-center gap-2">
-                <UserCheck className="w-4 h-4 text-amber-600" /> Membership Applications
+                <UserCheck className="w-4 h-4 text-amber-600" /> Membership
+                Applications
               </div>
               <p className="text-[11px] text-slate-500 mt-1">
                 Approve, suspend, or reactivate staff hospital affiliations.

@@ -44,7 +44,8 @@ export default function LoginPage() {
             Sign In to PharmaVigil
           </h1>
           <p className="text-xs text-slate-500">
-            Hospital Outpatient Medication Safety System (Metro General Hospital)
+            Hospital Outpatient Medication Safety System (Metro General
+            Hospital)
           </p>
         </div>
 
@@ -57,28 +58,39 @@ export default function LoginPage() {
           <div className="grid grid-cols-2 gap-1.5">
             <button
               type="button"
-              onClick={() => handleQuickPersona("PHARMACIST", "pharma@metro-general.invalid")}
+              onClick={() =>
+                handleQuickPersona("PHARMACIST", "pharma@metro-general.invalid")
+              }
               className="px-2.5 py-1.5 rounded bg-white hover:bg-slate-100 border border-slate-200 text-left transition-colors font-medium text-slate-800 text-[11px]"
             >
               💊 Pharmacist
             </button>
             <button
               type="button"
-              onClick={() => handleQuickPersona("DOCTOR", "doctor@metro-general.invalid")}
+              onClick={() =>
+                handleQuickPersona("DOCTOR", "doctor@metro-general.invalid")
+              }
               className="px-2.5 py-1.5 rounded bg-white hover:bg-slate-100 border border-slate-200 text-left transition-colors font-medium text-slate-800 text-[11px]"
             >
               🩺 Doctor
             </button>
             <button
               type="button"
-              onClick={() => handleQuickPersona("PATIENT", "patient@metro-general.invalid")}
+              onClick={() =>
+                handleQuickPersona("PATIENT", "patient@metro-general.invalid")
+              }
               className="px-2.5 py-1.5 rounded bg-white hover:bg-slate-100 border border-slate-200 text-left transition-colors font-medium text-slate-800 text-[11px]"
             >
               👤 Patient (P-9021)
             </button>
             <button
               type="button"
-              onClick={() => handleQuickPersona("HOSPITAL_ADMIN", "admin@metro-general.invalid")}
+              onClick={() =>
+                handleQuickPersona(
+                  "HOSPITAL_ADMIN",
+                  "admin@metro-general.invalid",
+                )
+              }
               className="px-2.5 py-1.5 rounded bg-white hover:bg-slate-100 border border-slate-200 text-left transition-colors font-medium text-slate-800 text-[11px]"
             >
               ⚙️ Administrator
@@ -91,7 +103,10 @@ export default function LoginPage() {
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+            <label
+              htmlFor="email"
+              className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1"
+            >
               Email Address
             </label>
             <input
@@ -106,7 +121,10 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+            <label
+              htmlFor="password"
+              className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1"
+            >
               Password
             </label>
             <input
@@ -119,14 +137,22 @@ export default function LoginPage() {
             />
           </div>
 
-          <Button type="submit" variant="primary" loading={isLoading} className="w-full gap-2">
+          <Button
+            type="submit"
+            variant="primary"
+            loading={isLoading}
+            className="w-full gap-2"
+          >
             <KeyRound className="w-4 h-4" /> Sign In
           </Button>
         </form>
 
         <div className="text-center pt-2 border-t border-slate-100 text-xs text-slate-500">
           Need a hospital account?{" "}
-          <Link href="/auth/register" className="font-semibold text-slate-900 hover:underline">
+          <Link
+            href="/auth/register"
+            className="font-semibold text-slate-900 hover:underline"
+          >
             Request membership / Register
           </Link>
         </div>

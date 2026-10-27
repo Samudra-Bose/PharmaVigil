@@ -5,16 +5,16 @@ interface PipelineStepperSkeletonProps {
   className?: string;
 }
 
-export const PipelineStepperSkeleton: React.FC<PipelineStepperSkeletonProps> = ({
-  className,
-}) => {
+export const PipelineStepperSkeleton: React.FC<
+  PipelineStepperSkeletonProps
+> = ({ className }) => {
   return (
     <div
       role="status"
       aria-label="Loading clinical workflow steps..."
       className={cn(
         "w-full bg-white p-3.5 rounded-lg border border-slate-200/90 shadow-subtle mb-6 overflow-x-auto scrollbar-none select-none",
-        className
+        className,
       )}
     >
       <div className="flex items-center justify-between min-w-[580px] px-2">

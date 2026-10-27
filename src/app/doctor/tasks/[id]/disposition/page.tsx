@@ -11,14 +11,14 @@ import { AlertCardSkeleton } from "@/components/skeletons";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Textarea } from "@/components/ui/Textarea";
 import { Kbd } from "@/components/ui/Kbd";
-import { 
-  Stethoscope, 
-  FileEdit, 
-  CheckCircle, 
-  AlertTriangle, 
+import {
+  Stethoscope,
+  FileEdit,
+  CheckCircle,
+  AlertTriangle,
   ArrowLeft,
   ArrowRight,
-  ShieldAlert 
+  ShieldAlert,
 } from "lucide-react";
 
 function RecordDispositionContent() {
@@ -28,9 +28,11 @@ function RecordDispositionContent() {
   const alertId = params.id as string;
   const caseId = searchParams.get("caseId") || "case_rx_9021_01";
 
-  const [dispositionType, setDispositionType] = useState<"CHANGE_REQUIRED" | "CLINICALLY_REVIEWED">("CHANGE_REQUIRED");
+  const [dispositionType, setDispositionType] = useState<
+    "CHANGE_REQUIRED" | "CLINICALLY_REVIEWED"
+  >("CHANGE_REQUIRED");
   const [rationale, setRationale] = useState(
-    "Discontinue Aspirin to eliminate gastrointestinal bleeding risk with Warfarin. Substitute with Paracetamol 500mg for analgesia."
+    "Discontinue Aspirin to eliminate gastrointestinal bleeding risk with Warfarin. Substitute with Paracetamol 500mg for analgesia.",
   );
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -44,10 +46,14 @@ function RecordDispositionContent() {
     setError(null);
 
     try {
-      await api.recordDoctorDisposition(alertId, dispositionType, rationale.trim());
+      await api.recordDoctorDisposition(
+        alertId,
+        dispositionType,
+        rationale.trim(),
+      );
       clinicalToast.success(
         "Clinical Disposition Saved",
-        "Disposition recorded; rationale logged for audit."
+        "Disposition recorded; rationale logged for audit.",
       );
       if (dispositionType === "CHANGE_REQUIRED") {
         // Direct physician immediately to revision editor
@@ -73,7 +79,11 @@ function RecordDispositionContent() {
             Record Physician Clinical Disposition
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Alert: <span className="font-mono font-bold text-slate-800 font-tabular">{alertId}</span> • Case: {caseId}
+            Alert:{" "}
+            <span className="font-mono font-bold text-slate-800 font-tabular">
+              {alertId}
+            </span>{" "}
+            • Case: {caseId}
           </p>
         </div>
 
@@ -93,7 +103,10 @@ function RecordDispositionContent() {
             Select Clinical Action & Disposition Decision
           </label>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3" role="radiogroup">
+          <div
+            className="grid grid-cols-1 md:grid-cols-2 gap-3"
+            role="radiogroup"
+          >
             {/* Change Required Card */}
             <div
               onClick={() => setDispositionType("CHANGE_REQUIRED")}
@@ -101,7 +114,8 @@ function RecordDispositionContent() {
               aria-checked={dispositionType === "CHANGE_REQUIRED"}
               tabIndex={0}
               onKeyDown={(e) => {
-                if (e.key === " " || e.key === "Enter") setDispositionType("CHANGE_REQUIRED");
+                if (e.key === " " || e.key === "Enter")
+                  setDispositionType("CHANGE_REQUIRED");
               }}
               className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
                 dispositionType === "CHANGE_REQUIRED"
@@ -123,7 +137,8 @@ function RecordDispositionContent() {
                 </span>
               </div>
               <p className="mt-2 text-xs text-slate-600 leading-relaxed pl-6">
-                Acknowledge the flagged concern and issue an immutable revised prescription (e.g. substitute or discontinue interacting drug).
+                Acknowledge the flagged concern and issue an immutable revised
+                prescription (e.g. substitute or discontinue interacting drug).
               </p>
             </div>
 
@@ -134,7 +149,8 @@ function RecordDispositionContent() {
               aria-checked={dispositionType === "CLINICALLY_REVIEWED"}
               tabIndex={0}
               onKeyDown={(e) => {
-                if (e.key === " " || e.key === "Enter") setDispositionType("CLINICALLY_REVIEWED");
+                if (e.key === " " || e.key === "Enter")
+                  setDispositionType("CLINICALLY_REVIEWED");
               }}
               className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
                 dispositionType === "CLINICALLY_REVIEWED"
@@ -156,7 +172,8 @@ function RecordDispositionContent() {
                 </span>
               </div>
               <p className="mt-2 text-xs text-slate-600 leading-relaxed pl-6">
-                Clinical benefit justifies combination under documented close physician monitoring (e.g. frequent INR and CBC checks).
+                Clinical benefit justifies combination under documented close
+                physician monitoring (e.g. frequent INR and CBC checks).
               </p>
             </div>
           </div>
@@ -166,12 +183,18 @@ function RecordDispositionContent() {
         <Card className="shadow-2xs">
           <CardContent className="p-5 space-y-2">
             <div className="flex justify-between items-center">
-              <label htmlFor="rationale" className="block text-xs font-bold uppercase tracking-wider text-slate-700">
-                Mandatory Clinical Rationale <span className="text-rose-600">*</span>
+              <label
+                htmlFor="rationale"
+                className="block text-xs font-bold uppercase tracking-wider text-slate-700"
+              >
+                Mandatory Clinical Rationale{" "}
+                <span className="text-rose-600">*</span>
               </label>
               <span
                 className={`text-[11px] font-mono font-tabular ${
-                  isRationaleValid ? "text-emerald-700 font-semibold" : "text-amber-700 font-semibold"
+                  isRationaleValid
+                    ? "text-emerald-700 font-semibold"
+                    : "text-amber-700 font-semibold"
                 }`}
               >
                 {rationale.trim().length} / 15 chars min
@@ -179,7 +202,8 @@ function RecordDispositionContent() {
             </div>
 
             <p className="text-xs text-slate-500">
-              Explain the clinical reasoning for this disposition. This statement is permanently recorded in the clinical audit ledger.
+              Explain the clinical reasoning for this disposition. This
+              statement is permanently recorded in the clinical audit ledger.
             </p>
 
             <Textarea
@@ -205,11 +229,13 @@ function RecordDispositionContent() {
           >
             {dispositionType === "CHANGE_REQUIRED" ? (
               <>
-                <FileEdit className="w-4 h-4 text-emerald-400" /> Submit & Create Revised Prescription <ArrowRight className="w-4 h-4" />
+                <FileEdit className="w-4 h-4 text-emerald-400" /> Submit &
+                Create Revised Prescription <ArrowRight className="w-4 h-4" />
               </>
             ) : (
               <>
-                <CheckCircle className="w-4 h-4 text-emerald-400" /> Record Disposition & Clear Triage
+                <CheckCircle className="w-4 h-4 text-emerald-400" /> Record
+                Disposition & Clear Triage
               </>
             )}
           </Button>

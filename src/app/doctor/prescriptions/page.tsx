@@ -36,7 +36,8 @@ export default function DoctorPrescriptionsPage() {
             Hospital Prescriptions & Revision Records
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Active prescriptions, historical revisions, and safety check outcomes
+            Active prescriptions, historical revisions, and safety check
+            outcomes
           </p>
         </div>
 
@@ -65,7 +66,9 @@ export default function DoctorPrescriptionsPage() {
             <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
               {cases.map((c) => (
                 <tr key={c.id} className="hover:bg-slate-50/70">
-                  <td className="py-3 px-4 font-mono font-bold text-slate-900">{c.id}</td>
+                  <td className="py-3 px-4 font-mono font-bold text-slate-900">
+                    {c.id}
+                  </td>
                   <td className="py-3 px-4 font-mono">{c.patientId}</td>
                   <td className="py-3 px-4">
                     <span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 text-[11px]">
@@ -74,17 +77,29 @@ export default function DoctorPrescriptionsPage() {
                   </td>
                   <td className="py-3 px-4">
                     <div className="font-semibold text-slate-900">
-                      {c.items.map((i) => i.canonicalIngredientIds.join(", ")).join("; ")}
+                      {c.items
+                        .map((i) => i.canonicalIngredientIds.join(", "))
+                        .join("; ")}
                     </div>
                   </td>
                   <td className="py-3 px-4">
-                    <Badge variant={c.status === "DISPENSING_AUTHORIZED" ? "authorized" : "info"}>
+                    <Badge
+                      variant={
+                        c.status === "DISPENSING_AUTHORIZED"
+                          ? "authorized"
+                          : "info"
+                      }
+                    >
                       {c.status}
                     </Badge>
                   </td>
                   <td className="py-3 px-4 text-right">
                     <Link href={`/doctor/prescriptions/new?caseId=${c.id}`}>
-                      <Button size="sm" variant="outline" className="text-xs gap-1 h-7">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="text-xs gap-1 h-7"
+                      >
                         Revise <ArrowRight className="w-3 h-3" />
                       </Button>
                     </Link>

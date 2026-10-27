@@ -32,7 +32,9 @@ import {
 export default function PatientHomePage() {
   const [patient, setPatient] = useState<PatientRecord>(FIXTURE_PATIENT);
   const [cases, setCases] = useState<FixtureCase[]>([INITIAL_FIXTURE_CASE]);
-  const [appointments, setAppointments] = useState<AppointmentRecord[]>(INITIAL_FIXTURE_APPOINTMENTS);
+  const [appointments, setAppointments] = useState<AppointmentRecord[]>(
+    INITIAL_FIXTURE_APPOINTMENTS,
+  );
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -75,7 +77,10 @@ export default function PatientHomePage() {
             Welcome back, {patient?.displayName || "Rajan Sharma"}
           </h1>
           <p className="text-xs text-slate-500">
-            Cardiology Outpatient Clinic • <span className="font-semibold text-slate-700">Metro General Hospital</span>
+            Cardiology Outpatient Clinic •{" "}
+            <span className="font-semibold text-slate-700">
+              Metro General Hospital
+            </span>
           </p>
         </div>
 
@@ -101,10 +106,16 @@ export default function PatientHomePage() {
             <div className="space-y-3">
               <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 font-mono flex items-center gap-1.5">
-                  <Pill className="w-3.5 h-3.5 text-emerald-700" /> Active Therapy Regimen
+                  <Pill className="w-3.5 h-3.5 text-emerald-700" /> Active
+                  Therapy Regimen
                 </span>
-                <Badge variant={isReady ? "authorized" : "moderate"} className="text-xs">
-                  {isReady ? "Ready for Pharmacy Pick-up" : "Under Pharmacist Safety Review"}
+                <Badge
+                  variant={isReady ? "authorized" : "moderate"}
+                  className="text-xs"
+                >
+                  {isReady
+                    ? "Ready for Pharmacy Pick-up"
+                    : "Under Pharmacist Safety Review"}
                 </Badge>
               </div>
 
@@ -113,7 +124,9 @@ export default function PatientHomePage() {
                   Cardiology Regimen (Dr. Arvind Patel)
                 </h2>
                 <p className="text-xs text-slate-500 mt-0.5 font-mono">
-                  Prescription v{activeRx?.currentRevisionNumber || 1} • {activeRx?.items.length || 2} prescribed medication{activeRx?.items.length !== 1 ? "s" : ""}
+                  Prescription v{activeRx?.currentRevisionNumber || 1} •{" "}
+                  {activeRx?.items.length || 2} prescribed medication
+                  {activeRx?.items.length !== 1 ? "s" : ""}
                 </p>
               </div>
 
@@ -129,10 +142,13 @@ export default function PatientHomePage() {
                       </div>
                       <div className="min-w-0">
                         <div className="text-xs font-bold text-slate-900 truncate">
-                          {item.canonicalIngredientIds.join(", ")} {item.strengthValue}{item.strengthUnit}
+                          {item.canonicalIngredientIds.join(", ")}{" "}
+                          {item.strengthValue}
+                          {item.strengthUnit}
                         </div>
                         <div className="text-[10px] text-slate-500 font-mono mt-0.5">
-                          {item.brandText ? `${item.brandText} • ` : ""}{item.dosageForm}
+                          {item.brandText ? `${item.brandText} • ` : ""}
+                          {item.dosageForm}
                         </div>
                       </div>
                     </div>
@@ -149,7 +165,9 @@ export default function PatientHomePage() {
               <span className="text-xs text-slate-500">
                 Instructions: Take with a full glass of water after meals.
               </span>
-              <Link href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`}>
+              <Link
+                href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`}
+              >
                 <button className="h-8 px-3.5 rounded-xl bg-forest-900 hover:bg-forest-800 text-white font-medium text-xs shadow-2xs flex items-center gap-1.5 transition-all">
                   <span>View Dosing Schedule</span>
                   <ArrowRight className="w-3 h-3 text-emerald-300" />
@@ -165,7 +183,8 @@ export default function PatientHomePage() {
             <div className="space-y-3">
               <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 font-mono flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-blue-600" /> Upcoming Visit
+                  <Calendar className="w-3.5 h-3.5 text-blue-600" /> Upcoming
+                  Visit
                 </span>
                 {upcomingApt && <Badge variant="info">Scheduled</Badge>}
               </div>
@@ -180,7 +199,11 @@ export default function PatientHomePage() {
                     <span>{formatDateTime(upcomingApt.slotStart)}</span>
                   </div>
                   <div className="text-xs text-slate-500">
-                    Clinician: <span className="font-semibold text-slate-800">{upcomingApt.clinicianDisplayName}</span> ({upcomingApt.department})
+                    Clinician:{" "}
+                    <span className="font-semibold text-slate-800">
+                      {upcomingApt.clinicianDisplayName}
+                    </span>{" "}
+                    ({upcomingApt.department})
                   </div>
                 </div>
               ) : (
@@ -189,10 +212,12 @@ export default function PatientHomePage() {
                     Outpatient Pharmacy (Counter 3)
                   </h3>
                   <div className="flex items-center gap-2 text-slate-500">
-                    <Clock className="w-3.5 h-3.5 text-slate-400" /> Hours: 8:00 AM – 8:00 PM (Mon–Sat)
+                    <Clock className="w-3.5 h-3.5 text-slate-400" /> Hours: 8:00
+                    AM – 8:00 PM (Mon–Sat)
                   </div>
                   <div className="flex items-center gap-2 text-slate-500">
-                    <Phone className="w-3.5 h-3.5 text-slate-400" /> Helpline: +91 11 2345 6789
+                    <Phone className="w-3.5 h-3.5 text-slate-400" /> Helpline:
+                    +91 11 2345 6789
                   </div>
                 </div>
               )}
@@ -204,13 +229,20 @@ export default function PatientHomePage() {
                   <span>Pharmacy Counter Pickup</span>
                 </div>
                 <p className="text-[11px] text-slate-600 leading-relaxed">
-                  Present your patient MRN <span className="font-mono font-bold text-slate-900">P-9021</span> at Counter 3. Dispensing requires pharmacist safety clearance.
+                  Present your patient MRN{" "}
+                  <span className="font-mono font-bold text-slate-900">
+                    P-9021
+                  </span>{" "}
+                  at Counter 3. Dispensing requires pharmacist safety clearance.
                 </p>
               </div>
             </div>
 
             <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-              <Link href="/patient/appointments" className="font-semibold text-slate-600 hover:text-slate-900">
+              <Link
+                href="/patient/appointments"
+                className="font-semibold text-slate-600 hover:text-slate-900"
+              >
                 All Consultations ({appointments.length})
               </Link>
               <Link href="/patient/history">

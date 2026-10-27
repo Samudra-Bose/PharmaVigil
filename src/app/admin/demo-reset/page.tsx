@@ -11,7 +11,13 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/Alert";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Kbd } from "@/components/ui/Kbd";
-import { RotateCcw, AlertTriangle, ShieldAlert, ArrowLeft, Check } from "lucide-react";
+import {
+  RotateCcw,
+  AlertTriangle,
+  ShieldAlert,
+  ArrowLeft,
+  Check,
+} from "lucide-react";
 
 export default function ScopedDemoResetPage() {
   const router = useRouter();
@@ -34,7 +40,7 @@ export default function ScopedDemoResetPage() {
       setSuccess(true);
       clinicalToast.success(
         "Demo State Reset",
-        "Workspace restored to pristine synthetic baseline."
+        "Workspace restored to pristine synthetic baseline.",
       );
       setTimeout(() => {
         router.push("/pharmacist");
@@ -71,15 +77,20 @@ export default function ScopedDemoResetPage() {
       {/* Safety Warning Alert */}
       <Alert variant="destructive">
         <ShieldAlert className="h-4 w-4" />
-        <AlertTitle className="font-bold text-rose-950">High-Consequence Administrative Action (REQ-SEC-006)</AlertTitle>
+        <AlertTitle className="font-bold text-rose-950">
+          High-Consequence Administrative Action (REQ-SEC-006)
+        </AlertTitle>
         <AlertDescription className="text-rose-900 mt-1 space-y-2">
           <p className="leading-relaxed">
-            This operation will clear all captured outpatient prescriptions, re-seed the deterministic
-            clinical scenario (Warfarin + Aspirin DDI for patient Rajan Sharma P-9021), and restore original staff personas.
-            The reset is strictly scoped to the synthetic demo workspace.
+            This operation will clear all captured outpatient prescriptions,
+            re-seed the deterministic clinical scenario (Warfarin + Aspirin DDI
+            for patient Rajan Sharma P-9021), and restore original staff
+            personas. The reset is strictly scoped to the synthetic demo
+            workspace.
           </p>
           <div className="font-mono text-[11px] text-rose-900/80 pt-1 border-t border-rose-200/80">
-            Audit Guarantee: In accordance with clinical governance, the reset audit event itself is indelibly recorded and cannot be erased.
+            Audit Guarantee: In accordance with clinical governance, the reset
+            audit event itself is indelibly recorded and cannot be erased.
           </div>
         </AlertDescription>
       </Alert>
@@ -93,7 +104,8 @@ export default function ScopedDemoResetPage() {
             Demo Workspace Successfully Reset
           </h3>
           <p className="text-xs text-teal-800">
-            Deterministic fixtures restored. Redirecting to Pharmacist Pipeline...
+            Deterministic fixtures restored. Redirecting to Pharmacist
+            Pipeline...
           </p>
         </Card>
       ) : (
@@ -101,8 +113,15 @@ export default function ScopedDemoResetPage() {
           <CardContent className="p-6 space-y-4 text-xs">
             <form onSubmit={handleReset} className="space-y-4">
               <div>
-                <label htmlFor="confirm" className="block text-xs font-bold text-slate-800 mb-1.5">
-                  Type the confirmation phrase <Kbd className="font-mono text-rose-700 bg-rose-50 border-rose-300">{REQUIRED_PHRASE}</Kbd> to execute:
+                <label
+                  htmlFor="confirm"
+                  className="block text-xs font-bold text-slate-800 mb-1.5"
+                >
+                  Type the confirmation phrase{" "}
+                  <Kbd className="font-mono text-rose-700 bg-rose-50 border-rose-300">
+                    {REQUIRED_PHRASE}
+                  </Kbd>{" "}
+                  to execute:
                 </label>
                 <Input
                   id="confirm"

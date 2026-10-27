@@ -16,7 +16,9 @@ export const PatientIdentityCard: React.FC<PatientIdentityCardProps> = ({
   className = "",
 }) => {
   return (
-    <div className={`bg-white rounded-lg border border-slate-200 shadow-xs overflow-hidden ${className}`}>
+    <div
+      className={`bg-white rounded-lg border border-slate-200 shadow-xs overflow-hidden ${className}`}
+    >
       {/* Header */}
       <div className="bg-slate-100/70 p-3.5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2.5">
@@ -39,11 +41,15 @@ export const PatientIdentityCard: React.FC<PatientIdentityCardProps> = ({
         <div className="text-xs text-slate-600 flex items-center gap-4">
           <div>
             <span className="text-slate-400">DOB: </span>
-            <span className="font-semibold text-slate-800">{patient.dateOfBirth || "1968-04-12"}</span>
+            <span className="font-semibold text-slate-800">
+              {patient.dateOfBirth || "1968-04-12"}
+            </span>
           </div>
           <div>
             <span className="text-slate-400">Gender: </span>
-            <span className="font-semibold text-slate-800">{patient.gender || "MALE"}</span>
+            <span className="font-semibold text-slate-800">
+              {patient.gender || "MALE"}
+            </span>
           </div>
         </div>
       </div>
@@ -53,7 +59,8 @@ export const PatientIdentityCard: React.FC<PatientIdentityCardProps> = ({
         {/* Allergies */}
         <div className="space-y-2">
           <div className="flex items-center gap-1.5 font-semibold text-slate-700 uppercase tracking-wider text-[11px]">
-            <AlertOctagon className="w-3.5 h-3.5 text-rose-500" /> Known Allergies & Adverse Reactions
+            <AlertOctagon className="w-3.5 h-3.5 text-rose-500" /> Known
+            Allergies & Adverse Reactions
           </div>
           {patient.knownAllergies && patient.knownAllergies.length > 0 ? (
             <div className="space-y-1.5">
@@ -63,24 +70,34 @@ export const PatientIdentityCard: React.FC<PatientIdentityCardProps> = ({
                   className="p-2 rounded bg-rose-50/70 border border-rose-200 flex items-start justify-between gap-2"
                 >
                   <div>
-                    <span className="font-semibold text-rose-900">{alg.allergenName}</span>
+                    <span className="font-semibold text-rose-900">
+                      {alg.allergenName}
+                    </span>
                     <span className="text-rose-700"> — {alg.reaction}</span>
                   </div>
-                  <Badge variant={alg.severity === "CRITICAL" ? "critical" : "moderate"} className="text-[10px] py-0">
+                  <Badge
+                    variant={
+                      alg.severity === "CRITICAL" ? "critical" : "moderate"
+                    }
+                    className="text-[10px] py-0"
+                  >
                     {alg.severity}
                   </Badge>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-slate-400 italic">No allergies recorded in synthetic profile.</div>
+            <div className="text-slate-400 italic">
+              No allergies recorded in synthetic profile.
+            </div>
           )}
         </div>
 
         {/* Active Medications */}
         <div className="space-y-2">
           <div className="flex items-center gap-1.5 font-semibold text-slate-700 uppercase tracking-wider text-[11px]">
-            <Pill className="w-3.5 h-3.5 text-blue-500" /> Current Active Prescriptions
+            <Pill className="w-3.5 h-3.5 text-blue-500" /> Current Active
+            Prescriptions
           </div>
           {patient.activeMedications && patient.activeMedications.length > 0 ? (
             <div className="space-y-1.5">
@@ -90,16 +107,26 @@ export const PatientIdentityCard: React.FC<PatientIdentityCardProps> = ({
                   className="p-2 rounded bg-slate-50 border border-slate-200 flex items-start justify-between gap-2"
                 >
                   <div>
-                    <span className="font-semibold text-slate-900">{med.ingredientName}</span>
-                    {med.brandName && <span className="text-slate-500"> ({med.brandName})</span>}
-                    <div className="text-[11px] text-slate-600">{med.dosage} • {med.frequency}</div>
+                    <span className="font-semibold text-slate-900">
+                      {med.ingredientName}
+                    </span>
+                    {med.brandName && (
+                      <span className="text-slate-500"> ({med.brandName})</span>
+                    )}
+                    <div className="text-[11px] text-slate-600">
+                      {med.dosage} • {med.frequency}
+                    </div>
                   </div>
-                  <span className="text-[10px] font-mono text-slate-400">Since {med.startedAt}</span>
+                  <span className="text-[10px] font-mono text-slate-400">
+                    Since {med.startedAt}
+                  </span>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-slate-400 italic">No active medications recorded.</div>
+            <div className="text-slate-400 italic">
+              No active medications recorded.
+            </div>
           )}
         </div>
       </div>

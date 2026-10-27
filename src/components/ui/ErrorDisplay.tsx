@@ -55,16 +55,23 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
       className={`p-4 rounded-lg border border-rose-200 bg-rose-50/70 text-rose-950 ${className}`}
     >
       <div className="flex items-start gap-3">
-        <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" aria-hidden="true" />
+        <AlertCircle
+          className="w-5 h-5 text-rose-600 shrink-0 mt-0.5"
+          aria-hidden="true"
+        />
         <div className="flex-1 min-w-0">
           <h3 className="text-sm font-semibold text-rose-900">{title}</h3>
-          <p className="mt-1 text-xs text-rose-800 leading-relaxed">{message}</p>
+          <p className="mt-1 text-xs text-rose-800 leading-relaxed">
+            {message}
+          </p>
 
           {details && details.length > 0 && (
             <ul className="mt-2 space-y-1 text-xs text-rose-700 list-disc list-inside">
               {details.map((d, i) => (
                 <li key={i}>
-                  {d.field ? <span className="font-semibold font-mono">{d.field}: </span> : null}
+                  {d.field ? (
+                    <span className="font-semibold font-mono">{d.field}: </span>
+                  ) : null}
                   {d.message}
                 </li>
               ))}
@@ -85,7 +92,11 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
               className="inline-flex items-center text-[11px] text-rose-700 hover:text-rose-900 underline ml-auto gap-1"
               type="button"
             >
-              {copied ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+              {copied ? (
+                <Check className="w-3 h-3 text-emerald-600" />
+              ) : (
+                <Copy className="w-3 h-3" />
+              )}
               {copied ? "Copied diagnostic" : "Copy details"}
             </button>
           </div>

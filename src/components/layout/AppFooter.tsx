@@ -10,7 +10,8 @@ export const AppFooter: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
         <span className="font-semibold text-slate-700">PharmaVigil</span>
         <span className="text-[11px] text-slate-500">
-          Synthetic demonstration only — not for clinical use. Pinned OpenAPI 3.1.1.
+          Synthetic demonstration only — not for clinical use. Pinned OpenAPI
+          3.1.1.
         </span>
         <span className="font-mono text-[11px] text-slate-400">
           Hospital: {hospitalName}

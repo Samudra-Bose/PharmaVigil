@@ -18,7 +18,14 @@ import {
 } from "@/components/ui/Table";
 import { formatDateTime } from "@/lib/utils";
 import { SegmentedControl } from "@/components/heroui/SegmentedControl";
-import { Calendar, Clock, User, ArrowLeft, Filter, CheckCircle2 } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  User,
+  ArrowLeft,
+  Filter,
+  CheckCircle2,
+} from "lucide-react";
 
 export default function DoctorAppointmentsPage() {
   const [appointments, setAppointments] = useState<AppointmentRecord[]>([]);
@@ -66,7 +73,8 @@ export default function DoctorAppointmentsPage() {
             Clinical Consultations & Appointments
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Cardiology & Outpatient appointment schedule for Dr. Arvind Patel, MD (Metro General Hospital)
+            Cardiology & Outpatient appointment schedule for Dr. Arvind Patel,
+            MD (Metro General Hospital)
           </p>
         </div>
 
@@ -85,9 +93,24 @@ export default function DoctorAppointmentsPage() {
           onChange={setFilter}
           options={[
             { id: "ALL", label: "All", count: appointments.length },
-            { id: "SCHEDULED", label: "Scheduled", count: appointments.filter((a) => a.status === "SCHEDULED").length },
-            { id: "COMPLETED", label: "Completed", count: appointments.filter((a) => a.status === "COMPLETED").length },
-            { id: "CANCELLED", label: "Cancelled", count: appointments.filter((a) => a.status === "CANCELLED").length },
+            {
+              id: "SCHEDULED",
+              label: "Scheduled",
+              count: appointments.filter((a) => a.status === "SCHEDULED")
+                .length,
+            },
+            {
+              id: "COMPLETED",
+              label: "Completed",
+              count: appointments.filter((a) => a.status === "COMPLETED")
+                .length,
+            },
+            {
+              id: "CANCELLED",
+              label: "Cancelled",
+              count: appointments.filter((a) => a.status === "CANCELLED")
+                .length,
+            },
           ]}
           ariaLabel="Appointment Status Filter"
         />
@@ -115,7 +138,10 @@ export default function DoctorAppointmentsPage() {
               </TableHeader>
               <TableBody>
                 {filtered.map((apt) => (
-                  <TableRow key={apt.id} className="hover:bg-slate-50/80 transition-colors">
+                  <TableRow
+                    key={apt.id}
+                    className="hover:bg-slate-50/80 transition-colors"
+                  >
                     <TableCell className="font-mono text-xs font-semibold text-slate-900 font-tabular">
                       <div className="flex items-center gap-1.5">
                         <Clock className="w-3.5 h-3.5 text-slate-400" />
@@ -185,9 +211,13 @@ export default function DoctorAppointmentsPage() {
                 </div>
 
                 <div className="text-xs text-slate-700 bg-slate-50 p-2.5 rounded border border-slate-100">
-                  <div className="font-semibold text-slate-800">{apt.reason}</div>
+                  <div className="font-semibold text-slate-800">
+                    {apt.reason}
+                  </div>
                   {apt.notes && (
-                    <div className="text-[11px] text-slate-500 italic mt-0.5">{apt.notes}</div>
+                    <div className="text-[11px] text-slate-500 italic mt-0.5">
+                      {apt.notes}
+                    </div>
                   )}
                 </div>
               </div>

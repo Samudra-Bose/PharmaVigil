@@ -52,7 +52,10 @@ export const NotificationBell: React.FC = () => {
     if (!isOpen) return;
 
     const handleClickOutside = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -81,7 +84,7 @@ export const NotificationBell: React.FC = () => {
     // Snapshot previous state for rollback
     const prevList = [...notifications];
     setNotifications((curr) =>
-      curr.map((n) => (n.id === id ? { ...n, read: true } : n))
+      curr.map((n) => (n.id === id ? { ...n, read: true } : n)),
     );
 
     try {
@@ -105,7 +108,10 @@ export const NotificationBell: React.FC = () => {
 
     try {
       await Promise.all(unreadItems.map((n) => api.markNotificationRead(n.id)));
-      clinicalToast.success("All caught up", "Marked all notifications as read.");
+      clinicalToast.success(
+        "All caught up",
+        "Marked all notifications as read.",
+      );
     } catch (err) {
       setNotifications(prevList);
       clinicalToast.error(err, "Failed to mark all as read");
@@ -168,9 +174,10 @@ export const NotificationBell: React.FC = () => {
     }
   };
 
-  const displayedNotifications = activeTab === "UNREAD"
-    ? notifications.filter((n) => !n.read)
-    : notifications;
+  const displayedNotifications =
+    activeTab === "UNREAD"
+      ? notifications.filter((n) => !n.read)
+      : notifications;
 
   return (
     <div ref={containerRef} className="relative inline-block text-left">
@@ -186,7 +193,7 @@ export const NotificationBell: React.FC = () => {
         aria-expanded={isOpen}
         className={cn(
           "relative p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900",
-          isOpen && "bg-slate-100 text-slate-900"
+          isOpen && "bg-slate-100 text-slate-900",
         )}
       >
         <Bell className="w-4 h-4" />
@@ -213,7 +220,9 @@ export const NotificationBell: React.FC = () => {
           {/* Header */}
           <div className="p-3.5 bg-slate-50/80 border-b border-slate-200 flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-slate-900 text-sm">Notifications</span>
+              <span className="font-bold text-slate-900 text-sm">
+                Notifications
+              </span>
               {unreadCount > 0 && (
                 <span className="px-1.5 py-0.5 rounded-md bg-rose-100 text-rose-800 text-[10px] font-bold font-mono border border-rose-200/80">
                   {unreadCount} unread
@@ -241,7 +250,7 @@ export const NotificationBell: React.FC = () => {
                 "py-2 px-2 border-b-2 text-[11px] font-semibold transition-all -mb-[1px]",
                 activeTab === "ALL"
                   ? "border-slate-900 text-slate-900"
-                  : "border-transparent text-slate-500 hover:text-slate-800"
+                  : "border-transparent text-slate-500 hover:text-slate-800",
               )}
             >
               All ({notifications.length})
@@ -253,7 +262,7 @@ export const NotificationBell: React.FC = () => {
                 "py-2 px-2 border-b-2 text-[11px] font-semibold transition-all -mb-[1px]",
                 activeTab === "UNREAD"
                   ? "border-slate-900 text-slate-900"
-                  : "border-transparent text-slate-500 hover:text-slate-800"
+                  : "border-transparent text-slate-500 hover:text-slate-800",
               )}
             >
               Unread ({unreadCount})
@@ -278,13 +287,13 @@ export const NotificationBell: React.FC = () => {
                     onClick={() => handleNotificationClick(n)}
                     className={cn(
                       "p-3.5 transition-colors cursor-pointer flex items-start gap-3 hover:bg-slate-50/80 group",
-                      !n.read && "bg-teal-50/20"
+                      !n.read && "bg-teal-50/20",
                     )}
                   >
                     <span
                       className={cn(
                         "w-2 h-2 rounded-full mt-1.5 shrink-0",
-                        n.read ? "bg-slate-200" : priorityInfo.dotClass
+                        n.read ? "bg-slate-200" : priorityInfo.dotClass,
                       )}
                     />
 
@@ -293,7 +302,7 @@ export const NotificationBell: React.FC = () => {
                         <span
                           className={cn(
                             "px-1.5 py-0.2 rounded border text-[9px] font-bold font-mono tracking-wider",
-                            priorityInfo.badgeClass
+                            priorityInfo.badgeClass,
                           )}
                         >
                           {priorityInfo.priority}
@@ -306,7 +315,9 @@ export const NotificationBell: React.FC = () => {
                       <div
                         className={cn(
                           "text-xs leading-snug",
-                          n.read ? "text-slate-700 font-medium" : "text-slate-900 font-bold"
+                          n.read
+                            ? "text-slate-700 font-medium"
+                            : "text-slate-900 font-bold",
                         )}
                       >
                         {n.title}
