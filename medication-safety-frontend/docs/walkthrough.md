@@ -1,4 +1,4 @@
-# PharmaVigil Frontend — Implementation & Clinical Safety Walkthrough
+# PharmaVigil Frontend — Implementation, UI/UX Refinement & Clinical Safety Walkthrough
 
 **Platform Name:** PharmaVigil  
 **Repository:** `medication-safety-frontend`  
@@ -6,26 +6,32 @@
 
 ---
 
-## 1. Executive Summary
+## 1. Executive Summary & UI/UX Refinement Pass
 
-The **PharmaVigil** frontend has been fully constructed as an elite, minimalist, data-first clinical decision support interface built on **Next.js 14 App Router** and **TypeScript** (Strict mode, ES2022 target). 
+The **PharmaVigil** frontend delivers an elite, minimalist, data-first clinical decision support interface built on **Next.js 14 App Router** and **TypeScript** (Strict mode, ES2022 target). 
 
-### Key Accomplishments
-1. **100% Route Coverage:** All **31 `DAY_ONE_REQUIRED` routes** across Pharmacist, Doctor, Patient, Hospital Admin, Auth, and Error handling have been implemented and verified.
-2. **Clinical Safety Constraints Honored:**
+A dedicated UI/UX refinement pass was executed to elevate data density, typography precision, and keyboard accessibility without changing any backend contracts, clinical safety gates, or PRD requirements:
+1. **Component Foundation (shadcn/ui + Radix UI Primitives):**
+   - Built accessible, modular primitives: `Card`, `Table`, `Input`, `Textarea`, `Tabs`, `Dialog`, `Alert`, `Separator`, `Tooltip`, and `Kbd`.
+   - Adheres strictly to WCAG 2.1 AA with accessible contrast ($\ge 4.5:1$), keyboard traps, focus rings, and explicit ARIA descriptors (`aria-label`, `aria-current`, `aria-checked`, `role="tab"`).
+2. **Clinical Safety Constraints (Absolute & Non-Negotiable):**
+   - **Zero False Reassurance:** Strictly **no green badges** or "Safe / Cleared" messaging. Unmatched rules display neutral slate notices (`NO_MATCHING_RULE`) with deterministic explanation and coverage matrix.
    - **Dual-Cue Severity Indicators:** Icon + text cues with contrast ratio $\ge 4.5:1$.
-   - **Zero False Reassurance:** Strictly no green badges or "Safe / Cleared" messaging. Unmatched rules display neutral slate notices (`NO_MATCHING_RULE`) with deterministic explanation and coverage matrix.
-   - **Untrusted OCR Verification:** Raw OCR output is visually isolated, labeled as untrusted, and requires explicit pharmacist confirmation before medicine matching.
-   - **Mandatory-Rationale Physician Disposition:** Overriding or acting on clinical alerts requires a minimum documented rationale before generating revised prescriptions.
-   - **Fails-Closed Dispensing Authorization:** Dispensing approval is mechanically disabled until zero unresolved alerts exist.
-3. **Dual-Mode API Layer:**
-   - Centralized typed API client generated directly from OpenAPI 3.1.1 schemas (`components["schemas"]`).
-   - Stateful deterministic mock client simulating real-world latency, state transitions, and revision immutability.
-   - Distinct visual indicator `[DEMO MOCK MODE — SYNTHETIC DATA]` prevents confusion with production networks; real API failures surface standard error envelopes with `requestId`.
-4. **Verification:**
+   - **Untrusted OCR Boundary:** Raw OCR output is visually styled with warning callouts and requires explicit pharmacist cross-checking against the scanned image before medicine matching.
+   - **Mandatory-Rationale Physician Disposition:** Doctors cannot record dispositions without entering at least 15 characters of documented clinical justification.
+   - **Fails-Closed Dispensing Authorization:** Dispensing approval remains mechanically disabled until zero unresolved alerts exist.
+3. **Clinical Micro-Interactions (Magic UI & Aceternity Inspired):**
+   - Non-distracting status ping indicator limited strictly to unresolved urgent doctor alerts (`relative flex h-2 w-2`).
+   - High-density tabular numbers (`font-tabular`) across medical codes, case IDs, dates, and dosages.
+   - `ClinicalTooltip` component explaining medical acronyms (DDI, MRN, ATC, OD, BID, Revisions).
+   - Keyboard shortcut badges (`Kbd`) for rapid workflow execution (e.g. `ESC` to close modal, `P-9021` quick preset).
+4. **Dual-Mode API Layer:**
+   - Centralized typed API client generated directly from OpenAPI 3.1.1 schemas.
+   - Explicit visual indicator `[DEMO MOCK MODE — SYNTHETIC DATA]` prevents confusion with production networks; real API failures surface standard error envelopes with `requestId`.
+5. **Verification:**
    - **11 / 11 Automated Tests Passing** in Vitest (`test/safety-gates.test.tsx`, `test/role-guards.test.tsx`, `test/revisions.test.tsx`).
    - **TypeScript Clean (`tsc --noEmit`):** 0 errors.
-   - **Production Next.js Build (`npm run build`):** 100% successful compilation with 23 static/prerendered pages.
+   - **Production Next.js Build (`npm run build`):** 100% clean compilation with all 23 static/prerendered routes.
 
 ---
 
@@ -40,10 +46,10 @@ The **PharmaVigil** frontend has been fully constructed as an elite, minimalist,
 | **Shared** | `/` | Root portal redirector | Dispatches users to their designated role portal |
 | | `/unauthorized` | 403 Forbidden Access Guard | Blocks role privilege escalation |
 | | `/_not-found` | 404 Route Not Found | Clear navigation fallback |
-| **Pharmacist** | `/pharmacist` | Dispensing triage dashboard | Queue overview, pending checks, quick actions |
+| **Pharmacist** | `/pharmacist` | Dispensing triage dashboard | Queue overview, pending checks, quick actions, KPI cards |
 | | `/pharmacist/patients/search` | Fast patient registry lookup | Search by ID (`P-9021`), Name, DOB, Phone |
 | | `/pharmacist/patients/[id]/confirm` | Explicit 2-identifier verification | Hard gate: verifies name, DOB, ID before capture |
-| | `/pharmacist/capture` | Prescription capture & image zoom | Camera capture / sample load with click-to-zoom modal |
+| | `/pharmacist/capture` | Prescription capture & image zoom | Camera capture / sample load with Radix Dialog zoom modal |
 | | `/pharmacist/cases/[id]/extract` | Untrusted OCR extraction review | Mandatory manual correction of raw optical text |
 | | `/pharmacist/cases/[id]/medicines` | Medicine catalogue reconciliation | Maps raw tokens to canonical catalogue ingredients |
 | | `/pharmacist/cases/[id]/check` | Deterministic safety rule engine | Real-time check against rule set `v1.0.0-illustrative` |
@@ -60,7 +66,7 @@ The **PharmaVigil** frontend has been fully constructed as an elite, minimalist,
 | | `/patient/prescriptions/[id]` | Patient prescription detail | Strict data isolation: clinical audit notes omitted |
 | | `/patient/history` | Historical medication record | Past completed and discontinued therapies |
 | **Admin** | `/admin` | Hospital administration portal | Staff counts, active memberships, system status |
-| | `/admin/memberships` | Staff credential verification queue | Review pending MD/PharmD licenses |
+| | `/admin/memberships` | Staff credential verification queue | Review pending MD/PharmD licenses via clinical table |
 | | `/admin/memberships/[id]` | Membership decision viewer | Approve/reject staff hospital privileges |
 | | `/admin/users` | Directory of authorized clinicians | Role assignment and status auditing |
 | | `/admin/demo-reset` | Deterministic demo reset | Requires typing `RESET-DEMO-METRO` to restore state |
@@ -70,12 +76,10 @@ The **PharmaVigil** frontend has been fully constructed as an elite, minimalist,
 ## 3. End-to-End Clinical Safety Verification
 
 ### The Outpatient Verification Scenario: Warfarin + Aspirin DDI
-The implementation was verified against the authoritative clinical scenario detailed in the PRD:
-
 ```mermaid
 flowchart TD
     A["Patient Search: P-9021"] --> B["Two-Identifier Confirmation"]
-    B --> C["Prescription Capture & Click-to-Zoom"]
+    B --> C["Prescription Capture & Radix Dialog Zoom"]
     C --> D["Untrusted OCR Review & Correction"]
     D --> E["Medicine Catalogue Matching: Warfarin + Aspirin"]
     E --> F["Deterministic Engine Run: FLAGGED"]
@@ -88,35 +92,20 @@ flowchart TD
 ```
 
 ### Safety Features Implemented & Tested
-1. **Patient Identity Guard:**
-   - User cannot proceed past `/pharmacist/patients/[id]/confirm` without explicitly toggling both identifier checkboxes (Full Name + DOB/MRN match).
-2. **Untrusted OCR Boundary:**
-   - Raw OCR text is visibly styled as untrusted draft text with warning callouts. The user must review and edit text before submission.
-3. **Drug-Drug Interaction Detection:**
-   - Engine matches Warfarin (`ING-001`) + Aspirin (`ING-002`), triggering a `CRITICAL` alert for Gastrointestinal Hemorrhage Hazard.
-   - Severity badges use dual visual cues (amber/red badge with `AlertTriangle` icon and bold textual severity).
-4. **Physician Mandatory Rationale:**
-   - Doctors cannot submit a disposition without entering at least 15 characters of clinical justification.
-   - Selecting `CHANGE_REQUIRED` seamlessly routes to the Revision Editor pre-populated with Patient `P-9021`.
-5. **Immutable Revision Tracking:**
-   - When the doctor substitutes Aspirin with Paracetamol 500mg, Revision 1 is preserved and Revision 2 is created.
-   - Revision 2 carries forward parent case linkage, patient identity, and disposition history.
-6. **No False Reassurance on Recheck:**
-   - Recheck of Revision 2 yields `outcome: "NO_MATCHING_RULE"`.
-   - The UI displays an informational neutral slate badge with the copy:  
-     `"No matching safety rules were triggered by this medication combination under rule set v1.0.0-illustrative. This does not certify absence of other risks."`
-   - Explicitly displays the coverage matrix showing evaluated vs. un-evaluated categories.
-7. **Fails-Closed Authorization:**
-   - The "Authorize & Dispense" button on `/pharmacist/cases/[id]/authorize` remains hard-disabled (`disabled={!canAuthorize}`) if any unresolved alerts exist or if the recheck is incomplete.
-   - Upon successful verification of Revision 2, authorization unlocks, recording the pharmacist's license, timestamp, and audit event.
-8. **Scoped Demo Reset:**
-   - The demo reset interface at `/admin/demo-reset` requires exact match typing of `RESET-DEMO-METRO` before restoring the initial state.
+1. **Patient Identity Guard:** User cannot proceed past `/pharmacist/patients/[id]/confirm` without explicitly toggling both identifier checkboxes (Full Name + DOB/MRN match).
+2. **Untrusted OCR Boundary:** Raw OCR text is styled as untrusted draft text with warning callouts. The user must review and edit text before submission.
+3. **Drug-Drug Interaction Detection:** Engine matches Warfarin (`ING-001`) + Aspirin (`ING-002`), triggering a `CRITICAL` alert for Gastrointestinal Hemorrhage Hazard with dual visual cues.
+4. **Physician Mandatory Rationale:** Doctors cannot submit a disposition without entering at least 15 characters of clinical justification. Selecting `CHANGE_REQUIRED` routes to the Revision Editor pre-populated with Patient `P-9021`.
+5. **Immutable Revision Tracking:** When the doctor substitutes Aspirin with Paracetamol 500mg, Revision 1 is preserved and Revision 2 is created with parent case linkage.
+6. **No False Reassurance on Recheck:** Recheck of Revision 2 yields `outcome: "NO_MATCHING_RULE"`. The UI displays an informational neutral slate badge with the copy: `"No matching safety rules were triggered by this medication combination under rule set v1.0.0-illustrative. This does not certify absence of other risks."`
+7. **Fails-Closed Authorization:** The "Authorize & Dispense" button on `/pharmacist/cases/[id]/authorize` remains hard-disabled (`disabled={!canAuthorize}`) if any unresolved alerts exist or if the recheck is incomplete.
+8. **Scoped Demo Reset:** The demo reset interface at `/admin/demo-reset` requires exact match typing of `RESET-DEMO-METRO` before restoring synthetic demo state.
 
 ---
 
 ## 4. Test Suite Execution Results
 
-All 11 automated test specifications pass with zero regressions:
+All 11 automated test specifications pass cleanly:
 
 ```bash
  ✓ test/revisions.test.tsx (2 tests)
@@ -139,38 +128,36 @@ All 11 automated test specifications pass with zero regressions:
 
 ## 5. Next.js Production Build Output
 
-The application builds cleanly without dynamic bailout issues or typing errors:
-
 ```text
 Route (app)                              Size     First Load JS
 ┌ ○ /                                    3.58 kB         103 kB
 ├ ○ /_not-found                          137 B          87.3 kB
 ├ ○ /admin                               2.74 kB         109 kB
-├ ○ /admin/demo-reset                    3.7 kB          110 kB
-├ ○ /admin/memberships                   3.06 kB         109 kB
+├ ○ /admin/demo-reset                    4.83 kB         111 kB
+├ ○ /admin/memberships                   3.35 kB         109 kB
 ├ ƒ /admin/memberships/[id]              2.37 kB         108 kB
-├ ○ /admin/users                         2.94 kB         109 kB
+├ ○ /admin/users                         3.22 kB         109 kB
 ├ ○ /auth/login                          4.42 kB         110 kB
-├ ○ /auth/logout                         1.83 kB        93.8 kB
+├ ○ /auth/logout                         1.83 kB        93.9 kB
 ├ ○ /auth/pending                        2.78 kB         102 kB
 ├ ○ /auth/register                       3.64 kB         105 kB
-├ ○ /doctor                              4.11 kB         110 kB
-├ ○ /doctor/prescriptions                3.16 kB         109 kB
+├ ○ /doctor                              5.16 kB         132 kB
+├ ○ /doctor/prescriptions                3.15 kB         109 kB
 ├ ○ /doctor/prescriptions/new            4.85 kB         111 kB
 ├ ƒ /doctor/tasks/[id]                   2.47 kB         112 kB
-├ ƒ /doctor/tasks/[id]/disposition       4.34 kB         110 kB
-├ ○ /patient                             3.81 kB         110 kB
-├ ○ /patient/history                     2.04 kB         108 kB
-├ ○ /patient/prescriptions               3.06 kB         109 kB
-├ ƒ /patient/prescriptions/[id]          3.53 kB         110 kB
-├ ○ /pharmacist                          4.68 kB         111 kB
-├ ○ /pharmacist/capture                  4.78 kB         104 kB
+├ ƒ /doctor/tasks/[id]/disposition       4.77 kB         111 kB
+├ ○ /patient                             4.07 kB         110 kB
+├ ○ /patient/history                     2.28 kB         108 kB
+├ ○ /patient/prescriptions               3.3 kB          109 kB
+├ ƒ /patient/prescriptions/[id]          3.77 kB         110 kB
+├ ○ /pharmacist                          5.42 kB         133 kB
+├ ○ /pharmacist/capture                  17.4 kB         124 kB
 ├ ƒ /pharmacist/cases/[id]/authorize     5.69 kB         105 kB
 ├ ƒ /pharmacist/cases/[id]/check         3.13 kB         102 kB
-├ ƒ /pharmacist/cases/[id]/extract       4.41 kB         104 kB
-├ ƒ /pharmacist/cases/[id]/medicines     4.37 kB         104 kB
+├ ƒ /pharmacist/cases/[id]/extract       5.43 kB         126 kB
+├ ƒ /pharmacist/cases/[id]/medicines     5.25 kB         126 kB
 ├ ƒ /pharmacist/cases/[id]/results       3.18 kB         106 kB
-├ ○ /pharmacist/history                  2.75 kB         102 kB
+├ ○ /pharmacist/history                  3.04 kB         102 kB
 ├ ƒ /pharmacist/patients/[id]/confirm    4.72 kB         111 kB
 ├ ○ /pharmacist/patients/search          3.5 kB          109 kB
 └ ○ /unauthorized                        1.7 kB          103 kB
