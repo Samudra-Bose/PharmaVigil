@@ -28,7 +28,9 @@ export const CameraCaptureModal: React.FC<CameraCaptureModalProps> = ({
   const streamRef = useRef<MediaStream | null>(null);
   const fallbackInputRef = useRef<HTMLInputElement>(null);
 
-  const [facingMode, setFacingMode] = useState<"environment" | "user">("environment");
+  const [facingMode, setFacingMode] = useState<"environment" | "user">(
+    "environment",
+  );
   const [snapshot, setSnapshot] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loadingCamera, setLoadingCamera] = useState<boolean>(true);
@@ -42,47 +44,66 @@ export const CameraCaptureModal: React.FC<CameraCaptureModalProps> = ({
   }, []);
 
   // Initialize or re-initialize camera stream
-  const startCamera = useCallback(async (facing: "environment" | "user") => {
-    stopStream();
-    setError(null);
-    setLoadingCamera(true);
+  const startCamera = useCallback(
+    async (facing: "environment" | "user") => {
+      stopStream();
+      setError(null);
+      setLoadingCamera(true);
 
-    try {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        throw new Error("WebRTC camera streaming is not supported by your browser environment.");
+      try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          throw new Error(
+            "WebRTC camera streaming is not supported by your browser environment.",
+          );
+        }
+
+        const constraints: MediaStreamConstraints = {
+          video: {
+            facingMode: { ideal: facing },
+            width: { ideal: 1920 },
+            height: { ideal: 1080 },
+          },
+          audio: false,
+        };
+
+        const mediaStream =
+          await navigator.mediaDevices.getUserMedia(constraints);
+        streamRef.current = mediaStream;
+
+        if (videoRef.current) {
+          videoRef.current.srcObject = mediaStream;
+          await videoRef.current.play();
+        }
+      } catch (err: any) {
+        console.warn("Camera access failed:", err);
+        if (
+          err.name === "NotAllowedError" ||
+          err.name === "PermissionDeniedError"
+        ) {
+          setError(
+            "Camera permission was denied. Please allow camera access in your browser settings or use the file upload fallback.",
+          );
+        } else if (
+          err.name === "NotFoundError" ||
+          err.name === "DevicesNotFoundError"
+        ) {
+          setError("No video camera device was detected on your hardware.");
+        } else if (
+          err.name === "NotReadableError" ||
+          err.name === "TrackStartError"
+        ) {
+          setError(
+            "The camera is currently in use by another application or browser tab.",
+          );
+        } else {
+          setError(err.message || "Failed to initialize video camera stream.");
+        }
+      } finally {
+        setLoadingCamera(false);
       }
-
-      const constraints: MediaStreamConstraints = {
-        video: {
-          facingMode: { ideal: facing },
-          width: { ideal: 1920 },
-          height: { ideal: 1080 },
-        },
-        audio: false,
-      };
-
-      const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
-      streamRef.current = mediaStream;
-
-      if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream;
-        await videoRef.current.play();
-      }
-    } catch (err: any) {
-      console.warn("Camera access failed:", err);
-      if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
-        setError("Camera permission was denied. Please allow camera access in your browser settings or use the file upload fallback.");
-      } else if (err.name === "NotFoundError" || err.name === "DevicesNotFoundError") {
-        setError("No video camera device was detected on your hardware.");
-      } else if (err.name === "NotReadableError" || err.name === "TrackStartError") {
-        setError("The camera is currently in use by another application or browser tab.");
-      } else {
-        setError(err.message || "Failed to initialize video camera stream.");
-      }
-    } finally {
-      setLoadingCamera(false);
-    }
-  }, [stopStream]);
+    },
+    [stopStream],
+  );
 
   // Start stream when modal opens
   useEffect(() => {
@@ -180,11 +201,16 @@ export const CameraCaptureModal: React.FC<CameraCaptureModalProps> = ({
               <Camera className="w-4 h-4" />
             </div>
             <div>
-              <h2 id="camera-modal-title" className="text-sm font-bold text-white tracking-tight">
+              <h2
+                id="camera-modal-title"
+                className="text-sm font-bold text-white tracking-tight"
+              >
                 Live Prescription Scanner
               </h2>
               <p className="text-[11px] text-slate-400">
-                {snapshot ? "Review captured scan" : "Align document inside guide"}
+                {snapshot
+                  ? "Review captured scan"
+                  : "Align document inside guide"}
               </p>
             </div>
           </div>
@@ -207,8 +233,12 @@ export const CameraCaptureModal: React.FC<CameraCaptureModalProps> = ({
                 <AlertTriangle className="w-6 h-6" />
               </div>
               <div className="space-y-1">
-                <h3 className="text-sm font-bold text-white">Camera Unavailable</h3>
-                <p className="text-xs text-slate-400 leading-relaxed">{error}</p>
+                <h3 className="text-sm font-bold text-white">
+                  Camera Unavailable
+                </h3>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  {error}
+                </p>
               </div>
               <div className="pt-2 flex flex-col sm:flex-row gap-2 justify-center">
                 <Button

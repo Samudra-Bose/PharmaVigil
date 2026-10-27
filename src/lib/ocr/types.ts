@@ -37,13 +37,7 @@ export interface OcrResult {
 }
 
 export type ClinicalDosageForm =
-  | "TABLET"
-  | "CAPSULE"
-  | "SYRUP"
-  | "INJECTION"
-  | "OINTMENT"
-  | "DROPS"
-  | "OTHER";
+  "TABLET" | "CAPSULE" | "SYRUP" | "INJECTION" | "OINTMENT" | "DROPS" | "OTHER";
 
 export interface ParsedClinicalItem {
   id: string;

@@ -62,9 +62,7 @@ export const OcrProgressBar: React.FC<OcrProgressBarProps> = ({
       </div>
 
       {error && (
-        <div className="text-[11px] text-rose-700 font-medium">
-          {error}
-        </div>
+        <div className="text-[11px] text-rose-700 font-medium">{error}</div>
       )}
     </div>
   );

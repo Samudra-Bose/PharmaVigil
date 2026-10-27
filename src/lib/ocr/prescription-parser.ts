@@ -4,9 +4,14 @@
  * using clinical shorthand heuristics and medical pattern recognition.
  */
 
-import type { ParsedClinicalItem, ClinicalDosageForm, OcrWordDetail } from "./types";
+import type {
+  ParsedClinicalItem,
+  ClinicalDosageForm,
+  OcrWordDetail,
+} from "./types";
 
-const HEADER_IGNORE_REGEX = /^(?:dr\.?|doctor|hospital|clinic|patient|date|age|gender|reg(?:\s*#|\s*no)?|phone|tel|email|address|rx:?\s*$)/i;
+const HEADER_IGNORE_REGEX =
+  /^(?:dr\.?|doctor|hospital|clinic|patient|date|age|gender|reg(?:\s*#|\s*no)?|phone|tel|email|address|rx:?\s*$)/i;
 
 const FORM_PATTERNS: Array<{ regex: RegExp; form: ClinicalDosageForm }> = [
   { regex: /\b(?:tab(?:let)?s?|tab\.)\b/i, form: "TABLET" },
@@ -19,11 +24,13 @@ const FORM_PATTERNS: Array<{ regex: RegExp; form: ClinicalDosageForm }> = [
 
 const STRENGTH_REGEX = /(\d+(?:\.\d+)?)\s*(mg|g|mcg|ml|iu|units?|%)\b/i;
 
-const FREQUENCY_REGEX = /\b(OD|BD|BID|TDS|TID|QID|Q4H|Q6H|Q8H|Q12H|HS|SOS|PRN|STAT|ONCE DAILY|TWICE DAILY|THRICE DAILY)\b/i;
+const FREQUENCY_REGEX =
+  /\b(OD|BD|BID|TDS|TID|QID|Q4H|Q6H|Q8H|Q12H|HS|SOS|PRN|STAT|ONCE DAILY|TWICE DAILY|THRICE DAILY)\b/i;
 
 const DURATION_REGEX = /(?:for|x)?\s*(\d+)\s*(days?|weeks?|months?)\b/i;
 
-const ROUTE_REGEX = /\b(oral|po|topical|iv|im|sublingual|inhalation|ophthalmic|otic)\b/i;
+const ROUTE_REGEX =
+  /\b(oral|po|topical|iv|im|sublingual|inhalation|ophthalmic|otic)\b/i;
 
 /**
  * Normalizes frequency string to canonical representation
@@ -39,7 +46,10 @@ function normalizeFrequency(freqStr: string): string {
 /**
  * Calculates average OCR confidence for a given line of text based on word bounding confidences
  */
-function computeLineConfidence(lineText: string, words?: OcrWordDetail[]): number {
+function computeLineConfidence(
+  lineText: string,
+  words?: OcrWordDetail[],
+): number {
   if (!words || words.length === 0) return 0.85;
 
   const lineWords = lineText.toLowerCase().split(/\s+/).filter(Boolean);
@@ -67,7 +77,7 @@ function computeLineConfidence(lineText: string, words?: OcrWordDetail[]): numbe
  */
 export function parsePrescriptionText(
   rawText: string,
-  words?: OcrWordDetail[]
+  words?: OcrWordDetail[],
 ): ParsedClinicalItem[] {
   if (!rawText || !rawText.trim()) {
     return [];
@@ -143,7 +153,10 @@ export function parsePrescriptionText(
     let candidateName = cleanLine;
 
     // Strip dosage form prefix
-    candidateName = candidateName.replace(/\b(?:tab(?:let)?s?|cap(?:sule)?s?|syr(?:up)?s?|inj(?:ection)?s?|oint(?:ment)?s?|drops?)\.?\s*/i, "");
+    candidateName = candidateName.replace(
+      /\b(?:tab(?:let)?s?|cap(?:sule)?s?|syr(?:up)?s?|inj(?:ection)?s?|oint(?:ment)?s?|drops?)\.?\s*/i,
+      "",
+    );
 
     // Cut everything from strength onwards or '-' onwards
     if (strengthMatch && strengthMatch.index !== undefined) {
@@ -160,7 +173,8 @@ export function parsePrescriptionText(
       .trim();
 
     // If candidate name is empty, fall back to line fragment
-    const brandText = candidateName.length >= 2 ? candidateName : cleanLine.slice(0, 30);
+    const brandText =
+      candidateName.length >= 2 ? candidateName : cleanLine.slice(0, 30);
 
     const confidence = computeLineConfidence(line, words);
 

@@ -20,7 +20,10 @@ import {
 import { CameraCaptureModal } from "@/components/clinical/CameraCaptureModal";
 import { OcrProgressBar } from "@/components/clinical/OcrProgressBar";
 import { preprocessImageForOcr } from "@/lib/ocr/image-preprocessor";
-import { recognizePrescriptionImage, terminateOcrWorker } from "@/lib/ocr/tesseract-worker";
+import {
+  recognizePrescriptionImage,
+  terminateOcrWorker,
+} from "@/lib/ocr/tesseract-worker";
 import { parsePrescriptionText } from "@/lib/ocr/prescription-parser";
 import type { OcrProgressState, ParsedClinicalItem } from "@/lib/ocr/types";
 import {
@@ -71,7 +74,7 @@ function CapturePrescriptionContent() {
 
   // Manual fallback state
   const [manualText, setManualText] = useState(
-    "Tab. Warfarin 5mg - 1 Tab OD at night x 30 days\nTab. Aspirin 75mg - 1 Tab OD with food x 15 days"
+    "Tab. Warfarin 5mg - 1 Tab OD at night x 30 days\nTab. Aspirin 75mg - 1 Tab OD with food x 15 days",
   );
   const [submitting, setSubmitting] = useState(false);
 
@@ -122,7 +125,10 @@ function CapturePrescriptionContent() {
     setRecognizedText("");
     setParsedItems([]);
     setOcrWarning(null);
-    clinicalToast.info("Frame Captured", "Prescription ready for OCR extraction");
+    clinicalToast.info(
+      "Frame Captured",
+      "Prescription ready for OCR extraction",
+    );
   };
 
   // Handle image file selection
@@ -130,7 +136,9 @@ function CapturePrescriptionContent() {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 15 * 1024 * 1024) {
-        clinicalToast.error("File size exceeds 15MB limit. Please upload a smaller image.");
+        clinicalToast.error(
+          "File size exceeds 15MB limit. Please upload a smaller image.",
+        );
         return;
       }
       const reader = new FileReader();
@@ -192,7 +200,7 @@ function CapturePrescriptionContent() {
       const result = await recognizePrescriptionImage(
         processedCanvas,
         (progress) => setOcrProgress(progress),
-        controller.signal
+        controller.signal,
       );
 
       setRecognizedText(result.rawText);
@@ -204,12 +212,12 @@ function CapturePrescriptionContent() {
 
       if (result.confidence < 45 || items.length === 0) {
         setOcrWarning(
-          "Low recognition confidence or blurry image detected. Verify image orientation, try rotating 90°, or use Manual Transcription."
+          "Low recognition confidence or blurry image detected. Verify image orientation, try rotating 90°, or use Manual Transcription.",
         );
       } else {
         clinicalToast.success(
           "Extraction Complete",
-          `Recognized ${items.length} prescription medication item(s) (${result.confidence}% confidence)`
+          `Recognized ${items.length} prescription medication item(s) (${result.confidence}% confidence)`,
         );
       }
     } catch (err: any) {
@@ -217,7 +225,9 @@ function CapturePrescriptionContent() {
         clinicalToast.info("OCR Cancelled", "Scan processing aborted");
       } else {
         clinicalToast.error(err, "OCR Recognition Failed");
-        setOcrWarning("OCR failed to process the image. Please retry or enter items manually.");
+        setOcrWarning(
+          "OCR failed to process the image. Please retry or enter items manually.",
+        );
       }
     } finally {
       setIsProcessingOcr(false);
@@ -239,7 +249,7 @@ function CapturePrescriptionContent() {
       const created = await api.createCapture(
         patientId,
         rawText,
-        isImageMode ? "BROWSER_OCR" : "MANUAL_ENTRY"
+        isImageMode ? "BROWSER_OCR" : "MANUAL_ENTRY",
       );
 
       // 2. Ingest structured items if items were parsed
@@ -271,7 +281,7 @@ function CapturePrescriptionContent() {
 
       clinicalToast.success(
         "Capture Ingested",
-        `Created clinical intake record #${created.id.slice(0, 8)}`
+        `Created clinical intake record #${created.id.slice(0, 8)}`,
       );
 
       router.push(`/pharmacist/cases/${created.id}/extract`);
@@ -307,10 +317,16 @@ function CapturePrescriptionContent() {
       <Tabs value={mode} onValueChange={setMode} className="w-full">
         <div className="flex justify-between items-center mb-4">
           <TabsList>
-            <TabsTrigger value="IMAGE" className="gap-1.5 text-xs font-semibold">
+            <TabsTrigger
+              value="IMAGE"
+              className="gap-1.5 text-xs font-semibold"
+            >
               <Camera className="w-3.5 h-3.5" /> Camera / Document Scan
             </TabsTrigger>
-            <TabsTrigger value="MANUAL" className="gap-1.5 text-xs font-semibold">
+            <TabsTrigger
+              value="MANUAL"
+              className="gap-1.5 text-xs font-semibold"
+            >
               <FileText className="w-3.5 h-3.5" /> Manual Text Fallback
             </TabsTrigger>
           </TabsList>
@@ -494,7 +510,9 @@ function CapturePrescriptionContent() {
                               )}
                             </div>
                             <div className="text-[11px] text-slate-500">
-                              {item.dosageForm} • {item.frequency} • {item.route} • {item.durationValue} {item.durationUnit}
+                              {item.dosageForm} • {item.frequency} •{" "}
+                              {item.route} • {item.durationValue}{" "}
+                              {item.durationUnit}
                             </div>
                           </div>
                         </div>
@@ -519,7 +537,8 @@ function CapturePrescriptionContent() {
                   No Prescription Scan Loaded
                 </p>
                 <p className="text-[11px] text-slate-500 max-w-sm mx-auto">
-                  Click <strong>Open Camera Scanner</strong> to take a photo of the patient's prescription or upload an existing scan.
+                  Click <strong>Open Camera Scanner</strong> to take a photo of
+                  the patient's prescription or upload an existing scan.
                 </p>
               </div>
             </div>
@@ -534,7 +553,8 @@ function CapturePrescriptionContent() {
               Manual Prescription Transcription
             </div>
             <p className="text-xs text-slate-500">
-              Paste or type prescription lines directly. The parser will automatically extract dosages, frequencies, and formulations.
+              Paste or type prescription lines directly. The parser will
+              automatically extract dosages, frequencies, and formulations.
             </p>
             <Textarea
               rows={6}
@@ -557,7 +577,8 @@ function CapturePrescriptionContent() {
       {/* Action Footer */}
       <div className="flex justify-between items-center pt-2 border-t border-slate-200">
         <div className="text-[11px] text-slate-400">
-          PRD Invariant: OCR output is an untrusted suggestion until pharmacist review.
+          PRD Invariant: OCR output is an untrusted suggestion until pharmacist
+          review.
         </div>
 
         <Button
@@ -565,7 +586,9 @@ function CapturePrescriptionContent() {
           variant="primary"
           onClick={handleSaveAndProceed}
           loading={submitting}
-          disabled={submitting || (mode === "IMAGE" && !imageUri && !recognizedText)}
+          disabled={
+            submitting || (mode === "IMAGE" && !imageUri && !recognizedText)
+          }
           className="gap-2 text-xs bg-slate-900 hover:bg-slate-800 text-white"
         >
           Proceed to Extraction Review <ArrowRight className="w-4 h-4" />

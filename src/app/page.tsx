@@ -11,13 +11,13 @@ import {
   Stethoscope,
   Pill,
   ShieldAlert,
-  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { GridPattern } from "@/components/aceternity/GridPattern";
+import type { UserRole } from "@/types";
 
 export default function HomePage() {
-  const { role, isLoading, switchRole } = useAuth();
+  const { role, isLoading, isMockMode, switchRole } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -28,6 +28,19 @@ export default function HomePage() {
       else if (role === "HOSPITAL_ADMIN") router.push("/admin");
     }
   }, [role, isLoading, router]);
+
+  const handleRoleAction = (targetRole: UserRole) => {
+    if (role === targetRole) {
+      if (targetRole === "PHARMACIST") router.push("/pharmacist");
+      else if (targetRole === "DOCTOR") router.push("/doctor");
+      else if (targetRole === "PATIENT") router.push("/patient");
+      else if (targetRole === "HOSPITAL_ADMIN") router.push("/admin");
+    } else if (isMockMode) {
+      switchRole(targetRole);
+    } else {
+      router.push(`/auth/login?role=${targetRole}`);
+    }
+  };
 
   return (
     <div className="py-6 sm:py-10 relative">
@@ -51,14 +64,14 @@ export default function HomePage() {
 
         <div className="pt-2 flex flex-wrap justify-center gap-2.5">
           <Button
-            onClick={() => switchRole("PHARMACIST")}
+            onClick={() => handleRoleAction("PHARMACIST")}
             variant="primary"
             className="gap-2 text-xs h-9 bg-slate-900 hover:bg-slate-800 shadow-2xs"
           >
             Open Pharmacist Queue <ArrowRight className="w-4 h-4" />
           </Button>
           <Button
-            onClick={() => switchRole("DOCTOR")}
+            onClick={() => handleRoleAction("DOCTOR")}
             variant="outline"
             className="gap-2 text-xs h-9"
           >
@@ -88,7 +101,7 @@ export default function HomePage() {
               size="sm"
               variant="outline"
               className="w-full text-xs h-8"
-              onClick={() => switchRole("PHARMACIST")}
+              onClick={() => handleRoleAction("PHARMACIST")}
             >
               Enter as Pharmacist
             </Button>
@@ -114,7 +127,7 @@ export default function HomePage() {
               size="sm"
               variant="outline"
               className="w-full text-xs h-8"
-              onClick={() => switchRole("DOCTOR")}
+              onClick={() => handleRoleAction("DOCTOR")}
             >
               Enter as Doctor
             </Button>
@@ -140,7 +153,7 @@ export default function HomePage() {
               size="sm"
               variant="outline"
               className="w-full text-xs h-8"
-              onClick={() => switchRole("PATIENT")}
+              onClick={() => handleRoleAction("PATIENT")}
             >
               Enter as Patient
             </Button>
@@ -166,7 +179,7 @@ export default function HomePage() {
               size="sm"
               variant="outline"
               className="w-full text-xs h-8"
-              onClick={() => switchRole("HOSPITAL_ADMIN")}
+              onClick={() => handleRoleAction("HOSPITAL_ADMIN")}
             >
               Enter as Admin
             </Button>

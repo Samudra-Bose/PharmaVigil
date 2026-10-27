@@ -74,16 +74,19 @@ export default function OcrExtractPage() {
 
         if (data) {
           const rawItems = (data as any).items;
-          const rawExtracted = (data as any).extractedText || (data as any).extractedOcrText;
+          const rawExtracted =
+            (data as any).extractedText || (data as any).extractedOcrText;
 
           if (Array.isArray(rawItems) && rawItems.length > 0) {
             setLines(
               rawItems.map((item: any, idx: number) => ({
                 id: idx + 1,
-                text: item.rawExtractedText || item.brandText || `Item ${idx + 1}`,
+                text:
+                  item.rawExtractedText || item.brandText || `Item ${idx + 1}`,
                 confidence: item.matchConfidence ?? item.confidence ?? 0.88,
-                status: item.matchStatus === "CONFIRMED" ? "CONFIRMED" : "UNREVIEWED",
-              }))
+                status:
+                  item.matchStatus === "CONFIRMED" ? "CONFIRMED" : "UNREVIEWED",
+              })),
             );
           } else if (rawExtracted && typeof rawExtracted === "string") {
             const parsed = parsePrescriptionText(rawExtracted);
@@ -94,7 +97,7 @@ export default function OcrExtractPage() {
                   text: item.rawExtractedText,
                   confidence: item.confidence,
                   status: "UNREVIEWED",
-                }))
+                })),
               );
             }
           }

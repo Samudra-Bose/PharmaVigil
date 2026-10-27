@@ -15,7 +15,7 @@ let currentLanguage = "eng";
  */
 export async function getOrInitWorker(
   lang: string = "eng",
-  onProgress?: (progress: OcrProgressState) => void
+  onProgress?: (progress: OcrProgressState) => void,
 ): Promise<Worker> {
   if (activeWorker && currentLanguage === lang) {
     return activeWorker;
@@ -70,7 +70,7 @@ export async function getOrInitWorker(
 export async function recognizePrescriptionImage(
   imageSource: string | HTMLCanvasElement | File | Blob,
   onProgress?: (progress: OcrProgressState) => void,
-  abortSignal?: AbortSignal
+  abortSignal?: AbortSignal,
 ): Promise<OcrResult> {
   const startTime = Date.now();
 
@@ -78,7 +78,10 @@ export async function recognizePrescriptionImage(
     const worker = await getOrInitWorker("eng", onProgress);
 
     if (abortSignal?.aborted) {
-      throw new DOMException("OCR process was cancelled by the user", "AbortError");
+      throw new DOMException(
+        "OCR process was cancelled by the user",
+        "AbortError",
+      );
     }
 
     onProgress?.({
@@ -90,7 +93,10 @@ export async function recognizePrescriptionImage(
     const { data } = await worker.recognize(imageSource as any);
 
     if (abortSignal?.aborted) {
-      throw new DOMException("OCR process was cancelled by the user", "AbortError");
+      throw new DOMException(
+        "OCR process was cancelled by the user",
+        "AbortError",
+      );
     }
 
     onProgress?.({
@@ -103,7 +109,7 @@ export async function recognizePrescriptionImage(
       (data as any).words ||
       (data.blocks
         ? data.blocks.flatMap((b) =>
-            b.paragraphs.flatMap((p) => p.lines.flatMap((l) => l.words))
+            b.paragraphs.flatMap((p) => p.lines.flatMap((l) => l.words)),
           )
         : []);
 

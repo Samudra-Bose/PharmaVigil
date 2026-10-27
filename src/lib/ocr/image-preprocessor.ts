@@ -16,12 +16,15 @@ const DEFAULT_MAX_DIMENSION = 1800;
 /**
  * Loads an image source (File, Blob, or Data URI) into an HTMLImageElement
  */
-export function loadImageElement(source: File | Blob | string): Promise<HTMLImageElement> {
+export function loadImageElement(
+  source: File | Blob | string,
+): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = () => resolve(img);
-    img.onerror = (err) => reject(new Error("Failed to load prescription image: " + err));
+    img.onerror = (err) =>
+      reject(new Error("Failed to load prescription image: " + err));
 
     if (typeof source === "string") {
       img.src = source;
@@ -41,7 +44,7 @@ export function loadImageElement(source: File | Blob | string): Promise<HTMLImag
  */
 export async function preprocessImageForOcr(
   source: File | Blob | string | HTMLImageElement,
-  options: PreprocessOptions = {}
+  options: PreprocessOptions = {},
 ): Promise<HTMLCanvasElement> {
   const {
     maxDimension = DEFAULT_MAX_DIMENSION,
@@ -50,7 +53,10 @@ export async function preprocessImageForOcr(
     rotationDegrees = 0,
   } = options;
 
-  const img = source instanceof HTMLImageElement ? source : await loadImageElement(source);
+  const img =
+    source instanceof HTMLImageElement
+      ? source
+      : await loadImageElement(source);
 
   let origWidth = img.naturalWidth || img.width;
   let origHeight = img.naturalHeight || img.height;
@@ -134,7 +140,7 @@ export async function preprocessImageForOcr(
       // Clamp
       const finalVal = Math.max(0, Math.min(255, Math.round(luma)));
 
-      data[i] = finalVal;     // R
+      data[i] = finalVal; // R
       data[i + 1] = finalVal; // G
       data[i + 2] = finalVal; // B
       // Alpha remains data[i + 3]
