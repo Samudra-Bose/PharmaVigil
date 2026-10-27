@@ -3,17 +3,16 @@ import type {
   PatientSummary,
   MedicineCandidate,
   PrescriptionRevision,
+  PrescriptionItem,
   CheckEnvelope,
   AlertSummary,
-  Membership,
-  UserSummary,
 } from "@/types";
 
 export const FIXTURE_HOSPITAL: Hospital = {
   id: "hosp_metro_general",
   name: "Metro General Hospital",
   slug: "metro-general",
-  workspaceType: "DEMO_SYNTHETIC",
+  status: "ACTIVE",
 };
 
 export interface FixtureUser {
@@ -70,10 +69,35 @@ export const FIXTURE_USERS: Record<string, FixtureUser> = {
   },
 };
 
-export const FIXTURE_PATIENT: PatientSummary = {
+export interface ClinicalAllergyContext {
+  id: string;
+  allergenName: string;
+  severity: "CRITICAL" | "MODERATE" | "LOW";
+  reaction: string;
+  verificationStatus: "VERIFIED_CLINICIAN" | "PATIENT_REPORTED";
+}
+
+export interface PatientRecord extends PatientSummary {
+  dateOfBirth?: string;
+  gender?: "MALE" | "FEMALE" | "OTHER";
+  contactPhone?: string;
+  knownAllergies?: ClinicalAllergyContext[];
+  activeMedications?: Array<{
+    id: string;
+    ingredientName: string;
+    brandName?: string;
+    dosage: string;
+    frequency: string;
+    startedAt: string;
+  }>;
+}
+
+export const FIXTURE_PATIENT: PatientRecord = {
   id: "pat_rajan_9021",
   syntheticHospitalPatientId: "P-9021",
-  fullName: "Rajan Sharma",
+  displayName: "Rajan Sharma",
+  linkStatus: "LINKED",
+  version: 1,
   dateOfBirth: "1968-04-12",
   gender: "MALE",
   contactPhone: "+91 98765 43210",
@@ -107,73 +131,85 @@ export const FIXTURE_PATIENT: PatientSummary = {
 
 export const FIXTURE_CATALOGUE: MedicineCandidate[] = [
   {
-    candidateId: "cand_warfarin",
-    matchedCatalogueItemId: "cat_warfarin_5",
-    extractedText: "Tab. Warfarin 5mg",
-    normalizedName: "Warfarin Sodium",
-    brandName: "Coumadin",
-    canonicalIngredients: [
-      { ingredientId: "ing_warfarin", ingredientName: "Warfarin Sodium" },
-    ],
-    strength: "5 mg",
+    id: "cat_warfarin_5",
+    displayName: "Warfarin Sodium (Coumadin) 5mg",
+    canonicalIngredientIds: ["ing_warfarin"],
+    productType: "SINGLE_INGREDIENT",
+    strengths: [{ value: 5, unit: "mg" }],
+    dosageForms: ["Tablet"],
+    matchStatus: "CANDIDATE",
+  },
+  {
+    id: "cat_aspirin_100",
+    displayName: "Aspirin (Disprin) 100mg",
+    canonicalIngredientIds: ["ing_aspirin"],
+    productType: "SINGLE_INGREDIENT",
+    strengths: [{ value: 100, unit: "mg" }],
+    dosageForms: ["Tablet"],
+    matchStatus: "CANDIDATE",
+  },
+  {
+    id: "cat_paracetamol_500",
+    displayName: "Paracetamol (Crocin) 500mg",
+    canonicalIngredientIds: ["ing_paracetamol"],
+    productType: "SINGLE_INGREDIENT",
+    strengths: [{ value: 500, unit: "mg" }],
+    dosageForms: ["Tablet"],
+    matchStatus: "CANDIDATE",
+  },
+  {
+    id: "cat_metformin_500",
+    displayName: "Metformin HCl (Glycomet) 500mg",
+    canonicalIngredientIds: ["ing_metformin"],
+    productType: "SINGLE_INGREDIENT",
+    strengths: [{ value: 500, unit: "mg" }],
+    dosageForms: ["Tablet"],
+    matchStatus: "CANDIDATE",
+  },
+  {
+    id: "cat_amoxicillin_500",
+    displayName: "Amoxicillin Trihydrate (Novamox) 500mg",
+    canonicalIngredientIds: ["ing_amoxicillin"],
+    productType: "SINGLE_INGREDIENT",
+    strengths: [{ value: 500, unit: "mg" }],
+    dosageForms: ["Capsule"],
+    matchStatus: "CANDIDATE",
+  },
+];
+
+export const INITIAL_PRESCRIPTION_ITEMS: PrescriptionItem[] = [
+  {
+    rawExtractedText: "Tab. Warfarin 5mg - 1 Tab OD x 30 days",
+    catalogueItemId: "cat_warfarin_5",
+    canonicalIngredientIds: ["ing_warfarin"],
+    brandText: "Coumadin",
+    strengthValue: 5,
+    strengthUnit: "mg",
     dosageForm: "Tablet",
-    matchConfidence: "EXACT",
+    doseValue: 1,
+    doseUnit: "Tablet",
+    route: "Oral",
+    frequency: "Once Daily",
+    durationValue: 30,
+    durationUnit: "days",
+    matchConfidence: 0.96,
     matchStatus: "CONFIRMED",
   },
   {
-    candidateId: "cand_aspirin",
-    matchedCatalogueItemId: "cat_aspirin_100",
-    extractedText: "Tab. Aspirin 100mg",
-    normalizedName: "Aspirin (Acetylsalicylic Acid)",
-    brandName: "Disprin",
-    canonicalIngredients: [
-      { ingredientId: "ing_aspirin", ingredientName: "Aspirin" },
-    ],
-    strength: "100 mg",
+    rawExtractedText: "Tab. Aspirin 100mg - 1 Tab OD x 15 days",
+    catalogueItemId: "cat_aspirin_100",
+    canonicalIngredientIds: ["ing_aspirin"],
+    brandText: "Disprin",
+    strengthValue: 100,
+    strengthUnit: "mg",
     dosageForm: "Tablet",
-    matchConfidence: "EXACT",
-    matchStatus: "CONFIRMED",
-  },
-  {
-    candidateId: "cand_paracetamol",
-    matchedCatalogueItemId: "cat_paracetamol_500",
-    extractedText: "Tab. Paracetamol 500mg",
-    normalizedName: "Paracetamol",
-    brandName: "Crocin",
-    canonicalIngredients: [
-      { ingredientId: "ing_paracetamol", ingredientName: "Paracetamol" },
-    ],
-    strength: "500 mg",
-    dosageForm: "Tablet",
-    matchConfidence: "EXACT",
-    matchStatus: "CONFIRMED",
-  },
-  {
-    candidateId: "cand_metformin",
-    matchedCatalogueItemId: "cat_metformin_500",
-    extractedText: "Tab. Metformin 500mg",
-    normalizedName: "Metformin HCl",
-    brandName: "Glycomet",
-    canonicalIngredients: [
-      { ingredientId: "ing_metformin", ingredientName: "Metformin HCl" },
-    ],
-    strength: "500 mg",
-    dosageForm: "Tablet",
-    matchConfidence: "EXACT",
-    matchStatus: "CONFIRMED",
-  },
-  {
-    candidateId: "cand_amoxicillin",
-    matchedCatalogueItemId: "cat_amoxicillin_500",
-    extractedText: "Cap. Amoxicillin 500mg",
-    normalizedName: "Amoxicillin Trihydrate",
-    brandName: "Novamox",
-    canonicalIngredients: [
-      { ingredientId: "ing_amoxicillin", ingredientName: "Amoxicillin" },
-    ],
-    strength: "500 mg",
-    dosageForm: "Capsule",
-    matchConfidence: "EXACT",
+    doseValue: 1,
+    doseUnit: "Tablet",
+    route: "Oral",
+    frequency: "Once Daily",
+    durationValue: 15,
+    durationUnit: "days",
+    matchConfidence: 0.94,
     matchStatus: "CONFIRMED",
   },
 ];
@@ -186,7 +222,7 @@ export interface FixtureCase {
   updatedAt: string;
   currentRevisionNumber: number;
   extractedRawText: string;
-  candidates: MedicineCandidate[];
+  items: PrescriptionItem[];
   checkResult?: CheckEnvelope;
   alerts?: AlertSummary[];
   revisions: PrescriptionRevision[];
@@ -205,18 +241,15 @@ export const INITIAL_FIXTURE_CASE: FixtureCase = {
   updatedAt: "2026-10-27T10:30:00Z",
   currentRevisionNumber: 1,
   extractedRawText: "Rx: Rajan Sharma (P-9021)\nTab. Warfarin 5mg - 1 Tab OD x 30 days\nTab. Aspirin 100mg - 1 Tab OD x 15 days\nDr. Arvind Patel, MD",
-  candidates: [FIXTURE_CATALOGUE[0], FIXTURE_CATALOGUE[1]],
+  items: [...INITIAL_PRESCRIPTION_ITEMS],
   alerts: [
     {
       id: "alert_ddi_001",
-      caseId: "case_rx_9021_01",
       ruleId: "ILLUSTRATIVE-DDI-001",
       ruleVersion: 1,
-      category: "DRUG_DRUG",
       severity: "MODERATE",
       status: "OPEN",
       rationale: "Concomitant use of Warfarin (anticoagulant) and Aspirin (antiplatelet agent) significantly increases the risk of severe gastrointestinal and systemic bleeding.",
-      interactingIngredients: ["Warfarin Sodium", "Aspirin"],
       limitations: [
         "Illustrative rule set; not clinically validated",
         "Synthetic demonstration dataset only",
@@ -225,64 +258,66 @@ export const INITIAL_FIXTURE_CASE: FixtureCase = {
       evidenceReferences: [
         {
           sourceId: "SRC-NFI-2026",
-          title: "National Formulary of India (NFI) — Anticoagulant Interactions",
+          title: "National Formulary of India (NFI) — Antithrombotic Interactions",
           publisher: "Indian Pharmacopoeia Commission (IPC)",
           url: "https://ipc.gov.in/mandates/nfi.html",
           locator: "Section 10.2: Antithrombotic Agents",
-          evidenceStrength: "ESTABLISHED",
+          licenseStatus: "VERIFIED",
+          evidenceStrength: "HIGH",
         },
       ],
-      recommendedNextAction: "Doctor review required. Route to Doctor Triage Queue for clinical disposition.",
-      createdAt: "2026-10-27T10:30:00Z",
     },
   ],
   checkResult: {
-    checkId: "chk_eval_001",
-    outcome: "FLAGGED",
-    evaluatedAt: "2026-10-27T10:30:00Z",
-    ruleSetVersion: "v1.0.0-illustrative",
-    coverageCategories: [
-      {
-        category: "DRUG_DRUG",
-        status: "EVALUATED_WITH_MATCHES",
-        summary: "1 illustrative drug-drug interaction rule matched.",
+    data: {
+      id: "chk_eval_001",
+      outcome: "FLAGGED",
+      ruleSetVersion: "v1.0.0-illustrative",
+      subjectId: "case_rx_9021_01",
+      subjectVersion: 1,
+      createdAt: "2026-10-27T10:30:00Z",
+      limitations: [
+        "Illustrative rule set; not clinically validated",
+        "Synthetic dataset only",
+      ],
+      alerts: [
+        {
+          id: "alert_ddi_001",
+          ruleId: "ILLUSTRATIVE-DDI-001",
+          ruleVersion: 1,
+          severity: "MODERATE",
+          status: "OPEN",
+          rationale: "Concomitant use of Warfarin (anticoagulant) and Aspirin (antiplatelet agent) significantly increases the risk of severe gastrointestinal and systemic bleeding.",
+          limitations: [
+            "Illustrative rule set; not clinically validated",
+            "Synthetic demonstration dataset only",
+          ],
+        },
+      ],
+      coverageByCategory: {
+        drugDrug: {
+          status: "EVALUATED_WITH_MATCHES",
+          limitation: "Evaluated against 1 seeded illustrative DDI rule.",
+          evaluatedInputsCount: 2,
+        },
+        allergy: {
+          status: "NO_MATCHING_SEEDED_RULE",
+          limitation: "No match detected against patient's Penicillin allergy profile.",
+          evaluatedInputsCount: 2,
+        },
+        foodDrink: {
+          status: "NOT_EVALUATED",
+          limitation: "Food/drink rules outside current demo scope.",
+        },
       },
-      {
-        category: "DRUG_ALLERGY",
-        status: "NO_MATCHING_SEEDED_RULE",
-        summary: "No matching allergen detected against confirmed Penicillin/Sulfa allergy records.",
-      },
-      {
-        category: "FOOD_DRINK",
-        status: "NOT_EVALUATED",
-        summary: "Food/drink interaction evaluation not supported in current illustrative ruleset.",
-      },
-    ],
+    },
   },
   revisions: [
     {
+      id: "rev_01",
       revisionNumber: 1,
       createdAt: "2026-10-27T10:15:00Z",
-      createdBy: "usr_doctor_01",
-      prescribedItems: [
-        {
-          medicationName: "Warfarin Sodium",
-          brandName: "Coumadin",
-          strength: "5 mg",
-          dosageForm: "Tablet",
-          doseInstruction: "1 Tablet Once Daily",
-          durationDays: 30,
-        },
-        {
-          medicationName: "Aspirin",
-          brandName: "Disprin",
-          strength: "100 mg",
-          dosageForm: "Tablet",
-          doseInstruction: "1 Tablet Once Daily",
-          durationDays: 15,
-        },
-      ],
-      changeReason: "Initial prescription creation.",
+      items: [...INITIAL_PRESCRIPTION_ITEMS],
     },
   ],
 };
