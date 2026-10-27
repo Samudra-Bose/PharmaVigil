@@ -7,6 +7,7 @@ import type { FixtureCase } from "@/lib/mock-data/fixtures";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { Card, CardContent } from "@/components/ui/Card";
 import { Pill, ArrowRight, ArrowLeft } from "lucide-react";
 
 export default function PatientPrescriptionsListPage() {
@@ -53,36 +54,38 @@ export default function PatientPrescriptionsListPage() {
           {cases.map((c) => {
             const isAuthorized = c.status === "DISPENSING_AUTHORIZED";
             return (
-              <div
+              <Card
                 key={c.id}
-                className="bg-white p-5 rounded-lg border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                className="shadow-2xs"
               >
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-sm text-slate-900">
-                      Prescription #{c.id}
-                    </span>
-                    <Badge variant={isAuthorized ? "authorized" : "moderate"}>
-                      {isAuthorized ? "Ready for Pick-up" : "Under Pharmacy Review"}
-                    </Badge>
+                <CardContent className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-sm text-slate-900 font-mono font-tabular">
+                        Prescription #{c.id}
+                      </span>
+                      <Badge variant={isAuthorized ? "authorized" : "moderate"}>
+                        {isAuthorized ? "Ready for Pick-up" : "Under Pharmacy Review"}
+                      </Badge>
+                    </div>
+
+                    <div className="text-xs text-slate-600">
+                      <span className="font-semibold text-slate-700">Prescribed: </span>
+                      {c.items.map((i) => `${i.canonicalIngredientIds.join(", ")} ${i.strengthValue}${i.strengthUnit}`).join(" • ")}
+                    </div>
+
+                    <div className="text-[11px] text-slate-500 font-mono font-tabular">
+                      Revision: {c.currentRevisionNumber} • Doctor: Dr. Arvind Patel, MD
+                    </div>
                   </div>
 
-                  <div className="text-xs text-slate-600">
-                    <span className="font-semibold text-slate-700">Prescribed: </span>
-                    {c.items.map((i) => `${i.canonicalIngredientIds.join(", ")} ${i.strengthValue}${i.strengthUnit}`).join(" • ")}
-                  </div>
-
-                  <div className="text-[11px] text-slate-500 font-mono">
-                    Revision: {c.currentRevisionNumber} • Doctor: Dr. Arvind Patel, MD
-                  </div>
-                </div>
-
-                <Link href={`/patient/prescriptions/${c.id}`}>
-                  <Button size="sm" variant="primary" className="text-xs gap-1.5 shrink-0">
-                    View Schedule <ArrowRight className="w-3.5 h-3.5" />
-                  </Button>
-                </Link>
-              </div>
+                  <Link href={`/patient/prescriptions/${c.id}`}>
+                    <Button size="sm" variant="primary" className="text-xs gap-1.5 shrink-0">
+                      View Schedule <ArrowRight className="w-3.5 h-3.5" />
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
             );
           })}
         </div>
