@@ -5,6 +5,7 @@ import { GlobalBanner } from "@/components/layout/GlobalBanner";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
+import { HotkeysHandler } from "@/components/layout/HotkeysHandler";
 
 export const metadata: Metadata = {
   title: "PharmaVigil — Hospital Outpatient Medication Safety Platform",
@@ -20,6 +21,7 @@ export default function RootLayout({
     <html lang="en" className="h-full">
       <body className="h-full flex flex-col font-sans text-slate-900 bg-clinical-canvas antialiased selection:bg-slate-200">
         <AuthProvider>
+          <HotkeysHandler />
           <GlobalBanner />
           <AppHeader />
           <div className="flex-1 flex min-h-0 w-full overflow-hidden">
