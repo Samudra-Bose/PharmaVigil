@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { api } from "@/lib/api-client";
 import { Button } from "@/components/ui/Button";
 import { ErrorDisplay } from "@/components/ui/ErrorDisplay";
 import { Shield, UserPlus, Info } from "lucide-react";
@@ -23,8 +24,12 @@ export default function RegisterPage() {
     setError(null);
 
     try {
-      // Simulate registration submission
-      await new Promise((r) => setTimeout(r, 600));
+      await api.registerApplicant({
+        displayName: displayName.trim(),
+        email: email.trim(),
+        password,
+        requestedRole,
+      });
       // Registration requires admin approval; direct to pending page
       router.push("/auth/pending");
     } catch (err) {

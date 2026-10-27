@@ -18,7 +18,8 @@ import {
   Users, 
   UserCheck, 
   RotateCcw, 
-  LayoutDashboard 
+  LayoutDashboard,
+  Calendar 
 } from "lucide-react";
 
 export const RoleNavigation: React.FC = () => {
@@ -49,11 +50,13 @@ export const RoleNavigation: React.FC = () => {
       { label: "Triage Task Queue", href: "/doctor", icon: AlertTriangle },
       { label: "Prescriptions", href: "/doctor/prescriptions", icon: FileText },
       { label: "Create Revision", href: "/doctor/prescriptions/new", icon: PlusCircle },
+      { label: "Appointments", href: "/doctor/appointments", icon: Calendar },
     ];
   } else if (role === "PATIENT") {
     items = [
       { label: "Health Overview", href: "/patient", icon: LayoutDashboard },
       { label: "My Prescriptions", href: "/patient/prescriptions", icon: Pill },
+      { label: "Appointments", href: "/patient/appointments", icon: Calendar },
       { label: "Medication History", href: "/patient/history", icon: Clock },
     ];
   } else if (role === "HOSPITAL_ADMIN") {

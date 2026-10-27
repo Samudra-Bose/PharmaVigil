@@ -85,6 +85,50 @@ function CreateRevisionContent() {
     loadData();
   }, [caseId]);
 
+  const handleAddItem = (candidate?: MedicineCandidate) => {
+    if (candidate) {
+      setItems([
+        ...items,
+        {
+          rawExtractedText: candidate.displayName,
+          catalogueItemId: candidate.id,
+          canonicalIngredientIds: candidate.canonicalIngredientIds,
+          brandText: candidate.displayName,
+          strengthValue: candidate.strengths[0]?.value || 500,
+          strengthUnit: candidate.strengths[0]?.unit || "mg",
+          dosageForm: candidate.dosageForms[0] || "Tablet",
+          doseValue: 1,
+          doseUnit: "Tablet",
+          route: "Oral",
+          frequency: "Once Daily",
+          durationValue: 30,
+          durationUnit: "days",
+          matchConfidence: 1.0,
+          matchStatus: "CONFIRMED",
+        },
+      ]);
+    } else {
+      setItems([
+        ...items,
+        {
+          rawExtractedText: "New Medication",
+          canonicalIngredientIds: ["custom_medication"],
+          strengthValue: 100,
+          strengthUnit: "mg",
+          dosageForm: "Tablet",
+          doseValue: 1,
+          doseUnit: "Tablet",
+          route: "Oral",
+          frequency: "Once Daily",
+          durationValue: 30,
+          durationUnit: "days",
+          matchConfidence: 1.0,
+          matchStatus: "CONFIRMED",
+        },
+      ]);
+    }
+  };
+
   const handleApplyRecommendedSubstitution = () => {
     setItems([
       {
@@ -189,11 +233,43 @@ function CreateRevisionContent() {
       <form onSubmit={handleSubmitRevision} className="space-y-6">
         {/* Prescribed Items Editor */}
         <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-xs space-y-4">
-          <div className="flex justify-between items-center border-b border-slate-100 pb-2">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
-              Revised Medication Items (Revision {nextRevisionNumber})
-            </h3>
-            <span className="text-xs text-slate-500 font-mono">{items.length} item(s)</span>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2">
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                Revised Medication Items (Revision {nextRevisionNumber})
+              </h3>
+              <span className="text-xs text-slate-500 font-mono">{items.length} item(s)</span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <select
+                onChange={(e) => {
+                  const target = catalogue.find((c) => c.id === e.target.value);
+                  if (target) {
+                    handleAddItem(target);
+                    e.target.value = "";
+                  }
+                }}
+                defaultValue=""
+                className="text-xs rounded border border-slate-300 px-2 py-1 bg-white font-medium text-slate-700"
+              >
+                <option value="" disabled>+ Add from Catalogue...</option>
+                {catalogue.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.displayName}
+                  </option>
+                ))}
+              </select>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() => handleAddItem()}
+                className="text-xs gap-1 h-7"
+              >
+                <Plus className="w-3.5 h-3.5" /> Custom Item
+              </Button>
+            </div>
           </div>
 
           <div className="space-y-3">
