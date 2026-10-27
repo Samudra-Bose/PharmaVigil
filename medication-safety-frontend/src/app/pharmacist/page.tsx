@@ -8,6 +8,17 @@ import { Badge, type BadgeVariant } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { Card, CardContent } from "@/components/ui/Card";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+} from "@/components/ui/Table";
+import { Kbd } from "@/components/ui/Kbd";
+import { ClinicalTooltip } from "@/components/clinical/ClinicalTooltip";
 import { formatDateTime } from "@/lib/utils";
 import { 
   ClipboardList, 
@@ -17,7 +28,8 @@ import {
   CheckCircle2, 
   Clock, 
   ArrowRight,
-  Filter
+  Filter,
+  ShieldCheck
 } from "lucide-react";
 
 export default function PharmacistDashboard() {
@@ -88,7 +100,7 @@ export default function PharmacistDashboard() {
         <div className="flex items-center gap-2">
           <Link href="/pharmacist/patients/search">
             <Button size="sm" variant="outline" className="gap-1.5 text-xs">
-              <Search className="w-3.5 h-3.5" /> Search Patient
+              <Search className="w-3.5 h-3.5" /> Search Patient <Kbd className="hidden md:inline">P-9021</Kbd>
             </Button>
           </Link>
           <Link href="/pharmacist/capture">
@@ -101,55 +113,78 @@ export default function PharmacistDashboard() {
 
       {/* KPI Metric Strip */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div className="bg-white p-3.5 rounded-lg border border-slate-200 shadow-xs">
-          <div className="flex items-center justify-between text-xs text-slate-500">
-            <span>Total Active Cases</span>
-            <ClipboardList className="w-4 h-4 text-slate-400" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 mt-1 font-mono">{cases.length}</div>
-        </div>
+        <Card className="border-t-2 border-t-slate-800 shadow-2xs">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
+              <span>Total Active Cases</span>
+              <ClipboardList className="w-4 h-4 text-slate-400" />
+            </div>
+            <div className="text-2xl font-bold text-slate-900 mt-1 font-mono tracking-tight font-tabular">
+              {cases.length}
+            </div>
+          </CardContent>
+        </Card>
 
-        <div className="bg-white p-3.5 rounded-lg border border-amber-200 bg-amber-50/30 shadow-xs">
-          <div className="flex items-center justify-between text-xs text-amber-800">
-            <span>Flagged for Doctor</span>
-            <AlertTriangle className="w-4 h-4 text-amber-600" />
-          </div>
-          <div className="text-2xl font-bold text-amber-950 mt-1 font-mono">{countFlagged}</div>
-        </div>
+        <Card className="border-t-2 border-t-amber-500 bg-amber-50/20 shadow-2xs">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between text-xs text-amber-900 font-medium">
+              <span>Flagged for Doctor</span>
+              <AlertTriangle className="w-4 h-4 text-amber-600" />
+            </div>
+            <div className="text-2xl font-bold text-amber-950 mt-1 font-mono tracking-tight font-tabular">
+              {countFlagged}
+            </div>
+          </CardContent>
+        </Card>
 
-        <div className="bg-white p-3.5 rounded-lg border border-blue-200 bg-blue-50/30 shadow-xs">
-          <div className="flex items-center justify-between text-xs text-blue-800">
-            <span>Ready for Authorization</span>
-            <Clock className="w-4 h-4 text-blue-600" />
-          </div>
-          <div className="text-2xl font-bold text-blue-950 mt-1 font-mono">{countReady}</div>
-        </div>
+        <Card className="border-t-2 border-t-blue-500 bg-blue-50/20 shadow-2xs">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between text-xs text-blue-900 font-medium">
+              <span>Ready for Authorization</span>
+              <Clock className="w-4 h-4 text-blue-600" />
+            </div>
+            <div className="text-2xl font-bold text-blue-950 mt-1 font-mono tracking-tight font-tabular">
+              {countReady}
+            </div>
+          </CardContent>
+        </Card>
 
-        <div className="bg-white p-3.5 rounded-lg border border-teal-200 bg-teal-50/30 shadow-xs">
-          <div className="flex items-center justify-between text-xs text-teal-800">
-            <span>Authorized Today</span>
-            <CheckCircle2 className="w-4 h-4 text-teal-600" />
-          </div>
-          <div className="text-2xl font-bold text-teal-950 mt-1 font-mono">{countAuthorized}</div>
-        </div>
+        <Card className="border-t-2 border-t-teal-600 bg-teal-50/20 shadow-2xs">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between text-xs text-teal-900 font-medium">
+              <span>Authorized Dispenses</span>
+              <ShieldCheck className="w-4 h-4 text-teal-600" />
+            </div>
+            <div className="text-2xl font-bold text-teal-950 mt-1 font-mono tracking-tight font-tabular">
+              {countAuthorized}
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Queue Filter Bar */}
       <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
         <Filter className="w-3.5 h-3.5 text-slate-400" />
         <span className="text-xs font-semibold text-slate-600 mr-2">Filter Queue:</span>
-        <div className="flex items-center gap-1.5">
-          {["ALL", "NEEDS_ACTION", "READY", "AUTHORIZED"].map((f) => (
+        <div className="flex items-center gap-1.5" role="tablist" aria-label="Queue Filter">
+          {[
+            { id: "ALL", label: "All Cases" },
+            { id: "NEEDS_ACTION", label: "Needs Action" },
+            { id: "READY", label: "Ready to Authorize" },
+            { id: "AUTHORIZED", label: "Authorized" },
+          ].map((f) => (
             <button
-              key={f}
-              onClick={() => setFilter(f)}
+              key={f.id}
+              role="tab"
+              aria-selected={filter === f.id}
+              onClick={() => setFilter(f.id)}
               className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${
-                filter === f
-                  ? "bg-slate-900 text-white font-semibold"
+                filter === f.id
+                  ? "bg-slate-900 text-white font-semibold shadow-2xs"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
             >
-              {f.replace("_", " ")}
+              {f.label}
             </button>
           ))}
         </div>
@@ -170,74 +205,75 @@ export default function PharmacistDashboard() {
           onAction={() => (window.location.href = "/pharmacist/patients/search")}
         />
       ) : (
-        <div className="bg-white rounded-lg border border-slate-200 shadow-xs overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr className="bg-slate-100/80 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider text-[11px]">
-                  <th className="py-3 px-4">Case ID</th>
-                  <th className="py-3 px-4">Patient ID</th>
-                  <th className="py-3 px-4">Items / Medicines</th>
-                  <th className="py-3 px-4">Revision</th>
-                  <th className="py-3 px-4">Status & Safety Gate</th>
-                  <th className="py-3 px-4">Created / Updated</th>
-                  <th className="py-3 px-4 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
-                {filteredCases.map((c) => {
-                  const statusInfo = getStatusBadge(c.status);
-                  return (
-                    <tr key={c.id} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="py-3 px-4 font-mono font-bold text-slate-900">
-                        {c.id}
-                      </td>
-                      <td className="py-3 px-4">
-                        <span className="font-mono bg-slate-100 text-slate-800 px-1.5 py-0.5 rounded border border-slate-200">
-                          {c.patientId}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4">
-                        <div className="font-semibold text-slate-900">
-                          {c.items.length} item(s)
-                        </div>
-                        <div className="text-[11px] text-slate-500 truncate max-w-xs">
-                          {c.items.map((i) => i.canonicalIngredientIds.join(", ")).join("; ")}
-                        </div>
-                      </td>
-                      <td className="py-3 px-4 font-mono text-slate-600">
-                        Rev {c.currentRevisionNumber}
-                      </td>
-                      <td className="py-3 px-4">
-                        <Badge variant={statusInfo.variant}>
-                          {statusInfo.label}
-                        </Badge>
-                      </td>
-                      <td className="py-3 px-4 text-slate-500 font-mono text-[11px]">
-                        {formatDateTime(c.updatedAt)}
-                      </td>
-                      <td className="py-3 px-4 text-right">
-                        <Link
-                          href={
-                            c.status === "CHECK_PASSED"
-                              ? `/pharmacist/cases/${c.id}/authorize`
-                              : c.status === "CHECK_FLAGGED"
-                              ? `/pharmacist/cases/${c.id}/results`
-                              : `/pharmacist/cases/${c.id}/medicines`
-                          }
-                        >
-                          <Button size="sm" variant="outline" className="text-xs gap-1 h-7">
-                            Open Case <ArrowRight className="w-3 h-3" />
-                          </Button>
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-36">Case ID</TableHead>
+              <TableHead className="w-28">Patient ID</TableHead>
+              <TableHead>Prescribed Medicines</TableHead>
+              <TableHead className="w-24">
+                <ClinicalTooltip
+                  term="Revision"
+                  explanation="Prescription version number. Revisions are immutable and increment each time a physician modifies therapy."
+                />
+              </TableHead>
+              <TableHead className="w-48">Status & Safety Gate</TableHead>
+              <TableHead className="w-36">Updated</TableHead>
+              <TableHead className="w-28 text-right">Action</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredCases.map((c) => {
+              const statusInfo = getStatusBadge(c.status);
+              return (
+                <TableRow key={c.id}>
+                  <TableCell className="font-mono font-bold text-slate-900 font-tabular">
+                    {c.id}
+                  </TableCell>
+                  <TableCell>
+                    <span className="font-mono bg-slate-100 text-slate-800 px-1.5 py-0.5 rounded border border-slate-200 text-[11px] font-semibold">
+                      {c.patientId}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <div className="font-semibold text-slate-900">
+                      {c.items.length} medication{c.items.length !== 1 ? "s" : ""}
+                    </div>
+                    <div className="text-[11px] text-slate-500 truncate max-w-sm">
+                      {c.items.map((i) => i.canonicalIngredientIds.join(", ")).join("; ")}
+                    </div>
+                  </TableCell>
+                  <TableCell className="font-mono text-slate-600 font-tabular">
+                    Rev {c.currentRevisionNumber}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={statusInfo.variant}>
+                      {statusInfo.label}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-slate-500 font-mono text-[11px] font-tabular">
+                    {formatDateTime(c.updatedAt)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Link
+                      href={
+                        c.status === "CHECK_PASSED"
+                          ? `/pharmacist/cases/${c.id}/authorize`
+                          : c.status === "CHECK_FLAGGED"
+                          ? `/pharmacist/cases/${c.id}/results`
+                          : `/pharmacist/cases/${c.id}/medicines`
+                      }
+                    >
+                      <Button size="sm" variant="outline" className="text-xs gap-1 h-7">
+                        Open <ArrowRight className="w-3 h-3" />
+                      </Button>
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
       )}
     </div>
   );
