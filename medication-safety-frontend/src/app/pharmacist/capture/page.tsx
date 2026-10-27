@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { api } from "@/lib/api-client";
 import { PipelineStepper } from "@/components/clinical/PipelineStepper";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { 
   Camera, 
   Upload, 
@@ -17,7 +18,7 @@ import {
   Image as ImageIcon 
 } from "lucide-react";
 
-export default function CapturePrescriptionPage() {
+function CapturePrescriptionContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const patientId = searchParams.get("patientId") || "P-9021";
@@ -205,5 +206,13 @@ export default function CapturePrescriptionPage() {
         </Button>
       </div>
     </div>
+  );
+}
+
+export default function CapturePrescriptionPage() {
+  return (
+    <Suspense fallback={<div className="max-w-4xl mx-auto p-8"><Skeleton className="h-64 w-full" /></div>}>
+      <CapturePrescriptionContent />
+    </Suspense>
   );
 }

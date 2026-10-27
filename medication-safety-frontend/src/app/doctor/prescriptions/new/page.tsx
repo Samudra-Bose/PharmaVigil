@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { api } from "@/lib/api-client";
@@ -8,6 +8,7 @@ import type { FixtureCase } from "@/lib/mock-data/fixtures";
 import type { PrescriptionItem, MedicineCandidate } from "@/types";
 import { Button } from "@/components/ui/Button";
 import { ErrorDisplay } from "@/components/ui/ErrorDisplay";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { 
   FileEdit, 
   Plus, 
@@ -15,11 +16,10 @@ import {
   Check, 
   ArrowLeft, 
   Sparkles,
-  GitCommit,
-  ShieldCheck 
+  GitCommit 
 } from "lucide-react";
 
-export default function CreateRevisionPage() {
+function CreateRevisionContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const caseId = searchParams.get("caseId") || "case_rx_9021_01";
@@ -86,7 +86,6 @@ export default function CreateRevisionPage() {
   }, [caseId]);
 
   const handleApplyRecommendedSubstitution = () => {
-    // Replaces Aspirin with Paracetamol
     setItems([
       {
         rawExtractedText: "Warfarin Sodium 5mg",
@@ -135,7 +134,6 @@ export default function CreateRevisionPage() {
 
     try {
       await api.createRevision(caseId, items, changeReason);
-      // Switch back to Pharmacist for re-check
       api.switchDemoRole("PHARMACIST");
       router.push(`/pharmacist/cases/${caseId}/check`);
     } catch (err) {
@@ -292,5 +290,13 @@ export default function CreateRevisionPage() {
         </div>
       </form>
     </div>
+  );
+}
+
+export default function CreateRevisionPage() {
+  return (
+    <Suspense fallback={<div className="max-w-4xl mx-auto p-8"><Skeleton className="h-64 w-full" /></div>}>
+      <CreateRevisionContent />
+    </Suspense>
   );
 }
