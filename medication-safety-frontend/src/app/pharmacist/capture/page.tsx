@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, Suspense } from "react";
+import React, { useState, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { api } from "@/lib/api-client";
 import { PipelineStepper } from "@/components/clinical/PipelineStepper";
@@ -36,10 +36,20 @@ function CapturePrescriptionContent() {
   const [mode, setMode] = useState<string>("IMAGE");
   const [sampleLoaded, setSampleLoaded] = useState(true);
   const [zoomOpen, setZoomOpen] = useState(false);
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>("rx_scan_rajan_9021.png");
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [manualText, setManualText] = useState(
     "Rx: Rajan Sharma (P-9021)\nTab. Warfarin 5mg - 1 Tab OD x 30 days\nTab. Aspirin 100mg - 1 Tab OD x 15 days\nDr. Arvind Patel, MD (Reg #MED-4091)"
   );
   const [submitting, setSubmitting] = useState(false);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setUploadedFileName(file.name);
+      setSampleLoaded(true);
+    }
+  };
 
   const handleCreateCapture = async () => {
     setSubmitting(true);
@@ -151,11 +161,30 @@ function CapturePrescriptionContent() {
                   </div>
                 </div>
               ) : (
-                <div className="text-center text-slate-400 space-y-2">
-                  <Upload className="w-8 h-8 mx-auto" />
-                  <p className="text-xs">Drag and drop prescription scan or connect physical webcam</p>
+                <div className="text-center text-slate-400 space-y-3 p-6 border-2 border-dashed border-slate-300 rounded-lg max-w-sm w-full">
+                  <Upload className="w-8 h-8 mx-auto text-slate-400" />
+                  <div>
+                    <p className="text-xs font-semibold text-slate-700">Upload prescription scan or image</p>
+                    <p className="text-[11px] text-slate-500 mt-0.5">PNG, JPG, or PDF up to 10MB</p>
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="text-xs"
+                  >
+                    Select File from Device
+                  </Button>
                 </div>
               )}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*,.pdf"
+                className="hidden"
+                onChange={handleFileUpload}
+              />
             </div>
           </Card>
         </TabsContent>
