@@ -17,6 +17,7 @@ import {
   TableCell,
 } from "@/components/ui/Table";
 import { formatDateTime } from "@/lib/utils";
+import { SegmentedControl } from "@/components/heroui/SegmentedControl";
 import { Calendar, Clock, User, ArrowLeft, Filter, CheckCircle2 } from "lucide-react";
 
 export default function DoctorAppointmentsPage() {
@@ -76,27 +77,20 @@ export default function DoctorAppointmentsPage() {
         </Link>
       </div>
 
-      {/* Filter Tabs */}
+      {/* Filter Tabs (HeroUI Segmented Control) */}
       <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
-        <Filter className="w-3.5 h-3.5 text-slate-400" />
-        <span className="text-xs font-semibold text-slate-600 mr-2">Status Filter:</span>
-        <div className="flex items-center gap-1.5" role="tablist">
-          {["ALL", "SCHEDULED", "COMPLETED", "CANCELLED"].map((f) => (
-            <button
-              key={f}
-              role="tab"
-              aria-selected={filter === f}
-              onClick={() => setFilter(f)}
-              className={`px-2.5 py-1 rounded text-xs font-semibold transition-colors ${
-                filter === f
-                  ? "bg-slate-900 text-white shadow-2xs"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900"
-              }`}
-            >
-              {f}
-            </button>
-          ))}
-        </div>
+        <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+        <SegmentedControl
+          value={filter}
+          onChange={setFilter}
+          options={[
+            { id: "ALL", label: "All", count: appointments.length },
+            { id: "SCHEDULED", label: "Scheduled", count: appointments.filter((a) => a.status === "SCHEDULED").length },
+            { id: "COMPLETED", label: "Completed", count: appointments.filter((a) => a.status === "COMPLETED").length },
+            { id: "CANCELLED", label: "Cancelled", count: appointments.filter((a) => a.status === "CANCELLED").length },
+          ]}
+          ariaLabel="Appointment Status Filter"
+        />
       </div>
 
       {loading ? (

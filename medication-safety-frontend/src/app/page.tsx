@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { Shield, ArrowRight, UserCheck, Stethoscope, Pill, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { GridPattern } from "@/components/aceternity/GridPattern";
 
 export default function HomePage() {
   const { role, isLoading, switchRole } = useAuth();
@@ -21,8 +22,9 @@ export default function HomePage() {
   }, [role, isLoading, router]);
 
   return (
-    <div className="py-8">
-      <div className="max-w-3xl mx-auto text-center space-y-4">
+    <div className="py-8 relative">
+      <GridPattern className="opacity-50" />
+      <div className="max-w-3xl mx-auto text-center space-y-4 relative z-10">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700">
           <Shield className="w-3.5 h-3.5 text-slate-900" />
           PharmaVigil Outpatient Medication Safety

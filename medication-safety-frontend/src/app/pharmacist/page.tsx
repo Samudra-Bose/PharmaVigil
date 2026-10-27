@@ -136,81 +136,31 @@ export default function PharmacistDashboard() {
         </div>
       </div>
 
-      {/* Summary Metrics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <Card className="border-t-2 border-t-slate-800 shadow-subtle">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
-              <span>Total Active Cases</span>
-              <ClipboardList className="w-4 h-4 text-slate-400" />
-            </div>
-            <div className="text-2xl font-bold text-slate-900 mt-1 font-mono tracking-tight font-tabular">
-              {cases.length}
-            </div>
-          </CardContent>
-        </Card>
+      {/* Summary Metrics (COSS UI Inspired Density) */}
+      <CossMetricStrip
+        metrics={[
+          { label: "Active Queue", value: cases.length, icon: ClipboardList, tone: "neutral" },
+          { label: "Flagged Concerns", value: countFlagged, icon: AlertTriangle, tone: "urgent" },
+          { label: "Ready to Authorize", value: countReady, icon: Clock, tone: "info" },
+          { label: "Authorized Dispenses", value: countAuthorized, icon: ShieldCheck, tone: "success" },
+        ]}
+      />
 
-        <Card className="border-t-2 border-t-amber-500 bg-amber-50/20 shadow-subtle">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between text-xs text-amber-900 font-medium">
-              <span>Flagged for Doctor</span>
-              <AlertTriangle className="w-4 h-4 text-amber-600" />
-            </div>
-            <div className="text-2xl font-bold text-amber-950 mt-1 font-mono tracking-tight font-tabular">
-              {countFlagged}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-t-2 border-t-blue-500 bg-blue-50/20 shadow-subtle">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between text-xs text-blue-900 font-medium">
-              <span>Ready for Authorization</span>
-              <Clock className="w-4 h-4 text-blue-600" />
-            </div>
-            <div className="text-2xl font-bold text-blue-950 mt-1 font-mono tracking-tight font-tabular">
-              {countReady}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-t-2 border-t-teal-600 bg-teal-50/20 shadow-subtle">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between text-xs text-teal-900 font-medium">
-              <span>Authorized Dispenses</span>
-              <ShieldCheck className="w-4 h-4 text-teal-600" />
-            </div>
-            <div className="text-2xl font-bold text-teal-950 mt-1 font-mono tracking-tight font-tabular">
-              {countAuthorized}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Filter and Search Bar */}
+      {/* Filter and Search Bar (HeroUI Segmented Control) */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-white rounded-lg border border-slate-200/90 shadow-subtle">
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none" role="tablist" aria-label="Queue Filter">
-          <Filter className="w-3.5 h-3.5 text-slate-400 mr-1 shrink-0" />
-          {[
-            { id: "ALL", label: "All Cases" },
-            { id: "NEEDS_ACTION", label: "Needs Action" },
-            { id: "READY", label: "Ready to Authorize" },
-            { id: "AUTHORIZED", label: "Authorized" },
-          ].map((f) => (
-            <button
-              key={f.id}
-              role="tab"
-              aria-selected={filter === f.id}
-              onClick={() => setFilter(f.id)}
-              className={`px-2.5 py-1 rounded-md text-xs font-semibold whitespace-nowrap transition-colors ${
-                filter === f.id
-                  ? "bg-slate-900 text-white shadow-2xs"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900"
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+          <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+          <SegmentedControl
+            value={filter}
+            onChange={setFilter}
+            options={[
+              { id: "ALL", label: "All Cases", count: cases.length },
+              { id: "NEEDS_ACTION", label: "Needs Action", count: countFlagged },
+              { id: "READY", label: "Ready to Authorize", count: countReady },
+              { id: "AUTHORIZED", label: "Authorized", count: countAuthorized },
+            ]}
+            ariaLabel="Queue Status Filter"
+          />
         </div>
 
         <div className="relative w-full sm:w-64">
