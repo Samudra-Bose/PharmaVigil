@@ -4,9 +4,10 @@ import React, { useState, Suspense } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { api } from "@/lib/api-client";
+import { clinicalToast } from "@/lib/toast";
 import { Button } from "@/components/ui/Button";
 import { ErrorDisplay } from "@/components/ui/ErrorDisplay";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { AlertCardSkeleton } from "@/components/skeletons";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Textarea } from "@/components/ui/Textarea";
 import { Kbd } from "@/components/ui/Kbd";
@@ -44,6 +45,10 @@ function RecordDispositionContent() {
 
     try {
       await api.recordDoctorDisposition(alertId, dispositionType, rationale.trim());
+      clinicalToast.success(
+        "Clinical Disposition Saved",
+        "Disposition recorded; rationale logged for audit."
+      );
       if (dispositionType === "CHANGE_REQUIRED") {
         // Direct physician immediately to revision editor
         router.push(`/doctor/prescriptions/new?caseId=${caseId}`);
@@ -52,6 +57,7 @@ function RecordDispositionContent() {
       }
     } catch (err) {
       setError(err as Error);
+      clinicalToast.error(err, "Failed to record clinical disposition");
     } finally {
       setSubmitting(false);
     }
@@ -218,8 +224,8 @@ export default function RecordDispositionPage() {
     <Suspense
       fallback={
         <div className="max-w-3xl mx-auto space-y-6">
-          <Skeleton className="h-10 w-64" />
-          <Skeleton className="h-96 w-full" />
+          <div className="h-10 w-64 rounded bg-slate-200 animate-pulse" />
+          <AlertCardSkeleton />
         </div>
       }
     >

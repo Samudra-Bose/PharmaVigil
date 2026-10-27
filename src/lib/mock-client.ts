@@ -7,10 +7,17 @@ import {
   INITIAL_FIXTURE_CASE,
   INITIAL_PRESCRIPTION_ITEMS,
   INITIAL_FIXTURE_APPOINTMENTS,
+  INITIAL_FIXTURE_NOTIFICATIONS,
+  INITIAL_MEDICATION_ORDERS,
+  INITIAL_AUDIT_EVENTS,
+  INITIAL_RULE_SETS,
+  INITIAL_PATIENT_ALLERGIES,
+  INITIAL_PATIENT_MED_HISTORY,
   type FixtureCase,
   type FixtureUser,
   type PatientRecord,
   type AppointmentRecord,
+  type FixtureNotification,
 } from "./mock-data/fixtures";
 import type {
   CurrentUserResponse,
@@ -20,6 +27,15 @@ import type {
   CheckEnvelope,
   AlertSummary,
   Hospital,
+  InpatientMedicationOrder,
+  InpatientMedicationOrderItem,
+  MedicationOrderVersion,
+  AuditEvent,
+  ClinicalRuleSet,
+  ClinicalRule,
+  PatientAllergy,
+  PatientMedicationHistoryItem,
+  MedicationOrderStatus,
 } from "@/types";
 
 const STORAGE_KEY = "pharmavigil_demo_state";
@@ -36,6 +52,11 @@ interface PersistedState {
     createdAt: string;
   }>;
   appointments: AppointmentRecord[];
+  notifications: FixtureNotification[];
+  medicationOrders?: InpatientMedicationOrder[];
+  auditEvents?: AuditEvent[];
+  allergies?: PatientAllergy[];
+  medicationHistory?: PatientMedicationHistoryItem[];
 }
 
 class MockEngine {
@@ -54,6 +75,12 @@ class MockEngine {
     createdAt: string;
   }>;
   private appointments: AppointmentRecord[];
+  private notifications: FixtureNotification[];
+  private medicationOrders: InpatientMedicationOrder[];
+  private auditEvents: AuditEvent[];
+  private ruleSets: ClinicalRuleSet[];
+  private allergies: PatientAllergy[];
+  private medicationHistory: PatientMedicationHistoryItem[];
 
   constructor() {
     const loaded = this.loadFromStorage();
@@ -61,10 +88,22 @@ class MockEngine {
       this.activeCases = new Map(loaded.activeCases);
       this.memberships = loaded.memberships;
       this.appointments = loaded.appointments;
+      this.notifications = loaded.notifications || JSON.parse(JSON.stringify(INITIAL_FIXTURE_NOTIFICATIONS));
+      this.medicationOrders = loaded.medicationOrders || JSON.parse(JSON.stringify(INITIAL_MEDICATION_ORDERS));
+      this.auditEvents = loaded.auditEvents || JSON.parse(JSON.stringify(INITIAL_AUDIT_EVENTS));
+      this.ruleSets = JSON.parse(JSON.stringify(INITIAL_RULE_SETS));
+      this.allergies = loaded.allergies || JSON.parse(JSON.stringify(INITIAL_PATIENT_ALLERGIES));
+      this.medicationHistory = loaded.medicationHistory || JSON.parse(JSON.stringify(INITIAL_PATIENT_MED_HISTORY));
     } else {
       this.activeCases = new Map([
         [INITIAL_FIXTURE_CASE.id, JSON.parse(JSON.stringify(INITIAL_FIXTURE_CASE))],
       ]);
+      this.notifications = JSON.parse(JSON.stringify(INITIAL_FIXTURE_NOTIFICATIONS));
+      this.medicationOrders = JSON.parse(JSON.stringify(INITIAL_MEDICATION_ORDERS));
+      this.auditEvents = JSON.parse(JSON.stringify(INITIAL_AUDIT_EVENTS));
+      this.ruleSets = JSON.parse(JSON.stringify(INITIAL_RULE_SETS));
+      this.allergies = JSON.parse(JSON.stringify(INITIAL_PATIENT_ALLERGIES));
+      this.medicationHistory = JSON.parse(JSON.stringify(INITIAL_PATIENT_MED_HISTORY));
       this.memberships = [
         {
           id: "mem_01",
@@ -118,6 +157,11 @@ class MockEngine {
         activeCases: Array.from(this.activeCases.entries()),
         memberships: this.memberships,
         appointments: this.appointments,
+        notifications: this.notifications,
+        medicationOrders: this.medicationOrders,
+        auditEvents: this.auditEvents,
+        allergies: this.allergies,
+        medicationHistory: this.medicationHistory,
       };
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch {
@@ -559,6 +603,41 @@ class MockEngine {
     return target;
   }
 
+  // Notification Operations
+  async getNotifications(unreadOnly = false): Promise<FixtureNotification[]> {
+    const currentUserId = this.currentUser?.id;
+    const currentRole = this.currentUser?.role;
+
+    let list = this.notifications.filter((n) => {
+      if (currentUserId && n.recipientUserId === currentUserId) return true;
+      if (currentRole && n.role === currentRole) return true;
+      return false;
+    });
+
+    if (list.length === 0) {
+      list = [...this.notifications];
+    }
+
+    if (unreadOnly) {
+      list = list.filter((n) => !n.read);
+    }
+
+    return [...list].sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  async markNotificationRead(id: string): Promise<void> {
+    const target = this.notifications.find((n) => n.id === id);
+    if (!target) {
+      const err = new Error(`Notification ${id} not found.`);
+      (err as unknown as { code: string; requestId: string }).code = "NOT_FOUND";
+      throw err;
+    }
+    target.read = true;
+    this.saveToStorage();
+  }
+
   async resetDemoWorkspace(): Promise<void> {
     if (typeof window !== "undefined") {
       try {
@@ -572,6 +651,12 @@ class MockEngine {
     this.patient = { ...FIXTURE_PATIENT };
     this.patients = [...FIXTURE_PATIENTS];
     this.appointments = [...INITIAL_FIXTURE_APPOINTMENTS];
+    this.notifications = JSON.parse(JSON.stringify(INITIAL_FIXTURE_NOTIFICATIONS));
+    this.medicationOrders = JSON.parse(JSON.stringify(INITIAL_MEDICATION_ORDERS));
+    this.auditEvents = JSON.parse(JSON.stringify(INITIAL_AUDIT_EVENTS));
+    this.ruleSets = JSON.parse(JSON.stringify(INITIAL_RULE_SETS));
+    this.allergies = JSON.parse(JSON.stringify(INITIAL_PATIENT_ALLERGIES));
+    this.medicationHistory = JSON.parse(JSON.stringify(INITIAL_PATIENT_MED_HISTORY));
     this.memberships = [
       {
         id: "mem_01",
@@ -602,6 +687,264 @@ class MockEngine {
       },
     ];
     this.switchPersona("PHARMACIST");
+  }
+
+  // Hospital Tenancy
+  async getCurrentHospital(): Promise<Hospital> {
+    return { ...this.hospital };
+  }
+
+  // Inpatient Medication Orders
+  async listMedicationOrders(filter?: {
+    patientId?: string;
+    status?: string;
+    limit?: number;
+  }): Promise<InpatientMedicationOrder[]> {
+    let list = [...this.medicationOrders];
+    if (filter?.patientId) {
+      const q = filter.patientId.toLowerCase();
+      list = list.filter(
+        (o) =>
+          o.patientId.toLowerCase().includes(q) ||
+          o.patientName?.toLowerCase().includes(q)
+      );
+    }
+    if (filter?.status && filter.status !== "ALL") {
+      list = list.filter((o) => o.status === filter.status);
+    }
+    if (filter?.limit) {
+      list = list.slice(0, filter.limit);
+    }
+    return list;
+  }
+
+  async getMedicationOrder(id: string): Promise<{
+    order: InpatientMedicationOrder;
+    versions?: MedicationOrderVersion[];
+  }> {
+    const order = this.medicationOrders.find(
+      (o) => o.id === id || o.orderId === id
+    );
+    if (!order) {
+      const err = new Error(`Medication order ${id} not found.`);
+      (err as unknown as { code: string; requestId: string }).code = "NOT_FOUND";
+      throw err;
+    }
+    return {
+      order,
+      versions: order.versions || [],
+    };
+  }
+
+  async createMedicationOrder(data: {
+    patientId: string;
+    items: InpatientMedicationOrderItem[];
+    notes?: string;
+    ward?: string;
+    bed?: string;
+    scheduleFrequency?: string;
+    route?: string;
+  }): Promise<InpatientMedicationOrder> {
+    if (!data.patientId) {
+      throw new Error("patientId is required");
+    }
+    if (!data.items || data.items.length === 0) {
+      throw new Error("At least 1 medication order item is required");
+    }
+
+    const patient = this.patients.find(
+      (p) =>
+        p.syntheticHospitalPatientId === data.patientId || p.id === data.patientId
+    );
+    const patientName =
+      patient?.displayName ||
+      (data.patientId === "P-9021" ? "Rajan Sharma" : "Inpatient Patient");
+    const orderId = `ord_inpatient_${Date.now()}`;
+    const now = new Date().toISOString();
+
+    const newOrder: InpatientMedicationOrder = {
+      id: orderId,
+      orderId,
+      patientId: data.patientId,
+      patientName,
+      orderingDoctorId: this.currentUser?.id || "usr_doctor_01",
+      orderingDoctorName: this.currentUser?.displayName || "Dr. Arvind Patel, MD",
+      currentVersionNumber: 1,
+      status: "ACTIVE",
+      ward: data.ward || "Cardiology Ward 4B",
+      bed: data.bed || "Bed 12",
+      scheduleFrequency: data.scheduleFrequency || data.items[0]?.frequency || "Q8H",
+      route: data.route || data.items[0]?.route || "INTRAVENOUS",
+      startDate: now,
+      notes: data.notes,
+      createdAt: now,
+      updatedAt: now,
+      items: data.items,
+      versions: [
+        {
+          id: `ver_${orderId}_1`,
+          orderId,
+          versionNumber: 1,
+          items: data.items,
+          changeReason: "Initial inpatient order prescribed",
+          createdBy: this.currentUser?.displayName || "Dr. Arvind Patel, MD",
+          createdAt: now,
+        },
+      ],
+    };
+
+    this.medicationOrders.unshift(newOrder);
+
+    this.auditEvents.unshift({
+      id: `aud_evt_${Date.now()}`,
+      timestamp: now,
+      actorUserId: this.currentUser?.id || "usr_doctor_01",
+      actorDisplayName: this.currentUser?.displayName || "Dr. Arvind Patel, MD",
+      actorRole: this.currentUser?.role || "DOCTOR",
+      action: "CREATE_MEDICATION_ORDER",
+      resourceType: "MedicationOrder",
+      resourceId: orderId,
+      requestId: `req_${Date.now().toString(36)}`,
+      ipAddress: "10.0.12.44",
+      metadata: {
+        patientId: data.patientId,
+        itemCount: data.items.length,
+        ward: data.ward,
+        scheduleFrequency: data.scheduleFrequency,
+      },
+    });
+
+    this.saveToStorage();
+    return newOrder;
+  }
+
+  async updateMedicationOrderStatus(
+    id: string,
+    status: MedicationOrderStatus
+  ): Promise<InpatientMedicationOrder> {
+    const target = this.medicationOrders.find(
+      (o) => o.id === id || o.orderId === id
+    );
+    if (!target) {
+      const err = new Error(`Medication order ${id} not found.`);
+      (err as unknown as { code: string; requestId: string }).code = "NOT_FOUND";
+      throw err;
+    }
+    target.status = status;
+    target.updatedAt = new Date().toISOString();
+    this.saveToStorage();
+    return target;
+  }
+
+  // Audit Events
+  async listAuditEvents(filter?: {
+    resourceType?: string;
+    actorUserId?: string;
+    limit?: number;
+    cursor?: string;
+  }): Promise<AuditEvent[]> {
+    let list = [...this.auditEvents];
+    if (filter?.resourceType && filter.resourceType !== "ALL") {
+      list = list.filter(
+        (e) => e.resourceType.toLowerCase() === filter.resourceType!.toLowerCase()
+      );
+    }
+    if (filter?.actorUserId) {
+      const q = filter.actorUserId.toLowerCase();
+      list = list.filter(
+        (e) =>
+          e.actorUserId.toLowerCase().includes(q) ||
+          e.actorDisplayName?.toLowerCase().includes(q)
+      );
+    }
+    if (filter?.limit) {
+      list = list.slice(0, filter.limit);
+    }
+    return list;
+  }
+
+  // Clinical Rule Sets
+  async getCurrentRuleSet(): Promise<ClinicalRuleSet> {
+    const published =
+      this.ruleSets.find((r) => r.status === "PUBLISHED") || this.ruleSets[0];
+    return JSON.parse(JSON.stringify(published));
+  }
+
+  async listRuleSets(filter?: {
+    status?: string;
+    limit?: number;
+  }): Promise<ClinicalRuleSet[]> {
+    let list = [...this.ruleSets];
+    if (filter?.status && filter.status !== "ALL") {
+      list = list.filter((r) => r.status === filter.status);
+    }
+    if (filter?.limit) {
+      list = list.slice(0, filter.limit);
+    }
+    return list;
+  }
+
+  // Patient Self-Reporting
+  async getAllergies(patientId: string): Promise<PatientAllergy[]> {
+    return this.allergies.filter((a) => a.patientId === patientId);
+  }
+
+  async addAllergy(
+    patientId: string,
+    data: Partial<PatientAllergy>
+  ): Promise<PatientAllergy> {
+    if (!data.substanceText || !data.substanceText.trim()) {
+      throw new Error("Substance text is required");
+    }
+    const now = new Date().toISOString();
+    const newAllergy: PatientAllergy = {
+      id: `alg_${Date.now()}`,
+      patientId,
+      substanceText: data.substanceText.trim(),
+      recordType: data.recordType || "ALLERGY",
+      reactionDescription: data.reactionDescription || "",
+      severity: data.severity || "MILD",
+      sourceType: "PATIENT_REPORTED",
+      verificationStatus: "REPORTED",
+      recordedAt: now,
+      createdAt: now,
+    };
+    this.allergies.unshift(newAllergy);
+    this.saveToStorage();
+    return newAllergy;
+  }
+
+  async getMedicationHistory(
+    patientId: string
+  ): Promise<PatientMedicationHistoryItem[]> {
+    return this.medicationHistory.filter((m) => m.patientId === patientId);
+  }
+
+  async addMedicationHistory(
+    patientId: string,
+    data: Partial<PatientMedicationHistoryItem>
+  ): Promise<PatientMedicationHistoryItem> {
+    if (!data.medicineName || !data.medicineName.trim()) {
+      throw new Error("Medicine name is required");
+    }
+    const now = new Date().toISOString();
+    const newMed: PatientMedicationHistoryItem = {
+      id: `medhist_${Date.now()}`,
+      patientId,
+      medicineName: data.medicineName.trim(),
+      dose: data.dose || "1",
+      unit: data.unit || "dose",
+      route: data.route || "ORAL",
+      frequency: data.frequency || "ONCE_DAILY",
+      status: data.status || "ACTIVE",
+      startDate: data.startDate || now,
+      sourceType: "PATIENT_REPORTED",
+      verificationStatus: "REPORTED",
+      createdAt: now,
+    };
+    this.medicationHistory.unshift(newMed);
+    this.saveToStorage();
+    return newMed;
   }
 }
 

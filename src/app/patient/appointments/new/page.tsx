@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { api } from "@/lib/api-client";
+import { clinicalToast } from "@/lib/toast";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
@@ -46,9 +47,14 @@ export default function BookAppointmentPage() {
         slotEnd,
         reason: reason.trim(),
       });
+      clinicalToast.success(
+        "Appointment Scheduled",
+        `Consultation booked with ${clinicianName} in ${department}.`
+      );
       router.push("/patient/appointments");
     } catch (err) {
       setError(err as Error);
+      clinicalToast.error(err, "Failed to schedule appointment");
     } finally {
       setSubmitting(false);
     }

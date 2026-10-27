@@ -8,6 +8,8 @@ interface EmptyStateProps {
   icon?: LucideIcon;
   actionLabel?: string;
   onAction?: () => void;
+  action?: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
 }
 
@@ -17,6 +19,8 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   icon: Icon = Inbox,
   actionLabel,
   onAction,
+  action,
+  children,
   className = "",
 }) => {
   return (
@@ -30,13 +34,16 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       <p className="mt-1 text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
         {description}
       </p>
-      {actionLabel && onAction && (
+      {action ? (
+        <div className="mt-4">{action}</div>
+      ) : actionLabel && onAction ? (
         <div className="mt-4">
           <Button size="sm" variant="secondary" onClick={onAction}>
             {actionLabel}
           </Button>
         </div>
-      )}
+      ) : null}
+      {children}
     </div>
   );
 };

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { api } from "@/lib/api-client";
+import { clinicalToast } from "@/lib/toast";
 import { Button } from "@/components/ui/Button";
 import { ErrorDisplay } from "@/components/ui/ErrorDisplay";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/Alert";
@@ -31,11 +32,16 @@ export default function ScopedDemoResetPage() {
     try {
       await api.resetDemoWorkspace();
       setSuccess(true);
+      clinicalToast.success(
+        "Demo State Reset",
+        "Workspace restored to pristine synthetic baseline."
+      );
       setTimeout(() => {
         router.push("/pharmacist");
       }, 1500);
     } catch (err) {
       setError(err as Error);
+      clinicalToast.error(err, "Reset Failed");
     } finally {
       setSubmitting(false);
     }

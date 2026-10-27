@@ -23,6 +23,11 @@ import {
   ChevronLeft,
   ChevronRight,
   Activity,
+  ListOrdered,
+  BedDouble,
+  ShieldAlert,
+  FileSearch,
+  BookOpenCheck,
 } from "lucide-react";
 
 interface NavItem {
@@ -76,6 +81,7 @@ export const Sidebar: React.FC = () => {
     roleTitle = "Pharmacy CDS";
     items = [
       { label: "Work Queue", href: "/pharmacist", icon: ClipboardList, badge: "1" },
+      { label: "Inpatient Orders", href: "/pharmacist/orders", icon: BedDouble },
       { label: "Patient Search", href: "/pharmacist/patients/search", icon: Search },
       { label: "Prescription Capture", href: "/pharmacist/capture", icon: Camera },
       { label: "Audit & Dispense History", href: "/pharmacist/history", icon: History },
@@ -84,6 +90,7 @@ export const Sidebar: React.FC = () => {
     roleTitle = "Clinical Review (MD)";
     items = [
       { label: "Triage Task Queue", href: "/doctor", icon: AlertTriangle, badge: "1", badgeVariant: "urgent" },
+      { label: "Inpatient Orders", href: "/doctor/orders", icon: ListOrdered },
       { label: "Prescriptions Ledger", href: "/doctor/prescriptions", icon: FileText },
       { label: "Author Revision", href: "/doctor/prescriptions/new", icon: PlusCircle },
       { label: "Consultations", href: "/doctor/appointments", icon: Calendar },
@@ -94,6 +101,7 @@ export const Sidebar: React.FC = () => {
       { label: "Health Overview", href: "/patient", icon: LayoutDashboard },
       { label: "My Prescriptions", href: "/patient/prescriptions", icon: Pill },
       { label: "Appointments", href: "/patient/appointments", icon: Calendar },
+      { label: "Report Meds & Allergies", href: "/patient/medication-history", icon: ShieldAlert },
       { label: "Medication History", href: "/patient/history", icon: Clock },
     ];
   } else if (role === "HOSPITAL_ADMIN") {
@@ -102,6 +110,8 @@ export const Sidebar: React.FC = () => {
       { label: "Governance Dashboard", href: "/admin", icon: LayoutDashboard },
       { label: "Staff Memberships", href: "/admin/memberships", icon: UserCheck, badge: "1" },
       { label: "Clinician Directory", href: "/admin/users", icon: Users },
+      { label: "Audit Trail", href: "/admin/audit", icon: FileSearch },
+      { label: "Clinical Rules", href: "/admin/rules", icon: BookOpenCheck },
       { label: "Scoped Demo Reset", href: "/admin/demo-reset", icon: RotateCcw },
     ];
   }

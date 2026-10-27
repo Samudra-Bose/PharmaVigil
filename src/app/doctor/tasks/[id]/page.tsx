@@ -10,7 +10,7 @@ import { PatientIdentityCard } from "@/components/clinical/PatientIdentityCard";
 import { AlertCard } from "@/components/clinical/AlertCard";
 import { RuleNoticeBanner } from "@/components/clinical/RuleNoticeBanner";
 import { Button } from "@/components/ui/Button";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { PatientIdentityCardSkeleton, AlertCardSkeleton } from "@/components/skeletons";
 import { Stethoscope, ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 
 function DoctorTaskDetailContent() {
@@ -66,8 +66,8 @@ function DoctorTaskDetailContent() {
 
       {loading ? (
         <div className="space-y-4">
-          <Skeleton className="h-44 w-full" />
-          <Skeleton className="h-64 w-full" />
+          <PatientIdentityCardSkeleton />
+          <AlertCardSkeleton />
         </div>
       ) : (
         <div className="space-y-6">
@@ -120,9 +120,9 @@ export default function DoctorTaskDetailPage() {
     <Suspense
       fallback={
         <div className="max-w-4xl mx-auto space-y-6">
-          <Skeleton className="h-10 w-64" />
-          <Skeleton className="h-44 w-full" />
-          <Skeleton className="h-64 w-full" />
+          <div className="h-10 w-64 rounded bg-slate-200 animate-pulse" />
+          <PatientIdentityCardSkeleton />
+          <AlertCardSkeleton />
         </div>
       }
     >

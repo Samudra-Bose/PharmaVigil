@@ -6,7 +6,7 @@ import { api } from "@/lib/api-client";
 import type { FixtureCase } from "@/lib/mock-data/fixtures";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { PrescriptionTableSkeleton } from "@/components/skeletons";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Pill, ArrowRight, ArrowLeft } from "lucide-react";
 
@@ -48,7 +48,7 @@ export default function PatientPrescriptionsListPage() {
       </div>
 
       {loading ? (
-        <Skeleton className="h-64 w-full" />
+        <PrescriptionTableSkeleton rowCount={3} />
       ) : (
         <div className="space-y-4">
           {cases.map((c) => {

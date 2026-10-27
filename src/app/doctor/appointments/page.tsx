@@ -6,7 +6,7 @@ import { api } from "@/lib/api-client";
 import type { AppointmentRecord } from "@/lib/mock-data/fixtures";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { PrescriptionTableSkeleton } from "@/components/skeletons";
 import { Card } from "@/components/ui/Card";
 import {
   Table,
@@ -94,7 +94,7 @@ export default function DoctorAppointmentsPage() {
       </div>
 
       {loading ? (
-        <Skeleton className="h-64 w-full" />
+        <PrescriptionTableSkeleton rowCount={4} />
       ) : filtered.length === 0 ? (
         <Card className="p-8 text-center text-xs text-slate-500 shadow-subtle">
           No appointments found matching filter "{filter}".

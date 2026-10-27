@@ -6,7 +6,7 @@ import { api } from "@/lib/api-client";
 import { INITIAL_FIXTURE_CASE, type FixtureCase } from "@/lib/mock-data/fixtures";
 import { Badge, type BadgeVariant } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { PrescriptionTableSkeleton } from "@/components/skeletons";
 import {
   Table,
   TableHeader,
@@ -347,10 +347,7 @@ export default function PharmacistDashboard() {
 
       {/* 4. Case List: Master Data Table on Desktop, Useful Card List on Mobile (Section C.4) */}
       {loading ? (
-        <div className="space-y-3 py-4">
-          <Skeleton className="h-12 w-full rounded-2xl" />
-          <Skeleton className="h-16 w-full rounded-2xl" />
-        </div>
+        <PrescriptionTableSkeleton rowCount={5} className="my-4" />
       ) : filteredCases.length === 0 ? (
         <EmptyState
           title="No prescription cases match this filter"

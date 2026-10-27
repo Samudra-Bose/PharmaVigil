@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { api } from "@/lib/api-client";
+import { clinicalToast } from "@/lib/toast";
 import type { FixtureCase } from "@/lib/mock-data/fixtures";
 import { PipelineStepper } from "@/components/clinical/PipelineStepper";
 import { RuleNoticeBanner } from "@/components/clinical/RuleNoticeBanner";
@@ -36,9 +37,21 @@ export default function RunCheckPage() {
     try {
       // Simulate server evaluation delay for visual feedback
       await new Promise((r) => setTimeout(r, 600));
-      await api.runCheck(caseId);
+      const res = await api.runCheck(caseId);
+      if (res.data.outcome === "FLAGGED") {
+        clinicalToast.warning(
+          "Safety Engine: Alerts Flagged",
+          `Engine evaluated ruleset (${res.data.ruleSetVersion}). Physician review required.`
+        );
+      } else {
+        clinicalToast.success(
+          "Safety Engine: Clear",
+          "No matching safety rules triggered. Ready for dispensing authorization."
+        );
+      }
       router.push(`/pharmacist/cases/${caseId}/results`);
     } catch (err) {
+      clinicalToast.error(err, "Safety Engine Evaluation Failed");
       setError((err as Error).message || "Rule engine execution failed. Fail-closed: No authorization permitted.");
     } finally {
       setEvaluating(false);

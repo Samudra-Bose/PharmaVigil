@@ -3,8 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { api } from "@/lib/api-client";
+import { clinicalToast } from "@/lib/toast";
 import { INITIAL_FIXTURE_CASE, type FixtureCase } from "@/lib/mock-data/fixtures";
 import { PipelineStepper } from "@/components/clinical/PipelineStepper";
+import { ExtractionEditorSkeleton } from "@/components/skeletons";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -65,6 +67,7 @@ export default function OcrExtractPage() {
 
   const handleConfirmLine = (id: number) => {
     setLines(lines.map((l) => (l.id === id ? { ...l, status: "CONFIRMED" } : l)));
+    clinicalToast.info("OCR Line Confirmed", `Line #${id} verified against handwritten scan`);
   };
 
   const handleReopenLine = (id: number) => {
@@ -88,7 +91,13 @@ export default function OcrExtractPage() {
         caseId,
         lines.map((l) => ({ id: l.id, text: l.text, confidence: l.confidence }))
       );
+      clinicalToast.success(
+        "OCR Transcription Saved",
+        "All prescription text items attested by pharmacist"
+      );
       router.push(`/pharmacist/cases/${caseId}/medicines`);
+    } catch (err) {
+      clinicalToast.error(err, "Failed to save OCR transcription");
     } finally {
       setSaving(false);
     }
@@ -118,10 +127,7 @@ export default function OcrExtractPage() {
       </Alert>
 
       {loading ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Skeleton className="h-96 w-full" />
-          <Skeleton className="h-96 w-full" />
-        </div>
+        <ExtractionEditorSkeleton />
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left Pane: Scan Image Preview */}

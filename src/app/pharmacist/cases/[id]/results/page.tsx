@@ -10,7 +10,7 @@ import { CoverageMatrix } from "@/components/clinical/CoverageMatrix";
 import { AlertCard } from "@/components/clinical/AlertCard";
 import { Badge, type BadgeVariant } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { AlertCardSkeleton } from "@/components/skeletons";
 import { 
   ShieldCheck, 
   AlertTriangle, 
@@ -91,10 +91,7 @@ export default function CheckResultsPage() {
       <RuleNoticeBanner ruleSetVersion={caseData?.checkResult?.data.ruleSetVersion} />
 
       {loading ? (
-        <div className="space-y-4">
-          <Skeleton className="h-28 w-full" />
-          <Skeleton className="h-64 w-full" />
-        </div>
+        <AlertCardSkeleton />
       ) : (
         <div className="space-y-6">
           {/* Flagged Alerts Section */}

@@ -6,7 +6,7 @@ import { api } from "@/lib/api-client";
 import type { FixtureCase } from "@/lib/mock-data/fixtures";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { PrescriptionTableSkeleton } from "@/components/skeletons";
 import { formatDateTime } from "@/lib/utils";
 import { FileText, Plus, GitCommit, ArrowRight } from "lucide-react";
 
@@ -48,7 +48,7 @@ export default function DoctorPrescriptionsPage() {
       </div>
 
       {loading ? (
-        <Skeleton className="h-64 w-full" />
+        <PrescriptionTableSkeleton rowCount={4} />
       ) : (
         <div className="bg-white rounded-lg border border-slate-200 shadow-xs overflow-hidden">
           <table className="w-full text-left border-collapse text-xs">

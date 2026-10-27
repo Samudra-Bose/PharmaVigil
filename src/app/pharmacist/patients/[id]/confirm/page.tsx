@@ -4,11 +4,12 @@ import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { api } from "@/lib/api-client";
+import { clinicalToast } from "@/lib/toast";
 import type { PatientRecord } from "@/lib/mock-data/fixtures";
 import { PipelineStepper } from "@/components/clinical/PipelineStepper";
 import { PatientIdentityCard } from "@/components/clinical/PatientIdentityCard";
+import { PatientIdentityCardSkeleton } from "@/components/skeletons";
 import { Button } from "@/components/ui/Button";
-import { Skeleton } from "@/components/ui/Skeleton";
 import { AlertCircle, UserCheck, ArrowLeft, ArrowRight, ShieldCheck } from "lucide-react";
 
 export default function ConfirmPatientPage() {
@@ -38,6 +39,10 @@ export default function ConfirmPatientPage() {
 
   const handleProceed = () => {
     if (!confirmedCheck) return;
+    clinicalToast.success(
+      "Patient Identity Confirmed",
+      `Linked to capture pipeline for ${patient?.displayName || "Patient"}`
+    );
     router.push(`/pharmacist/capture?patientId=${patient?.syntheticHospitalPatientId}`);
   };
 
@@ -56,9 +61,7 @@ export default function ConfirmPatientPage() {
       </div>
 
       {loading ? (
-        <div className="space-y-4">
-          <Skeleton className="h-48 w-full" />
-        </div>
+        <PatientIdentityCardSkeleton />
       ) : !patient ? (
         <div className="p-8 text-center bg-white rounded-lg border border-slate-200 text-xs text-slate-500">
           Patient record not found for ID "{patientId}".

@@ -19,7 +19,12 @@ import {
   UserCheck, 
   RotateCcw, 
   LayoutDashboard,
-  Calendar 
+  Calendar,
+  ListOrdered,
+  BedDouble,
+  ShieldAlert,
+  FileSearch,
+  BookOpenCheck
 } from "lucide-react";
 
 export const RoleNavigation: React.FC = () => {
@@ -41,6 +46,7 @@ export const RoleNavigation: React.FC = () => {
   if (role === "PHARMACIST") {
     items = [
       { label: "Work Queue", href: "/pharmacist", icon: ClipboardList },
+      { label: "Inpatient Orders", href: "/pharmacist/orders", icon: BedDouble },
       { label: "Patient Search", href: "/pharmacist/patients/search", icon: Search },
       { label: "New Capture", href: "/pharmacist/capture", icon: Camera },
       { label: "Audit & History", href: "/pharmacist/history", icon: History },
@@ -48,6 +54,7 @@ export const RoleNavigation: React.FC = () => {
   } else if (role === "DOCTOR") {
     items = [
       { label: "Triage Task Queue", href: "/doctor", icon: AlertTriangle },
+      { label: "Inpatient Orders", href: "/doctor/orders", icon: ListOrdered },
       { label: "Prescriptions", href: "/doctor/prescriptions", icon: FileText },
       { label: "Create Revision", href: "/doctor/prescriptions/new", icon: PlusCircle },
       { label: "Appointments", href: "/doctor/appointments", icon: Calendar },
@@ -57,6 +64,7 @@ export const RoleNavigation: React.FC = () => {
       { label: "Health Overview", href: "/patient", icon: LayoutDashboard },
       { label: "My Prescriptions", href: "/patient/prescriptions", icon: Pill },
       { label: "Appointments", href: "/patient/appointments", icon: Calendar },
+      { label: "Report Meds & Allergies", href: "/patient/medication-history", icon: ShieldAlert },
       { label: "Medication History", href: "/patient/history", icon: Clock },
     ];
   } else if (role === "HOSPITAL_ADMIN") {
@@ -64,6 +72,8 @@ export const RoleNavigation: React.FC = () => {
       { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
       { label: "Memberships", href: "/admin/memberships", icon: UserCheck },
       { label: "Staff Users", href: "/admin/users", icon: Users },
+      { label: "Audit Trail", href: "/admin/audit", icon: FileSearch },
+      { label: "Clinical Rules", href: "/admin/rules", icon: BookOpenCheck },
       { label: "Demo Reset", href: "/admin/demo-reset", icon: RotateCcw },
     ];
   }

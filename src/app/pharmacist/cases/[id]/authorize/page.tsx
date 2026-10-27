@@ -3,11 +3,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { api } from "@/lib/api-client";
+import { clinicalToast } from "@/lib/toast";
 import type { FixtureCase } from "@/lib/mock-data/fixtures";
 import { PipelineStepper } from "@/components/clinical/PipelineStepper";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { AlertCardSkeleton } from "@/components/skeletons";
 import { ErrorDisplay } from "@/components/ui/ErrorDisplay";
 import { formatDateTime } from "@/lib/utils";
 import { 
@@ -56,10 +57,15 @@ export default function DispensingAuthorizePage() {
     setError(null);
     try {
       await api.authorizeDispensing(caseId, caseData.currentRevisionNumber);
+      clinicalToast.success(
+        "Workflow Authorized",
+        "Dispensation recorded under Pharmacist credentials"
+      );
       const updated = await api.getCase(caseId);
       setCaseData(updated);
     } catch (err) {
       setError(err as Error);
+      clinicalToast.error(err, "Dispensing Gated");
     } finally {
       setSubmitting(false);
     }
@@ -91,7 +97,7 @@ export default function DispensingAuthorizePage() {
       {error && <ErrorDisplay error={error} title="Authorization Rejected by Safety Gates" />}
 
       {loading ? (
-        <Skeleton className="h-64 w-full" />
+        <AlertCardSkeleton />
       ) : isAuthorized ? (
         /* Successfully Authorized Card */
         <div className="bg-white rounded-lg border-2 border-teal-400 p-6 shadow-sm space-y-4">

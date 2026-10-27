@@ -14,6 +14,7 @@ export type BadgeVariant =
   | "critical" 
   | "high" 
   | "moderate" 
+  | "warning"
   | "info" 
   | "neutral" 
   | "authorized" 
@@ -43,6 +44,8 @@ export const Badge: React.FC<BadgeProps> = ({
         return <AlertTriangle className="w-3.5 h-3.5 mr-1 shrink-0" aria-hidden="true" />;
       case "moderate":
         return <Clock className="w-3.5 h-3.5 mr-1 shrink-0" aria-hidden="true" />;
+      case "warning":
+        return <AlertTriangle className="w-3.5 h-3.5 mr-1 shrink-0 text-amber-600" aria-hidden="true" />;
       case "failed":
         return <XCircle className="w-3.5 h-3.5 mr-1 shrink-0" aria-hidden="true" />;
       case "incomplete":
@@ -62,6 +65,7 @@ export const Badge: React.FC<BadgeProps> = ({
     critical: "bg-rose-50 text-rose-800 border-rose-300 font-semibold",
     high: "bg-amber-50 text-amber-900 border-amber-300 font-semibold",
     moderate: "bg-yellow-50 text-yellow-900 border-yellow-300 font-medium",
+    warning: "bg-amber-50 text-amber-900 border-amber-300 font-medium",
     info: "bg-blue-50 text-blue-900 border-blue-200 font-medium",
     neutral: "bg-slate-100 text-slate-800 border-slate-300 font-medium",
     authorized: "bg-teal-50 text-teal-800 border-teal-300 font-semibold",

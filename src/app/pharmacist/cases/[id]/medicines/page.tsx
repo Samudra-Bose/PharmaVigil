@@ -3,9 +3,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { api } from "@/lib/api-client";
+import { clinicalToast } from "@/lib/toast";
 import type { FixtureCase } from "@/lib/mock-data/fixtures";
 import type { PrescriptionItem, MedicineCandidate } from "@/types";
 import { PipelineStepper } from "@/components/clinical/PipelineStepper";
+import { PrescriptionTableSkeleton } from "@/components/skeletons";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -67,11 +69,23 @@ export default function MedicineMatchingPage() {
   };
 
   const handleProceed = async () => {
-    if (hasUnresolvedItems) return;
+    if (hasUnresolvedItems) {
+      clinicalToast.warning(
+        "Unconfirmed Medicines",
+        "All items must be explicitly confirmed to proceed"
+      );
+      return;
+    }
     setSubmitting(true);
     try {
       await api.confirmMedicines(caseId, items);
+      clinicalToast.success(
+        "Medicine Mappings Saved",
+        "Verified against hospital formulary catalogue"
+      );
       router.push(`/pharmacist/cases/${caseId}/check`);
+    } catch (err) {
+      clinicalToast.error(err, "Failed to save medicine mappings");
     } finally {
       setSubmitting(false);
     }
@@ -112,7 +126,7 @@ export default function MedicineMatchingPage() {
       )}
 
       {loading ? (
-        <Skeleton className="h-64 w-full" />
+        <PrescriptionTableSkeleton rowCount={3} />
       ) : (
         <>
           {/* Desktop Table View */}

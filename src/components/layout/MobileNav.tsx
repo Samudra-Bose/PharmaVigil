@@ -33,7 +33,7 @@ interface MobileNavProps {
 }
 
 export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
-  const { role, user, hospitalName, switchRole, logout } = useAuth();
+  const { role, user, hospitalName, logout } = useAuth();
   const pathname = usePathname();
 
   // Close on route change
@@ -124,25 +124,37 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
           </button>
         </div>
 
-        {/* Persona Switcher on Mobile */}
-        <div className="p-3 border-b border-slate-100 bg-slate-100/70">
-          <label htmlFor="mobile-role-select" className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
-            Switch Demo Portal
-          </label>
-          <div className="relative">
-            <select
-              id="mobile-role-select"
-              value={role || ""}
-              onChange={(e) => switchRole(e.target.value as UserRole)}
-              className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-900"
-            >
-              <option value="PHARMACIST">Pharmacist Portal</option>
-              <option value="DOCTOR">Doctor Portal</option>
-              <option value="PATIENT">Patient Hub</option>
-              <option value="HOSPITAL_ADMIN">Administrator</option>
-            </select>
+        {/* Authenticated Identity Card */}
+        {user && (
+          <div className="p-3 border-b border-slate-100 bg-slate-50/70">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+              Active Session
+            </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-xs font-semibold text-slate-900 truncate max-w-[180px]">
+                  {user.displayName}
+                </div>
+                <div className="text-[11px] text-slate-500 font-mono">
+                  {user.id}
+                </div>
+              </div>
+              {role && (
+                <span
+                  className={cn(
+                    "inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase border",
+                    role === "DOCTOR" && "bg-teal-50 text-teal-800 border-teal-200/80",
+                    role === "PHARMACIST" && "bg-emerald-50 text-emerald-800 border-emerald-200/80",
+                    role === "PATIENT" && "bg-sky-50 text-sky-800 border-sky-200/80",
+                    role === "HOSPITAL_ADMIN" && "bg-purple-50 text-purple-800 border-purple-200/80"
+                  )}
+                >
+                  {role === "HOSPITAL_ADMIN" ? "Admin" : role}
+                </span>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Links */}
         <nav className="flex-1 p-3 space-y-1 overflow-y-auto">

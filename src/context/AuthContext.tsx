@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { api, ApiClientError } from "@/lib/api-client";
-import type { CurrentUserResponse, Membership, UserRole } from "@/types";
+import type { CurrentUserResponse, Membership, UserRole, Hospital } from "@/types";
 import { useRouter, usePathname } from "next/navigation";
 
 interface AuthContextType {
@@ -10,6 +10,7 @@ interface AuthContextType {
   membership: Membership | null;
   role: UserRole | null;
   hospitalName: string;
+  hospital: Hospital | null;
   isLoading: boolean;
   isMockMode: boolean;
   login: (email: string, password?: string) => Promise<void>;
@@ -24,6 +25,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<CurrentUserResponse["user"] | null>(null);
   const [membership, setMembership] = useState<Membership | null>(null);
   const [role, setRole] = useState<UserRole | null>(null);
+  const [hospital, setHospital] = useState<Hospital | null>(null);
   const [hospitalName, setHospitalName] = useState<string>("Metro General Hospital");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const router = useRouter();
@@ -31,20 +33,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const isMockMode = api.getMockMode();
 
+  const resolveHospital = async (activeMem: Membership | null) => {
+    try {
+      const currentHosp = await api.getCurrentHospital();
+      if (currentHosp && currentHosp.name) {
+        setHospital(currentHosp);
+        setHospitalName(currentHosp.name);
+      } else if (activeMem?.hospitalId) {
+        setHospitalName(activeMem.hospitalId);
+      }
+    } catch {
+      setHospitalName(activeMem?.hospitalId || "Metro General Hospital");
+    }
+  };
+
   const refreshSession = useCallback(async () => {
     try {
       setIsLoading(true);
       const res = await api.getCurrentUser();
       setUser(res.user);
-      const activeMem = res.memberships[0] || null;
+      const activeMem = res.memberships?.[0] || (res as any).membership || null;
       setMembership(activeMem);
-      const assigned = (activeMem?.assignedRole || activeMem?.requestedRole) as UserRole | undefined;
+      const assigned = (activeMem?.assignedRole || activeMem?.requestedRole || (activeMem as any)?.role) as UserRole | undefined;
       setRole(assigned || null);
-      setHospitalName("Metro General Hospital");
+      await resolveHospital(activeMem);
     } catch (err) {
       setUser(null);
       setMembership(null);
       setRole(null);
+      setHospital(null);
       if (
         err instanceof ApiClientError &&
         err.code === "UNAUTHENTICATED" &&
@@ -66,10 +83,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const res = await api.login(email, password);
       setUser(res.user);
-      const activeMem = res.memberships[0] || null;
+      const activeMem = res.memberships?.[0] || (res as any).membership || null;
       setMembership(activeMem);
-      const userRole = (activeMem?.assignedRole || activeMem?.requestedRole) as UserRole | undefined;
+      const userRole = (activeMem?.assignedRole || activeMem?.requestedRole || (activeMem as any)?.role) as UserRole | undefined;
       setRole(userRole || null);
+      await resolveHospital(activeMem);
 
       if (activeMem?.status === "PENDING") {
         router.push("/auth/pending");
@@ -96,17 +114,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(null);
       setMembership(null);
       setRole(null);
+      setHospital(null);
       router.push("/auth/login");
     }
   };
 
   const switchRole = async (targetRole: UserRole) => {
-    api.switchDemoRole(targetRole);
-    await refreshSession();
-    if (targetRole === "PHARMACIST") router.push("/pharmacist");
-    if (targetRole === "DOCTOR") router.push("/doctor");
-    if (targetRole === "PATIENT") router.push("/patient");
-    if (targetRole === "HOSPITAL_ADMIN") router.push("/admin");
+    if (isMockMode) {
+      api.switchDemoRole(targetRole);
+      await refreshSession();
+      if (targetRole === "PHARMACIST") router.push("/pharmacist");
+      if (targetRole === "DOCTOR") router.push("/doctor");
+      if (targetRole === "PATIENT") router.push("/patient");
+      if (targetRole === "HOSPITAL_ADMIN") router.push("/admin");
+    } else {
+      console.warn("Role switching is disabled in live authenticated mode.");
+    }
   };
 
   return (
@@ -116,6 +139,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         membership,
         role,
         hospitalName,
+        hospital,
         isLoading,
         isMockMode,
         login,

@@ -6,18 +6,11 @@ import { useAuth } from "@/context/AuthContext";
 import { Shield, Building2, User, LogOut, Menu } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { MobileNav } from "@/components/layout/MobileNav";
-import type { UserRole } from "@/types";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { cn } from "@/lib/utils";
 
-const ROLE_OPTIONS: Array<{ role: UserRole; label: string; shortcut: string }> = [
-  { role: "PHARMACIST", label: "Pharmacist", shortcut: "⌥1" },
-  { role: "DOCTOR", label: "Doctor", shortcut: "⌥2" },
-  { role: "PATIENT", label: "Patient", shortcut: "⌥3" },
-  { role: "HOSPITAL_ADMIN", label: "Admin", shortcut: "⌥4" },
-];
-
 export const AppHeader: React.FC = () => {
-  const { user, membership, role, hospitalName, logout, switchRole } = useAuth();
+  const { user, membership, role, hospitalName, logout } = useAuth();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   return (
@@ -63,51 +56,46 @@ export const AppHeader: React.FC = () => {
             )}
           </div>
 
-          {/* User and Role Switcher */}
+          {/* User Profile & Actions */}
           {user ? (
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-              {/* Desktop Segmented Role Switcher (Shown on screens ≥ 1024px) */}
-              <nav
-                aria-label="Role Switcher"
-                className="hidden xl:flex items-center bg-slate-100/90 p-0.5 rounded-lg border border-slate-200/70 text-xs"
-              >
-                {ROLE_OPTIONS.map((opt) => {
-                  const isActive = role === opt.role;
-                  return (
-                    <button
-                      key={opt.role}
-                      type="button"
-                      onClick={() => switchRole(opt.role)}
+              {/* Authenticated Role Badge */}
+              {role && (
+                <div className="flex items-center">
+                  <span
+                    data-testid="user-role-badge"
+                    className={cn(
+                      "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold tracking-wide border select-none",
+                      role === "DOCTOR" && "bg-teal-50 text-teal-800 border-teal-200/80",
+                      role === "PHARMACIST" && "bg-emerald-50 text-emerald-800 border-emerald-200/80",
+                      role === "PATIENT" && "bg-sky-50 text-sky-800 border-sky-200/80",
+                      role === "HOSPITAL_ADMIN" && "bg-purple-50 text-purple-800 border-purple-200/80"
+                    )}
+                  >
+                    <span
                       className={cn(
-                        "inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-medium text-[11px] transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-900",
-                        isActive
-                          ? "bg-white text-slate-900 shadow-2xs border border-slate-200/80 font-semibold"
-                          : "text-slate-500 hover:text-slate-800 hover:bg-slate-200/50"
+                        "w-1.5 h-1.5 rounded-full shrink-0",
+                        role === "DOCTOR" && "bg-teal-600",
+                        role === "PHARMACIST" && "bg-emerald-600",
+                        role === "PATIENT" && "bg-sky-600",
+                        role === "HOSPITAL_ADMIN" && "bg-purple-600"
                       )}
-                    >
-                      <span>{opt.label}</span>
-                      <kbd className="text-[9px] font-mono text-slate-400 font-normal">
-                        {opt.shortcut}
-                      </kbd>
-                    </button>
-                  );
-                })}
-              </nav>
+                    />
+                    <span>
+                      {role === "HOSPITAL_ADMIN"
+                        ? "Hospital Admin"
+                        : role === "PHARMACIST"
+                        ? "Pharmacist"
+                        : role === "DOCTOR"
+                        ? "Doctor"
+                        : "Patient"}
+                    </span>
+                  </span>
+                </div>
+              )}
 
-              {/* Compact Role Select (For widths under 1280px, including 900px!) */}
-              <div className="xl:hidden flex items-center">
-                <select
-                  aria-label="Select Portal Role"
-                  value={role || ""}
-                  onChange={(e) => switchRole(e.target.value as UserRole)}
-                  className="bg-slate-100/90 border border-slate-200/80 rounded-md px-2 py-1 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-900 cursor-pointer h-7"
-                >
-                  <option value="PHARMACIST">Pharmacist (⌥1)</option>
-                  <option value="DOCTOR">Doctor (⌥2)</option>
-                  <option value="PATIENT">Patient (⌥3)</option>
-                  <option value="HOSPITAL_ADMIN">Admin (⌥4)</option>
-                </select>
-              </div>
+              {/* Notifications Bell */}
+              <NotificationBell />
 
               {/* User Profile & Sign Out */}
               <div className="flex items-center gap-1.5 pl-2 border-l border-slate-200/80">

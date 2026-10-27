@@ -3,10 +3,11 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { api } from "@/lib/api-client";
+import { clinicalToast } from "@/lib/toast";
 import type { AppointmentRecord } from "@/lib/mock-data/fixtures";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { PrescriptionTableSkeleton } from "@/components/skeletons";
 import { Card, CardContent } from "@/components/ui/Card";
 import { formatDateTime } from "@/lib/utils";
 import { Calendar, Plus, Clock, User, ArrowLeft, XCircle, CheckCircle2 } from "lucide-react";
@@ -34,8 +35,14 @@ export default function PatientAppointmentsPage() {
     setCancellingId(id);
     try {
       await api.cancelAppointment(id);
+      clinicalToast.info(
+        "Appointment Cancelled",
+        "Slot released back to outpatient schedule."
+      );
       const updated = await api.listAppointments({ patientId: "pat_rajan_9021" });
       setAppointments(updated);
+    } catch (err) {
+      clinicalToast.error(err, "Failed to cancel appointment");
     } finally {
       setCancellingId(null);
     }
@@ -73,7 +80,7 @@ export default function PatientAppointmentsPage() {
       </div>
 
       {loading ? (
-        <Skeleton className="h-64 w-full" />
+        <PrescriptionTableSkeleton rowCount={3} />
       ) : (
         <div className="space-y-6">
           {/* Upcoming Section */}

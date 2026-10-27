@@ -3,9 +3,10 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { api } from "@/lib/api-client";
+import { clinicalToast } from "@/lib/toast";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { PrescriptionTableSkeleton } from "@/components/skeletons";
 import {
   Table,
   TableHeader,
@@ -39,8 +40,14 @@ export default function AdminMembershipsPage() {
     setActionLoading(id);
     try {
       await api.updateMembershipStatus(id, newStatus, currentRole);
+      clinicalToast.success(
+        "Membership Updated",
+        `Staff status updated to ${newStatus}.`
+      );
       const updated = await api.getMemberships();
       setMemberships(updated);
+    } catch (err) {
+      clinicalToast.error(err, "Failed to update membership");
     } finally {
       setActionLoading(null);
     }
@@ -67,7 +74,7 @@ export default function AdminMembershipsPage() {
       </div>
 
       {loading ? (
-        <Skeleton className="h-64 w-full" />
+        <PrescriptionTableSkeleton rowCount={5} />
       ) : (
         <>
           {/* Desktop Table */}

@@ -97,16 +97,20 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label htmlFor="reg-password" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-              Create Password
-            </label>
+            <div className="flex items-center justify-between mb-1">
+              <label htmlFor="reg-password" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                Create Password
+              </label>
+              <span className="text-[11px] text-slate-400">Min 12 chars</span>
+            </div>
             <input
               id="reg-password"
               type="password"
               required
-              minLength={8}
+              minLength={12}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••••••"
               className="w-full px-3 py-2 text-sm rounded-md border border-slate-300 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent"
             />
           </div>

@@ -4,11 +4,12 @@ import React, { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { api } from "@/lib/api-client";
+import { clinicalToast } from "@/lib/toast";
 import type { FixtureCase } from "@/lib/mock-data/fixtures";
 import type { PrescriptionItem, MedicineCandidate } from "@/types";
 import { Button } from "@/components/ui/Button";
 import { ErrorDisplay } from "@/components/ui/ErrorDisplay";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { PrescriptionTableSkeleton } from "@/components/skeletons";
 import { 
   FileEdit, 
   Plus, 
@@ -178,10 +179,15 @@ function CreateRevisionContent() {
 
     try {
       await api.createRevision(caseId, items, changeReason);
+      clinicalToast.success(
+        "Prescription Revision Published",
+        `Prescription revision ${nextRevisionNumber} active for patient.`
+      );
       api.switchDemoRole("PHARMACIST");
       router.push(`/pharmacist/cases/${caseId}/check`);
     } catch (err) {
       setError(err as Error);
+      clinicalToast.error(err, "Failed to publish prescription revision");
     } finally {
       setSubmitting(false);
     }
@@ -371,7 +377,7 @@ function CreateRevisionContent() {
 
 export default function CreateRevisionPage() {
   return (
-    <Suspense fallback={<div className="max-w-4xl mx-auto p-8"><Skeleton className="h-64 w-full" /></div>}>
+    <Suspense fallback={<div className="max-w-4xl mx-auto p-4"><PrescriptionTableSkeleton rowCount={4} /></div>}>
       <CreateRevisionContent />
     </Suspense>
   );
