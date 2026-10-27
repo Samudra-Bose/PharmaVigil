@@ -8,6 +8,11 @@ import { PipelineStepper } from "@/components/clinical/PipelineStepper";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/Alert";
+import { ClinicalTooltip } from "@/components/clinical/ClinicalTooltip";
+import { Kbd } from "@/components/ui/Kbd";
 import { 
   FileText, 
   ZoomIn, 
@@ -15,7 +20,8 @@ import {
   Check, 
   ArrowRight,
   Plus,
-  Trash2 
+  Trash2,
+  ScanText
 } from "lucide-react";
 
 export default function OcrExtractPage() {
@@ -70,15 +76,17 @@ export default function OcrExtractPage() {
     <div className="max-w-6xl mx-auto space-y-6">
       <PipelineStepper currentStep={2} />
 
-      {/* Untrusted OCR Warning */}
-      <div className="p-3.5 rounded-lg bg-amber-50 border border-amber-300 text-xs text-amber-950 flex items-start gap-2.5 shadow-xs">
-        <AlertTriangle className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
-        <div className="leading-relaxed">
-          <span className="font-bold">Clinical Safety Protocol (REQ-SAFE-001):</span> OCR outputs are
-          treated as untrusted suggestions. The pharmacist must cross-verify each extracted line
-          against the prescription scan on the left and correct any illegible names or dosage errors.
-        </div>
-      </div>
+      {/* Untrusted OCR Warning Alert */}
+      <Alert variant="warning">
+        <AlertTriangle className="h-4 w-4" />
+        <AlertTitle className="font-bold text-amber-950 flex items-center gap-2">
+          <span>Clinical Safety Protocol (REQ-SAFE-001): Untrusted OCR Review</span>
+        </AlertTitle>
+        <AlertDescription className="text-amber-900 mt-1">
+          Optical character recognition outputs are classified as untrusted drafts. The pharmacist must cross-verify each extracted line
+          against the prescription scan on the left and correct any misrecognized drug names, dosages, or frequencies before medicine reconciliation.
+        </AlertDescription>
+      </Alert>
 
       {loading ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -88,15 +96,15 @@ export default function OcrExtractPage() {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left Pane: Scan Image Preview */}
-          <div className="bg-white rounded-lg border border-slate-200 shadow-xs overflow-hidden flex flex-col">
+          <Card className="flex flex-col shadow-2xs overflow-hidden">
             <div className="p-3 bg-slate-100/80 border-b border-slate-200 flex items-center justify-between text-xs text-slate-700">
               <span className="font-semibold">Prescription Source Scan</span>
-              <span className="font-mono text-[11px] text-slate-500">Case: {caseId}</span>
+              <span className="font-mono text-[11px] text-slate-500 font-tabular">Case: {caseId}</span>
             </div>
 
             <div className="p-6 flex-1 flex flex-col justify-center items-center bg-slate-900/5 min-h-[350px]">
-              <div className="w-full bg-white p-6 rounded border border-slate-300 shadow-sm font-mono text-xs space-y-3 leading-relaxed">
-                <div className="border-b border-slate-200 pb-2 text-[10px] text-slate-500 flex justify-between">
+              <div className="w-full bg-white p-6 rounded border border-slate-300 shadow-xs font-mono text-xs space-y-3 leading-relaxed">
+                <div className="border-b border-slate-200 pb-2 text-[10px] text-slate-500 flex justify-between font-tabular">
                   <span className="font-bold text-slate-800">METRO GENERAL HOSPITAL • OUTPATIENT Rx</span>
                   <span>2026-10-27</span>
                 </div>
@@ -116,19 +124,19 @@ export default function OcrExtractPage() {
                 </div>
               </div>
             </div>
-          </div>
+          </Card>
 
           {/* Right Pane: OCR Text Extraction Editor */}
-          <div className="bg-white rounded-lg border border-slate-200 shadow-xs overflow-hidden flex flex-col">
+          <Card className="flex flex-col shadow-2xs overflow-hidden">
             <div className="p-3 bg-slate-100/80 border-b border-slate-200 flex items-center justify-between text-xs text-slate-700">
               <span className="font-semibold flex items-center gap-1.5">
-                <FileText className="w-3.5 h-3.5 text-slate-500" />
+                <ScanText className="w-3.5 h-3.5 text-slate-500" />
                 Extracted Text Blocks ({lines.length} lines)
               </span>
               <button
                 type="button"
                 onClick={handleAddLine}
-                className="text-xs text-slate-900 hover:text-slate-700 font-semibold inline-flex items-center gap-1"
+                className="text-xs text-slate-900 hover:text-slate-700 font-semibold inline-flex items-center gap-1 px-2 py-0.5 rounded bg-white border border-slate-200 shadow-2xs transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" /> Add Line
               </button>
@@ -140,24 +148,28 @@ export default function OcrExtractPage() {
                   <div className="flex items-center justify-between text-[11px]">
                     <span className="font-semibold text-slate-700">Line {idx + 1}</span>
                     <div className="flex items-center gap-2">
-                      <Badge variant={line.confidence >= 0.9 ? "info" : "moderate"} className="text-[10px] py-0">
-                        OCR Confidence: {Math.round(line.confidence * 100)}%
-                      </Badge>
+                      <ClinicalTooltip
+                        term={`${Math.round(line.confidence * 100)}% Confidence`}
+                        explanation="Optical model confidence for raw character pattern recognition. Does not indicate clinical validity."
+                      >
+                        <Badge variant={line.confidence >= 0.9 ? "info" : "moderate"} className="text-[10px] py-0 font-tabular">
+                          {Math.round(line.confidence * 100)}%
+                        </Badge>
+                      </ClinicalTooltip>
                       <button
                         type="button"
                         onClick={() => handleRemoveLine(line.id)}
-                        className="text-slate-400 hover:text-rose-600 p-0.5"
+                        className="text-slate-400 hover:text-rose-600 p-0.5 rounded transition-colors"
                         title="Remove line"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
-                  <input
-                    type="text"
+                  <Input
                     value={line.text}
                     onChange={(e) => handleUpdateLine(line.id, e.target.value)}
-                    className="w-full px-2.5 py-1.5 text-xs font-mono rounded border border-slate-300 focus:outline-none focus:ring-1 focus:ring-slate-900 bg-white"
+                    className="font-mono text-xs bg-white"
                   />
                 </div>
               ))}
@@ -174,7 +186,7 @@ export default function OcrExtractPage() {
                 <Check className="w-3.5 h-3.5 text-emerald-400" /> Confirm Extraction & Match Medicines <ArrowRight className="w-3.5 h-3.5" />
               </Button>
             </div>
-          </div>
+          </Card>
         </div>
       )}
     </div>
