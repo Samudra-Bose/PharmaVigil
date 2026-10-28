@@ -238,12 +238,30 @@ function LoginForm() {
             const isSelected = selectedPersona === p.email;
             const isLoggingIn = isInstantLoggingIn === p.email;
 
+            const btnTheme =
+              p.role === "PHARMACIST"
+                ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/10"
+                : p.role === "DOCTOR"
+                  ? "bg-blue-600 hover:bg-blue-700 shadow-blue-500/10"
+                  : p.role === "PATIENT"
+                    ? "bg-violet-600 hover:bg-violet-700 shadow-violet-500/10"
+                    : "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-500/10";
+
+            const selectedRing =
+              p.role === "PHARMACIST"
+                ? "border-emerald-600 ring-1 ring-emerald-600"
+                : p.role === "DOCTOR"
+                  ? "border-blue-600 ring-1 ring-blue-600"
+                  : p.role === "PATIENT"
+                    ? "border-violet-600 ring-1 ring-violet-600"
+                    : "border-indigo-600 ring-1 ring-indigo-600";
+
             return (
               <div
                 key={p.email}
                 className={`p-2.5 rounded-md border text-left transition-all ${
                   isSelected
-                    ? "bg-white border-slate-900 shadow-2xs ring-1 ring-slate-900"
+                    ? `bg-white ${selectedRing} shadow-2xs`
                     : "bg-white/70 hover:bg-white border-slate-200"
                 }`}
               >
@@ -273,13 +291,13 @@ function LoginForm() {
                     type="button"
                     disabled={isLoading || isLoggingIn}
                     onClick={() => handleInstantSignIn(p)}
-                    className="flex-1 px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 text-white text-[10px] font-medium flex items-center justify-center gap-1 transition-colors"
+                    className={`flex-1 px-2 py-1 rounded text-white text-[10px] font-medium flex items-center justify-center gap-1 transition-colors shadow-xs ${btnTheme}`}
                   >
                     {isLoggingIn ? (
                       "Signing In..."
                     ) : (
                       <>
-                        <LogIn className="w-3 h-3 text-teal-400" /> 1-Click Login
+                        <LogIn className="w-3 h-3" /> 1-Click Login
                       </>
                     )}
                   </button>
