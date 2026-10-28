@@ -38,7 +38,7 @@ export default function AdminUsersPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <Users className="w-5 h-5 text-slate-700" />
+            <Users className="w-5 h-5 text-indigo-600" />
             Hospital Staff & User Directory
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -66,26 +66,38 @@ export default function AdminUsersPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {memberships.map((m) => (
-              <TableRow key={m.id}>
-                <TableCell className="font-bold text-slate-900">
-                  {m.displayName}
-                </TableCell>
-                <TableCell className="font-mono text-slate-600 text-xs">
-                  {m.email}
-                </TableCell>
-                <TableCell className="font-semibold text-slate-800">
-                  {m.role}
-                </TableCell>
-                <TableCell>
-                  <Badge
-                    variant={m.status === "ACTIVE" ? "authorized" : "moderate"}
-                  >
-                    {m.status}
-                  </Badge>
-                </TableCell>
-              </TableRow>
-            ))}
+            {memberships.map((m) => {
+              const roleVariant =
+                m.role === "DOCTOR"
+                  ? "sapphire"
+                  : m.role === "PHARMACIST"
+                    ? "emerald"
+                    : m.role === "PATIENT"
+                      ? "violet"
+                      : "indigo";
+              return (
+                <TableRow key={m.id}>
+                  <TableCell className="font-bold text-slate-900">
+                    {m.displayName}
+                  </TableCell>
+                  <TableCell className="font-mono text-slate-600 text-xs">
+                    {m.email}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={roleVariant as any} className="text-[11px]">
+                      {m.role}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={m.status === "ACTIVE" ? "authorized" : "moderate"}
+                    >
+                      {m.status}
+                    </Badge>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       )}
