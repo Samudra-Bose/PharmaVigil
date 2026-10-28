@@ -101,10 +101,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const refreshSession = useCallback(async () => {
-    const hasToken =
-      typeof window !== "undefined"
-        ? localStorage.getItem("pharmavigil_session_token")
-        : null;
+    let hasToken: string | null = null;
+    try {
+      if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
+        hasToken = localStorage.getItem("pharmavigil_session_token");
+      }
+    } catch {
+      hasToken = null;
+    }
 
     if (!hasToken && !isMockMode && pathname?.startsWith("/auth")) {
       setIsLoading(false);
