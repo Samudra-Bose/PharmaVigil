@@ -23,7 +23,7 @@ export const AppHeader: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setMobileNavOpen(true)}
-                className="md:hidden p-1.5 -ml-1 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors"
+                className="lg:hidden p-1.5 -ml-1 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors"
                 aria-label="Open portal navigation"
               >
                 <Menu className="w-4 h-4" />

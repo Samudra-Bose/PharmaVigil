@@ -167,22 +167,17 @@ export const Sidebar: React.FC = () => {
   return (
     <aside
       className={cn(
-        "hidden md:flex flex-col bg-slate-50/70 border-r border-slate-200/80 shrink-0 transition-all duration-200 select-none z-30",
-        collapsed ? "w-14" : "w-52",
+        "hidden lg:flex flex-col bg-white border-r border-slate-200/80 shrink-0 transition-all duration-200 select-none z-30",
+        collapsed ? "w-16" : "w-60"
       )}
       aria-label="Clinical Portal Navigation"
     >
       {/* Workspace Context Header */}
-      <div
-        className={cn(
-          "p-2.5 border-b border-slate-200/60 flex items-center justify-between",
-          collapsed ? "justify-center px-1" : "px-3",
-        )}
-      >
-        {!collapsed && (
+      <div className={cn("p-3 border-b border-slate-100 flex items-center", collapsed ? "justify-center" : "justify-between px-3.5")}>
+        {!collapsed ? (
           <div className="overflow-hidden min-w-0 pr-1">
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-teal-800 flex items-center gap-1.5">
-              <Activity className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+            <div className="text-[10px] font-bold uppercase tracking-wider text-forest-900 flex items-center gap-1.5">
+              <Activity className="w-3.5 h-3.5 text-forest-900 shrink-0" />
               <span className="truncate">{roleTitle}</span>
             </div>
             <div
@@ -192,16 +187,19 @@ export const Sidebar: React.FC = () => {
               {hospitalName}
             </div>
           </div>
+        ) : (
+          <div className="w-8 h-8 rounded-lg bg-forest-50 border border-forest-200/80 text-forest-900 flex items-center justify-center shrink-0" title={roleTitle}>
+            <Activity className="w-4 h-4 text-forest-900" />
+          </div>
         )}
 
         <button
           onClick={toggleCollapsed}
-          aria-label={
-            collapsed
-              ? "Expand sidebar navigation"
-              : "Collapse sidebar navigation"
-          }
-          className="p-1 rounded-md text-slate-400 hover:text-slate-800 hover:bg-slate-200/60 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-900"
+          aria-label={collapsed ? "Expand sidebar navigation" : "Collapse sidebar navigation"}
+          className={cn(
+            "p-1.5 rounded-lg text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-900",
+            collapsed && "hidden"
+          )}
           title={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
         >
           {collapsed ? (
@@ -213,7 +211,7 @@ export const Sidebar: React.FC = () => {
       </div>
 
       {/* Nav List */}
-      <nav className="flex-1 py-2 px-1.5 space-y-0.5 overflow-y-auto">
+      <nav className="flex-1 py-3 px-2 space-y-1 overflow-y-auto">
         {items.map((item) => {
           const Icon = item.icon;
           const isActive =
@@ -230,19 +228,17 @@ export const Sidebar: React.FC = () => {
               aria-current={isActive ? "page" : undefined}
               title={collapsed ? item.label : undefined}
               className={cn(
-                "flex items-center rounded-md text-xs transition-all group relative",
-                collapsed ? "justify-center p-2" : "gap-2.5 px-2.5 py-1.5",
+                "flex items-center rounded-xl text-xs transition-all group relative",
+                collapsed ? "justify-center p-2.5" : "gap-3 px-3 py-2",
                 isActive
-                  ? "bg-white text-slate-900 shadow-2xs font-semibold border border-slate-200/90"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/40 font-medium",
+                  ? "bg-forest-900 text-white shadow-sm font-semibold"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium"
               )}
             >
               <Icon
                 className={cn(
                   "w-4 h-4 shrink-0 transition-colors",
-                  isActive
-                    ? "text-teal-700"
-                    : "text-slate-400 group-hover:text-slate-700",
+                  isActive ? "text-emerald-300" : "text-slate-400 group-hover:text-slate-700"
                 )}
               />
 
@@ -267,7 +263,7 @@ export const Sidebar: React.FC = () => {
 
               {/* Indicator Pip for active state when collapsed */}
               {collapsed && isActive && (
-                <span className="absolute left-0.5 top-1/2 -translate-y-1/2 w-1 h-4 bg-teal-600 rounded-r-full" />
+                <span className="absolute left-0.5 top-1/2 -translate-y-1/2 w-1 h-5 bg-emerald-400 rounded-r-full" />
               )}
             </Link>
           );
@@ -275,16 +271,22 @@ export const Sidebar: React.FC = () => {
       </nav>
 
       {/* Footer System Status */}
-      <div
-        className={cn(
-          "p-2 border-t border-slate-200/60 text-[10px] text-slate-400 font-mono text-center",
-          collapsed ? "hidden" : "block",
+      <div className={cn("p-2.5 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400 font-mono", collapsed ? "justify-center" : "px-3")}>
+        {!collapsed ? (
+          <>
+            <span>Hotkeys: </span>
+            <kbd className="px-1.5 py-0.5 bg-slate-50 rounded border border-slate-200 text-slate-600">⌥1..4</kbd>
+          </>
+        ) : (
+          <button
+            onClick={toggleCollapsed}
+            aria-label="Expand sidebar navigation"
+            className="p-1 rounded text-slate-400 hover:text-slate-800"
+            title="Expand Sidebar"
+          >
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
         )}
-      >
-        <span>Hotkeys: </span>
-        <kbd className="px-1 py-0.2 bg-white rounded border border-slate-200 text-slate-600">
-          ⌥1..4
-        </kbd>
       </div>
     </aside>
   );
