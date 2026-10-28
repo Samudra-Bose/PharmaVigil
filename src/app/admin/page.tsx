@@ -150,9 +150,8 @@ export default function AdminDashboardPage() {
               Tenancy: <span className="font-semibold text-slate-700">metro-general</span>
             </span>
           </div>
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2">
-            <span>Hospital Administration Hub</span>
-            <span>👋</span>
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900">
+            Hospital Governance Workspace
           </h1>
           <p className="text-xs sm:text-sm text-slate-500">
             Role-based access control, clinician credentialing, and multi-tenant security isolation.

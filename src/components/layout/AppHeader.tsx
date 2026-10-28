@@ -38,15 +38,15 @@ export const AppHeader: React.FC = () => {
               </button>
             )}
 
-            <Link href="/" className="flex items-center gap-2 group">
+            <Link href="/" className="flex lg:hidden items-center gap-2 group">
               <div className="size-7 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold tracking-wider shadow-2xs group-hover:bg-slate-800 transition-colors">
-                <Shield className="size-3.5 text-teal-400" />
+                <Shield className="size-3.5 text-emerald-400" />
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="font-semibold text-xs sm:text-sm text-slate-900 tracking-tight">
                   PharmaVigil
                 </span>
-                <span className="hidden sm:inline-block text-[9px] uppercase font-mono font-medium px-1.5 py-0.5 bg-teal-50 text-teal-800 rounded border border-teal-200/60">
+                <span className="hidden sm:inline-block text-[9px] uppercase font-mono font-medium px-1.5 py-0.5 bg-emerald-50 text-emerald-800 rounded border border-emerald-200/60">
                   CDS
                 </span>
               </div>
@@ -54,10 +54,10 @@ export const AppHeader: React.FC = () => {
 
             {/* Hospital Tenancy Tag */}
             {membership && (
-              <div className="hidden sm:flex items-center gap-1.5 pl-2.5 ml-1 border-l border-slate-200/80 text-xs text-slate-500">
-                <Building2 className="size-3 text-slate-400 shrink-0" />
+              <div className="hidden sm:flex items-center gap-1.5 lg:pl-0 sm:pl-2.5 sm:ml-1 lg:border-l-0 sm:border-l border-slate-200/80 text-xs text-slate-500">
+                <Building2 className="size-3.5 text-slate-400 shrink-0" />
                 <span
-                  className="font-medium text-slate-700 truncate max-w-[140px] md:max-w-[180px]"
+                  className="font-semibold text-slate-800 truncate max-w-[140px] md:max-w-[180px]"
                   title={hospitalName}
                 >
                   {hospitalName}

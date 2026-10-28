@@ -142,9 +142,8 @@ export default function PatientHomePage() {
             </span>
           </div>
 
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2">
-            <span>Welcome back, {patient?.displayName || "Rajan Sharma"}</span>
-            <span>👋</span>
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900">
+            Welcome, {patient?.displayName || "Rajan Sharma"}
           </h1>
 
           <p className="text-xs sm:text-sm text-slate-500">

@@ -22,14 +22,12 @@ import {
   Calendar,
   ChevronLeft,
   ChevronRight,
-  Activity,
   ListOrdered,
   BedDouble,
   ShieldAlert,
   FileSearch,
   BookOpenCheck,
   ShieldCheck,
-  ArrowUpRight,
 } from "lucide-react";
 
 interface NavItem {
@@ -54,7 +52,6 @@ export const Sidebar: React.FC = () => {
       if (saved !== null) {
         setCollapsed(saved === "true");
       } else if (window.innerWidth < 1200) {
-        // Default to compact mode on viewports under 1200px (e.g. 900px, 1024px)
         setCollapsed(true);
       }
     } catch {
@@ -179,43 +176,45 @@ export const Sidebar: React.FC = () => {
   return (
     <aside
       className={cn(
-        "hidden lg:flex flex-col bg-[#111317] border-r border-[#222731] shrink-0 transition-all duration-200 select-none z-30 text-white",
-        collapsed ? "w-16" : "w-64"
+        "hidden lg:flex flex-col bg-white border-r border-slate-200/80 shrink-0 transition-all duration-200 select-none z-30 text-slate-900",
+        collapsed ? "w-16" : "w-60"
       )}
       aria-label="Clinical Portal Navigation"
     >
-      {/* Workspace Context Header (Dark Eduplex Aesthetic) */}
+      {/* Workspace Context Header (Clean Healthcare Architecture) */}
       <div
         className={cn(
-          "p-3.5 border-b border-white/10 flex items-center",
+          "p-3.5 border-b border-slate-100 flex items-center",
           collapsed ? "justify-center" : "justify-between px-4"
         )}
       >
         {!collapsed ? (
           <Link href="/" className="overflow-hidden min-w-0 pr-1 flex items-center gap-2.5 group">
-            <div className="size-8 rounded-xl bg-white text-slate-950 flex items-center justify-center font-bold shadow-md shadow-emerald-500/10 shrink-0">
-              <ShieldCheck className="size-4 text-emerald-600" />
+            <div className="size-8 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold shadow-2xs shrink-0 group-hover:bg-slate-800 transition-colors">
+              <ShieldCheck className="size-4 text-emerald-400" />
             </div>
             <div className="overflow-hidden">
-              <div className="text-sm font-extrabold tracking-tight text-white flex items-center gap-1.5">
+              <div className="text-sm font-bold tracking-tight text-slate-900 flex items-center gap-1.5">
                 <span>PharmaVigil</span>
-                <span className="text-[9px] uppercase font-mono font-bold px-1.5 py-0.2 bg-emerald-500/20 text-emerald-300 rounded border border-emerald-500/30">CDS</span>
+                <span className="text-[9px] uppercase font-mono font-bold px-1.5 py-0.2 bg-emerald-50 text-emerald-800 rounded border border-emerald-200/80">
+                  CDS
+                </span>
               </div>
               <div
-                className="text-[11px] font-medium text-slate-400 truncate mt-0.5"
+                className="text-[11px] font-medium text-slate-500 truncate"
                 title={hospitalName}
               >
-                {roleTitle} • {hospitalName}
+                {roleTitle}
               </div>
             </div>
           </Link>
         ) : (
           <Link
             href="/"
-            className="size-8 rounded-xl bg-white text-slate-950 flex items-center justify-center font-bold shadow-md shadow-emerald-500/10 shrink-0"
+            className="size-8 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold shadow-2xs shrink-0"
             title={`PharmaVigil - ${roleTitle}`}
           >
-            <ShieldCheck className="size-4 text-emerald-600" />
+            <ShieldCheck className="size-4 text-emerald-400" />
           </Link>
         )}
 
@@ -223,7 +222,7 @@ export const Sidebar: React.FC = () => {
           onClick={toggleCollapsed}
           aria-label={collapsed ? "Expand sidebar navigation" : "Collapse sidebar navigation"}
           className={cn(
-            "p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-400",
+            "p-1 rounded-lg text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-900 cursor-pointer",
             collapsed && "hidden"
           )}
           title={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
@@ -232,8 +231,8 @@ export const Sidebar: React.FC = () => {
         </button>
       </div>
 
-      {/* Nav List with Eduplex Pistachio Active Pill */}
-      <nav className="flex-1 py-4 px-2.5 flex flex-col gap-1.5 overflow-y-auto">
+      {/* Nav List with Refined Soft Pills */}
+      <nav className="flex-1 py-3 px-2 flex flex-col gap-1 overflow-y-auto">
         {items.map((item) => {
           const Icon = item.icon;
           const isActive =
@@ -250,22 +249,22 @@ export const Sidebar: React.FC = () => {
               aria-current={isActive ? "page" : undefined}
               title={collapsed ? item.label : undefined}
               className={cn(
-                "flex items-center rounded-xl text-xs transition-all group relative",
-                collapsed ? "justify-center p-3" : "gap-3 px-3.5 py-2.5",
+                "flex items-center rounded-xl text-xs transition-all group relative cursor-pointer",
+                collapsed ? "justify-center p-2.5" : "gap-3 px-3 py-2",
                 isActive
-                  ? "bg-emerald-500/15 text-emerald-300 font-semibold border border-emerald-500/25 shadow-2xs"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-white/5 font-medium"
+                  ? "bg-emerald-50 text-emerald-900 font-semibold border border-emerald-200/80 shadow-2xs"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium"
               )}
             >
               <Icon
                 className={cn(
                   "size-4 shrink-0 transition-colors",
-                  isActive ? "text-emerald-400 stroke-[2.2]" : "text-slate-400 group-hover:text-slate-200"
+                  isActive ? "text-emerald-700 stroke-[2.2]" : "text-slate-400 group-hover:text-slate-700"
                 )}
               />
 
               {!collapsed && (
-                <span className="flex-1 truncate tracking-tight text-xs">
+                <span className="flex-1 truncate tracking-tight">
                   {item.label}
                 </span>
               )}
@@ -273,12 +272,10 @@ export const Sidebar: React.FC = () => {
               {!collapsed && item.badge && (
                 <span
                   className={cn(
-                    "text-[10px] font-mono px-2 py-0.5 rounded-full font-bold",
+                    "text-[10px] font-mono px-1.5 py-0.5 rounded-full font-bold",
                     item.badgeVariant === "urgent"
-                      ? "bg-rose-500 text-white"
-                      : isActive
-                        ? "bg-emerald-500/30 text-emerald-200 border border-emerald-400/30"
-                        : "bg-white/10 text-slate-300"
+                      ? "bg-rose-50 text-rose-700 border border-rose-200"
+                      : "bg-slate-100 text-slate-700 border border-slate-200/60"
                   )}
                 >
                   {item.badge}
@@ -287,48 +284,35 @@ export const Sidebar: React.FC = () => {
 
               {/* Indicator Pip for active state when collapsed */}
               {collapsed && isActive && (
-                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-6 bg-emerald-400 rounded-r-full" />
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-emerald-600 rounded-r-full" />
               )}
             </Link>
           );
         })}
       </nav>
 
-      {/* Refined Clinical Bottom Feature Card */}
-      {!collapsed && (
-        <div className="mx-3 mb-3 p-3.5 rounded-2xl bg-white/5 border border-white/10 text-white flex flex-col gap-2 relative overflow-hidden">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5 font-bold text-xs tracking-tight text-white">
-              <ShieldCheck className="size-4 text-emerald-400" />
-              <span>Safety Engine Active</span>
-            </div>
-            <div className="size-6 rounded-full bg-white/10 text-emerald-400 flex items-center justify-center shrink-0">
-              <ArrowUpRight className="size-3.5" />
-            </div>
-          </div>
-          <p className="text-[11px] text-slate-300 font-normal leading-snug">
-            Deterministic rule checks enforced. Dispensing fails closed until clinician sign-off.
-          </p>
-        </div>
-      )}
-
-      {/* Footer System Status */}
+      {/* Footer System Status (Clean 1-Line Status) */}
       <div
         className={cn(
-          "p-2.5 border-t border-white/10 flex items-center justify-between text-[10px] text-slate-400 font-mono",
+          "p-2.5 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500 font-mono",
           collapsed ? "justify-center" : "px-3.5"
         )}
       >
         {!collapsed ? (
           <>
-            <span>Hotkeys: </span>
-            <kbd className="px-1.5 py-0.5 bg-white/10 rounded border border-white/10 text-slate-300">⌥1..4</kbd>
+            <span className="flex items-center gap-1.5">
+              <span className="size-1.5 rounded-full bg-emerald-500" />
+              <span>Fails-Closed Active</span>
+            </span>
+            <kbd className="px-1.5 py-0.5 bg-slate-100 rounded border border-slate-200 text-slate-600">
+              ⌥1..4
+            </kbd>
           </>
         ) : (
           <button
             onClick={toggleCollapsed}
             aria-label="Expand sidebar navigation"
-            className="p-1 rounded text-slate-400 hover:text-white"
+            className="p-1 rounded text-slate-400 hover:text-slate-800 cursor-pointer"
             title="Expand Sidebar"
           >
             <ChevronRight className="size-3.5" />

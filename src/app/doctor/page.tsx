@@ -208,19 +208,18 @@ export default function DoctorDashboard() {
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold text-rose-800 bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200/80">
-              Attending Physician Disposition
+              Attending Physician Review
             </span>
             <span className="text-slate-300">•</span>
             <span className="text-xs text-slate-500 font-medium">
               Cardiology Outpatient Clinic
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2">
-            <span>Welcome back, Dr. Arvind Patel</span>
-            <span className="text-xl">👋</span>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+            Clinical Triage & Dispositions
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 max-w-2xl">
-            Prioritized clinical triage of automated CDS safety checks requiring attending physician rationale.
+            Prioritized clinical triage of automated CDS safety checks requiring attending physician rationale (≥15 characters).
           </p>
         </div>
 
