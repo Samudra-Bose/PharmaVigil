@@ -171,7 +171,7 @@ export default function PatientMedicationHistoryPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
         <div>
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-md bg-teal-50 text-teal-700 border border-teal-200">
+            <div className="p-1.5 rounded-md bg-violet-50 text-violet-700 border border-violet-200">
               <ShieldAlert className="w-5 h-5" />
             </div>
             <h1 className="text-xl font-bold tracking-tight text-slate-900">
@@ -188,7 +188,7 @@ export default function PatientMedicationHistoryPage() {
           {activeTab === "ALLERGIES" ? (
             <Button
               size="sm"
-              variant="primary"
+              variant="violet"
               className="text-xs gap-1.5 shadow-xs"
               onClick={() => setAllergyModalOpen(true)}
             >
@@ -197,7 +197,7 @@ export default function PatientMedicationHistoryPage() {
           ) : (
             <Button
               size="sm"
-              variant="primary"
+              variant="violet"
               className="text-xs gap-1.5 shadow-xs"
               onClick={() => setMedModalOpen(true)}
             >
@@ -230,7 +230,7 @@ export default function PatientMedicationHistoryPage() {
           onClick={() => setActiveTab("ALLERGIES")}
           className={`flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-semibold transition-colors ${
             activeTab === "ALLERGIES"
-              ? "bg-slate-900 text-white shadow-xs"
+              ? "bg-violet-600 text-white shadow-xs"
               : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200/80"
           }`}
         >
@@ -242,7 +242,7 @@ export default function PatientMedicationHistoryPage() {
           onClick={() => setActiveTab("HOME_MEDS")}
           className={`flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-semibold transition-colors ${
             activeTab === "HOME_MEDS"
-              ? "bg-slate-900 text-white shadow-xs"
+              ? "bg-violet-600 text-white shadow-xs"
               : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200/80"
           }`}
         >
