@@ -70,14 +70,23 @@ export const Sidebar: React.FC = () => {
     }
   };
 
-  if (!role || pathname?.startsWith("/auth")) {
+  let effectiveRole = role;
+  if (!effectiveRole) {
+    if (pathname?.startsWith("/doctor")) effectiveRole = "DOCTOR";
+    else if (pathname?.startsWith("/patient")) effectiveRole = "PATIENT";
+    else if (pathname?.startsWith("/admin")) effectiveRole = "HOSPITAL_ADMIN";
+    else if (pathname?.startsWith("/pharmacist")) effectiveRole = "PHARMACIST";
+    else effectiveRole = "PHARMACIST";
+  }
+
+  if (pathname?.startsWith("/auth")) {
     return null;
   }
 
   let items: NavItem[] = [];
   let roleTitle = "Portal";
 
-  if (role === "PHARMACIST") {
+  if (effectiveRole === "PHARMACIST") {
     roleTitle = "Pharmacy CDS";
     items = [
       {
