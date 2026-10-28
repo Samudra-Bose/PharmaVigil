@@ -9,7 +9,6 @@ import { Badge, type BadgeVariant } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/Alert";
 import {
   Table,
   TableHeader,
@@ -24,12 +23,10 @@ import { BorderBeam } from "@/components/magicui/BorderBeam";
 import { 
   Stethoscope, 
   AlertTriangle, 
-  Clock, 
   FileText, 
   ArrowRight, 
   ShieldAlert, 
   PlusCircle,
-  User,
   Activity,
   Calendar
 } from "lucide-react";
@@ -90,72 +87,78 @@ export default function DoctorDashboard() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
+    <div className="space-y-5">
+      {/* Editorial Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/80">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <Stethoscope className="w-5 h-5 text-slate-700" />
+          <h1 className="text-lg font-semibold tracking-tight text-slate-900 flex items-center gap-2">
+            <Stethoscope className="w-4 h-4 text-slate-700" />
             Doctor Clinical Alert Triage Deck
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Prioritized review of automated safety check concerns requiring physician disposition
+            Prioritized review of automated safety check concerns requiring attending physician disposition
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* Clear Action Prominence */}
+        <div className="flex items-center gap-2 shrink-0">
           <Link href="/doctor/appointments">
-            <Button size="sm" variant="outline" className="text-xs gap-1.5">
-              <Calendar className="w-3.5 h-3.5" /> Consultations
+            <Button size="sm" variant="outline" className="text-xs gap-1.5 h-8">
+              <Calendar className="w-3.5 h-3.5 text-slate-500" /> Consultations
             </Button>
           </Link>
           <Link href="/doctor/prescriptions">
-            <Button size="sm" variant="outline" className="text-xs gap-1.5">
-              <FileText className="w-3.5 h-3.5" /> Prescriptions
+            <Button size="sm" variant="outline" className="text-xs gap-1.5 h-8">
+              <FileText className="w-3.5 h-3.5 text-slate-500" /> Prescriptions
             </Button>
           </Link>
           <Link href="/doctor/prescriptions/new">
-            <Button size="sm" variant="primary" className="text-xs gap-1.5 bg-slate-900 hover:bg-slate-800">
-              <PlusCircle className="w-3.5 h-3.5" /> + New Revision
+            <Button size="sm" variant="primary" className="text-xs gap-1.5 h-8 bg-slate-900 hover:bg-slate-800 shadow-2xs">
+              <PlusCircle className="w-3.5 h-3.5 text-teal-400" /> + New Revision
             </Button>
           </Link>
         </div>
       </div>
 
-      {/* Triage Metrics Strip (COSS UI Inspired) */}
+      {/* Monolithic Linear-style Metric Rail */}
       <CossMetricStrip
         metrics={[
           { label: "Active Triage Alerts", value: tasks.length, icon: AlertTriangle, tone: tasks.length > 0 ? "urgent" : "neutral" },
           { label: "Critical Contraindications", value: countCritical, icon: ShieldAlert, tone: countCritical > 0 ? "urgent" : "neutral" },
-          { label: "Active Hospital Cases", value: cases.length, icon: Activity, tone: "info" },
+          { label: "Hospital Cases", value: cases.length, icon: Activity, tone: "info" },
           { label: "Attending Status", value: "Active", subtext: "Dr. Arvind Patel", icon: Stethoscope, tone: "success" },
         ]}
       />
 
-      {/* Urgent Alert Callout with Magic UI BorderBeam */}
+      {/* Urgent Alert Attention Card with Restrained Magic UI BorderBeam */}
       {tasks.length > 0 && (
-        <div className="relative rounded-lg overflow-hidden">
-          <Alert variant="warning" className="border-amber-300 bg-amber-50/70 shadow-subtle">
-            <AlertTriangle className="h-4 w-4 text-amber-700" />
-            <AlertTitle className="font-bold text-amber-950 flex items-center gap-2">
-              <span>Active Clinical Alerts Pending Review ({tasks.length})</span>
-              <span className="relative flex h-2 w-2 motion-reduce:hidden">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
-              </span>
-            </AlertTitle>
-            <AlertDescription className="text-amber-900 mt-1 text-xs">
-              Pharmacy dispensing authorization is blocked on these cases until an attending doctor records a clinical disposition with mandatory rationale.
-            </AlertDescription>
-          </Alert>
-          <BorderBeam size={180} duration={8} colorFrom="#f59e0b" colorTo="#ef4444" />
+        <div className="relative rounded-lg overflow-hidden bg-white border border-rose-200/80 border-l-4 border-l-rose-500 p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" aria-hidden="true" />
+              <h2 className="text-xs font-semibold text-rose-950 uppercase tracking-wider">
+                Active Critical Triage ({tasks.length} Alert{tasks.length > 1 ? "s" : ""})
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 max-w-2xl leading-relaxed">
+              Pharmacy dispensing is blocked on case <span className="font-mono font-semibold text-slate-900">{tasks[0].caseId}</span> (Patient <span className="font-mono font-semibold text-slate-900">{tasks[0].patientId}</span>). An attending physician must record a clinical disposition with documented rationale.
+            </p>
+          </div>
+
+          <Link href={`/doctor/tasks/${tasks[0].alert.id}?caseId=${tasks[0].caseId}`} className="shrink-0">
+            <Button size="sm" variant="primary" className="text-xs gap-1.5 h-8 bg-rose-600 hover:bg-rose-700 text-white shadow-2xs">
+              Triage Primary Alert <ArrowRight className="w-3.5 h-3.5" />
+            </Button>
+          </Link>
+
+          <BorderBeam size={160} duration={8} colorFrom="#f43f5e" colorTo="#fb923c" />
         </div>
       )}
 
       {loading ? (
-        <div className="space-y-3">
-          <Skeleton className="h-14 w-full" />
-          <Skeleton className="h-14 w-full" />
+        <div className="space-y-2.5">
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-12 w-full" />
         </div>
       ) : tasks.length === 0 ? (
         <EmptyState
@@ -167,41 +170,33 @@ export default function DoctorDashboard() {
         />
       ) : (
         <>
-          {/* Desktop Table View */}
-          <div className="hidden md:block bg-white rounded-lg border border-slate-200 overflow-hidden shadow-subtle">
+          {/* Desktop High-Density Triage Table */}
+          <div className="hidden md:block bg-white rounded-lg border border-slate-200/80 overflow-hidden shadow-2xs">
             <Table>
               <TableHeader>
-                <TableRow className="bg-slate-50/75">
-                  <TableHead className="w-32">
+                <TableRow className="bg-slate-50/60 border-b border-slate-200/80">
+                  <TableHead className="w-32 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
                     <ClinicalTooltip
                       term="Severity"
                       explanation="Clinical risk rating. Critical alerts represent severe hazard contraindications requiring therapy revision or documented review."
                     />
                   </TableHead>
-                  <TableHead>Safety Rule & Clinical Concern</TableHead>
-                  <TableHead className="w-48">Case / Patient</TableHead>
-                  <TableHead className="w-32">Triage Status</TableHead>
-                  <TableHead className="w-32 text-right">Action</TableHead>
+                  <TableHead className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Safety Rule & Clinical Concern</TableHead>
+                  <TableHead className="w-44 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Case / Patient</TableHead>
+                  <TableHead className="w-28 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Triage Status</TableHead>
+                  <TableHead className="w-24 text-right text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {tasks.map(({ caseId, alert, revisionNumber, patientId }) => (
-                  <TableRow key={alert.id} className="hover:bg-slate-50/80 transition-colors">
+                  <TableRow key={alert.id} className="hover:bg-slate-50/70 transition-colors border-b border-slate-100 last:border-b-0">
                     <TableCell>
-                      <div className="flex items-center gap-1.5">
-                        {alert.severity === "CRITICAL" && (
-                          <span className="relative flex h-2 w-2 shrink-0 motion-reduce:hidden">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-600" />
-                          </span>
-                        )}
-                        <Badge variant={getSeverityVariant(alert.severity)}>
-                          {alert.severity}
-                        </Badge>
-                      </div>
+                      <Badge variant={getSeverityVariant(alert.severity)} className="text-[11px]">
+                        {alert.severity}
+                      </Badge>
                     </TableCell>
                     <TableCell className="max-w-md">
-                      <div className="font-bold text-slate-900 font-mono text-[11px] font-tabular">
+                      <div className="font-semibold text-slate-900 font-mono text-[11px] font-tabular">
                         {alert.ruleId} <span className="text-slate-400 font-normal">(v{alert.ruleVersion})</span>
                       </div>
                       <div className="text-slate-600 text-xs mt-0.5 line-clamp-2 leading-relaxed">
@@ -209,20 +204,20 @@ export default function DoctorDashboard() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="font-bold text-slate-900 font-mono font-tabular">{caseId}</div>
-                      <div className="text-[11px] text-slate-500 font-mono font-tabular">
+                      <div className="font-mono font-semibold text-xs text-slate-900 font-tabular">{caseId}</div>
+                      <div className="text-[11px] text-slate-500 font-mono font-tabular mt-0.5">
                         Patient: {patientId} • Rev {revisionNumber}
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="moderate" icon={false} className="text-[10px] uppercase font-mono">
+                      <span className="font-mono text-[10px] uppercase px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
                         {alert.status}
-                      </Badge>
+                      </span>
                     </TableCell>
                     <TableCell className="text-right">
                       <Link href={`/doctor/tasks/${alert.id}?caseId=${caseId}`}>
-                        <Button size="sm" variant="primary" className="text-xs gap-1 h-7 bg-slate-900 hover:bg-slate-800">
-                          Review <ArrowRight className="w-3 h-3" />
+                        <Button size="sm" variant="outline" className="text-xs gap-1 h-7 px-2 font-medium">
+                          Triage <ArrowRight className="w-3 h-3" />
                         </Button>
                       </Link>
                     </TableCell>
@@ -232,24 +227,24 @@ export default function DoctorDashboard() {
             </Table>
           </div>
 
-          {/* Mobile Card View */}
-          <div className="md:hidden space-y-3">
+          {/* Mobile Reflow Card View */}
+          <div className="md:hidden space-y-2.5">
             {tasks.map(({ caseId, alert, revisionNumber, patientId }) => (
               <div
                 key={alert.id}
-                className="bg-white p-4 rounded-lg border border-slate-200 shadow-subtle space-y-3"
+                className="bg-white p-3.5 rounded-lg border border-slate-200/80 shadow-2xs space-y-2.5"
               >
                 <div className="flex items-center justify-between">
-                  <Badge variant={getSeverityVariant(alert.severity)}>
+                  <Badge variant={getSeverityVariant(alert.severity)} className="text-[10px]">
                     {alert.severity} Hazard
                   </Badge>
-                  <span className="font-mono text-[11px] text-slate-500 font-semibold">
+                  <span className="font-mono text-[11px] text-slate-500 font-medium">
                     Rev {revisionNumber}
                   </span>
                 </div>
 
                 <div>
-                  <div className="font-bold font-mono text-xs text-slate-900">
+                  <div className="font-semibold font-mono text-xs text-slate-900">
                     {alert.ruleId}
                   </div>
                   <div className="text-xs text-slate-600 mt-1 line-clamp-3 leading-relaxed">

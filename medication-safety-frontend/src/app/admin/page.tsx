@@ -6,6 +6,7 @@ import { api } from "@/lib/api-client";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { CossMetricStrip } from "@/components/coss/CossMetricStrip";
 import { 
   ShieldCheck, 
   UserCheck, 
@@ -13,7 +14,8 @@ import {
   RotateCcw, 
   ArrowRight,
   Building2,
-  Lock 
+  CheckCircle2,
+  Clock
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
@@ -37,84 +39,80 @@ export default function AdminDashboardPage() {
   const activeCount = memberships.filter((m) => m.status === "ACTIVE").length;
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
+    <div className="space-y-5">
+      {/* Editorial Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/80">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <ShieldCheck className="w-5 h-5 text-slate-700" />
+          <h1 className="text-lg font-semibold tracking-tight text-slate-900 flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-slate-700" />
             Hospital Administration & Governance
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Hospital Tenancy: <span className="font-semibold text-slate-800">Metro General Hospital</span> (Slug: metro-general)
+            Hospital Tenancy: <span className="font-medium text-slate-800">Metro General Hospital</span> (metro-general)
           </p>
         </div>
 
         <Link href="/admin/demo-reset">
-          <Button size="sm" variant="outline" className="text-xs gap-1.5 border-rose-300 text-rose-800 hover:bg-rose-50">
-            <RotateCcw className="w-3.5 h-3.5" /> Scoped Demo Reset
+          <Button size="sm" variant="outline" className="text-xs gap-1.5 h-8 border-rose-200 text-rose-800 hover:bg-rose-50 shadow-2xs">
+            <RotateCcw className="w-3.5 h-3.5 text-rose-600" /> Scoped Demo Reset
           </Button>
         </Link>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded-lg border border-amber-200 bg-amber-50/30 shadow-xs">
-          <div className="flex justify-between items-center text-xs text-amber-800">
-            <span>Pending Membership Requests</span>
-            <UserCheck className="w-4 h-4 text-amber-600" />
-          </div>
-          <div className="text-2xl font-bold text-amber-950 mt-1 font-mono">{pendingCount}</div>
-        </div>
-
-        <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-xs">
-          <div className="flex justify-between items-center text-xs text-slate-500">
-            <span>Active Hospital Staff</span>
-            <Users className="w-4 h-4 text-slate-400" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 mt-1 font-mono">{activeCount}</div>
-        </div>
-
-        <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-xs">
-          <div className="flex justify-between items-center text-xs text-slate-500">
-            <span>Workspace Type</span>
-            <Building2 className="w-4 h-4 text-slate-400" />
-          </div>
-          <div className="text-sm font-bold text-slate-900 mt-2 font-mono">DEMO_SYNTHETIC</div>
-        </div>
-      </div>
+      {/* Monolithic Linear-style Metric Rail */}
+      <CossMetricStrip
+        metrics={[
+          { label: "Pending Credentials", value: pendingCount, icon: UserCheck, tone: pendingCount > 0 ? "urgent" : "neutral" },
+          { label: "Active Clinicians", value: activeCount, icon: Users, tone: "info" },
+          { label: "Hospital Tenancy", value: "Metro General", icon: Building2, tone: "success" },
+          { label: "Operational Mode", value: "SYNTHETIC", subtext: "Pinned OpenAPI 3.1.1", icon: ShieldCheck, tone: "neutral" },
+        ]}
+      />
 
       {/* Pending Membership Queue Section */}
-      <div className="bg-white rounded-lg border border-slate-200 shadow-xs p-5 space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-            <UserCheck className="w-4 h-4 text-amber-600" /> Pending Hospital Membership Requests
+      <div className="bg-white rounded-lg border border-slate-200/80 shadow-2xs p-4 sm:p-5 space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+            <UserCheck className="w-3.5 h-3.5 text-amber-600" /> Pending Hospital Membership Requests
           </h2>
-          <Link href="/admin/memberships" className="text-xs text-slate-600 hover:text-slate-900 font-semibold underline">
-            View All ({memberships.length})
+          <Link href="/admin/memberships" className="text-xs text-slate-600 hover:text-slate-900 font-medium">
+            View All ({memberships.length}) →
           </Link>
         </div>
 
         {loading ? (
           <Skeleton className="h-20 w-full" />
         ) : pendingCount === 0 ? (
-          <div className="text-center py-6 text-xs text-slate-400 italic">
-            No pending membership applications. All staff verified.
+          <div className="py-6 text-center text-xs text-slate-500 flex flex-col items-center gap-1.5">
+            <CheckCircle2 className="w-5 h-5 text-teal-600 mb-1" />
+            <p className="font-medium text-slate-700">No pending clinician applications</p>
+            <p className="text-slate-400">All registered clinical staff have been verified and assigned active roles.</p>
           </div>
         ) : (
-          <div className="divide-y divide-slate-100">
+          <div className="space-y-2">
             {memberships
               .filter((m) => m.status === "PENDING")
               .map((mem) => (
-                <div key={mem.id} className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div
+                  key={mem.id}
+                  className="p-3 rounded-lg border border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                >
                   <div>
-                    <div className="font-bold text-slate-900">{mem.displayName}</div>
-                    <div className="text-slate-500 font-mono text-[11px]">{mem.email} • Requested: {mem.role}</div>
+                    <div className="text-xs font-semibold text-slate-900 flex items-center gap-2">
+                      <span>{mem.displayName}</span>
+                      <Badge variant="high" className="text-[10px] font-mono">
+                        {mem.role}
+                      </Badge>
+                    </div>
+                    <div className="text-[11px] text-slate-500 font-mono mt-0.5">
+                      {mem.email} • ID: {mem.userId}
+                    </div>
                   </div>
+
                   <div className="flex items-center gap-2">
                     <Link href={`/admin/memberships/${mem.id}`}>
-                      <Button size="sm" variant="primary" className="text-xs gap-1 h-7">
-                        Review & Assign Role <ArrowRight className="w-3 h-3" />
+                      <Button size="sm" variant="outline" className="text-xs gap-1 h-7">
+                        Review Credentials <ArrowRight className="w-3 h-3" />
                       </Button>
                     </Link>
                   </div>
@@ -122,6 +120,37 @@ export default function AdminDashboardPage() {
               ))}
           </div>
         )}
+      </div>
+
+      {/* Directory & Quick Access */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <Link href="/admin/users" className="block group">
+          <div className="p-4 bg-white rounded-lg border border-slate-200/80 shadow-2xs group-hover:border-slate-300 transition-colors">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-slate-900 flex items-center gap-2">
+                <Users className="w-4 h-4 text-slate-500" /> Clinician Directory
+              </span>
+              <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+            </div>
+            <p className="text-xs text-slate-500 mt-1">
+              Audit active staff licenses, hospital roles, and credential status.
+            </p>
+          </div>
+        </Link>
+
+        <Link href="/admin/memberships" className="block group">
+          <div className="p-4 bg-white rounded-lg border border-slate-200/80 shadow-2xs group-hover:border-slate-300 transition-colors">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-slate-900 flex items-center gap-2">
+                <UserCheck className="w-4 h-4 text-slate-500" /> Membership Applications
+              </span>
+              <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+            </div>
+            <p className="text-xs text-slate-500 mt-1">
+              Approve, suspend, or reactivate staff hospital affiliations.
+            </p>
+          </div>
+        </Link>
       </div>
     </div>
   );

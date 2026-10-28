@@ -7,18 +7,16 @@ import type { PatientRecord, FixtureCase, AppointmentRecord } from "@/lib/mock-d
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { Card, CardContent, CardFooter } from "@/components/ui/Card";
 import { formatDateTime } from "@/lib/utils";
 import { 
   Pill, 
   Clock, 
   Calendar, 
-  Building2, 
   Phone, 
   ArrowRight,
-  ShieldCheck,
-  User,
-  PlusCircle 
+  PlusCircle,
+  Building2,
+  CheckCircle2
 } from "lucide-react";
 
 export default function PatientHomePage() {
@@ -51,137 +49,150 @@ export default function PatientHomePage() {
   const upcomingApt = appointments.find((a) => a.status === "SCHEDULED");
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
-      {/* Patient Welcome Header */}
-      <Card className="shadow-subtle border-slate-200 bg-white">
-        <CardContent className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <span className="text-[11px] font-bold text-teal-800 uppercase tracking-wider bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
-              Patient Care Hub
+    <div className="max-w-4xl mx-auto space-y-6">
+      {/* Warm Patient Welcome Header */}
+      <section
+        aria-label="Patient Welcome Header"
+        className="bg-white rounded-xl border border-slate-200/80 p-5 sm:p-6 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+      >
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-semibold text-teal-800 uppercase tracking-wider bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200/60">
+              Patient Care
             </span>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 mt-2">
-              Welcome back, {patient?.displayName || "Rajan Sharma"}
-            </h1>
-            <p className="text-xs text-slate-500 mt-1">
-              Hospital Patient ID: <span className="font-mono font-bold text-slate-800 font-tabular">{patient?.syntheticHospitalPatientId}</span> • Metro General Hospital
-            </p>
+            <span className="text-xs text-slate-400 font-mono">ID: {patient?.syntheticHospitalPatientId || "P-9021"}</span>
           </div>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+            Welcome back, {patient?.displayName || "Rajan Sharma"}
+          </h1>
+          <p className="text-xs text-slate-500">
+            Outpatient care under <span className="font-medium text-slate-700">Metro General Hospital</span> • Cardiology Clinic
+          </p>
+        </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <Link href="/patient/appointments/new">
-              <Button size="sm" variant="outline" className="gap-1.5 text-xs">
-                <PlusCircle className="w-3.5 h-3.5" /> Book Consultation
-              </Button>
-            </Link>
-            <Link href="/patient/prescriptions">
-              <Button size="sm" variant="primary" className="gap-1.5 text-xs bg-slate-900 hover:bg-slate-800">
-                <Pill className="w-3.5 h-3.5" /> My Prescriptions
-              </Button>
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <Link href="/patient/appointments/new">
+            <Button size="sm" variant="outline" className="gap-1.5 text-xs h-8">
+              <PlusCircle className="w-3.5 h-3.5 text-slate-500" /> Book Visit
+            </Button>
+          </Link>
+          <Link href="/patient/prescriptions">
+            <Button size="sm" variant="primary" className="gap-1.5 text-xs h-8 bg-slate-900 hover:bg-slate-800 shadow-2xs">
+              <Pill className="w-3.5 h-3.5 text-teal-400" /> Prescriptions
+            </Button>
+          </Link>
+        </div>
+      </section>
 
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Skeleton className="h-56 w-full" />
-          <Skeleton className="h-56 w-full" />
+          <Skeleton className="h-56 w-full rounded-xl" />
+          <Skeleton className="h-56 w-full rounded-xl" />
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Active Prescription Status Card */}
-          <Card className="shadow-subtle flex flex-col justify-between border-slate-200">
-            <CardContent className="p-5 space-y-3">
+          {/* Active Medication Regimen Card */}
+          <section
+            aria-label="Active Medication Schedule"
+            className="bg-white rounded-xl border border-slate-200/80 shadow-2xs p-5 flex flex-col justify-between space-y-4"
+          >
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
-                  <Pill className="w-4 h-4 text-teal-600" /> Active Prescription
+                <span className="text-xs font-semibold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
+                  <Pill className="w-4 h-4 text-teal-600" /> Current Prescription
                 </span>
-                <Badge variant={isReady ? "authorized" : "moderate"}>
+                <Badge variant={isReady ? "authorized" : "moderate"} className="text-[11px]">
                   {isReady ? "Ready for Pharmacy Pick-up" : "Under Pharmacist Review"}
                 </Badge>
               </div>
 
               <div>
-                <div className="text-base font-bold text-slate-900">
-                  Cardiology Outpatient Order (Dr. Arvind Patel)
-                </div>
-                <div className="text-xs text-slate-500 mt-0.5">
-                  Revision {activeRx?.currentRevisionNumber || 1} • {activeRx?.items.length || 2} prescribed medicines
-                </div>
+                <h2 className="text-sm font-semibold text-slate-900">
+                  Cardiology Regimen (Dr. Arvind Patel)
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5 font-mono">
+                  Prescription v{activeRx?.currentRevisionNumber || 1} • {activeRx?.items.length || 2} medication{activeRx?.items.length !== 1 ? "s" : ""}
+                </p>
               </div>
 
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1.5">
+              <div className="p-3 bg-slate-50/70 rounded-lg border border-slate-100 text-xs text-slate-700 space-y-2">
                 {activeRx?.items.map((item, idx) => (
-                  <div key={idx} className="flex justify-between items-center">
+                  <div key={idx} className="flex justify-between items-center py-0.5 border-b border-slate-100 last:border-b-0">
                     <span className="font-semibold text-slate-900">{item.canonicalIngredientIds.join(", ")} {item.strengthValue}{item.strengthUnit}</span>
                     <span className="text-slate-500 font-mono text-[11px]">{item.frequency}</span>
                   </div>
                 ))}
               </div>
-            </CardContent>
+            </div>
 
-            <CardFooter className="p-4 border-t border-slate-100 flex justify-end bg-slate-50/50">
+            <div className="pt-3 border-t border-slate-100 flex justify-end">
               <Link href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`}>
-                <Button size="sm" variant="primary" className="text-xs gap-1.5 bg-slate-900 hover:bg-slate-800">
-                  View Full Schedule & Instructions <ArrowRight className="w-3.5 h-3.5" />
+                <Button size="sm" variant="outline" className="text-xs gap-1.5 font-medium h-8">
+                  View Dosing Schedule <ArrowRight className="w-3.5 h-3.5" />
                 </Button>
               </Link>
-            </CardFooter>
-          </Card>
+            </div>
+          </section>
 
-          {/* Upcoming Appointment or Pharmacy Hours */}
-          <Card className="shadow-subtle flex flex-col justify-between border-slate-200">
-            <CardContent className="p-5 space-y-3">
+          {/* Consultation Schedule or Pharmacy Counter */}
+          <section
+            aria-label="Appointments & Support"
+            className="bg-white rounded-xl border border-slate-200/80 shadow-2xs p-5 flex flex-col justify-between space-y-4"
+          >
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
-                  <Calendar className="w-4 h-4 text-blue-600" /> Upcoming Consultation
+                <span className="text-xs font-semibold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
+                  <Calendar className="w-4 h-4 text-blue-600" /> Upcoming Appointment
                 </span>
                 {upcomingApt && <Badge variant="info">Scheduled</Badge>}
               </div>
 
               {upcomingApt ? (
-                <div className="space-y-2">
-                  <div className="text-sm font-bold text-slate-900">
+                <div className="space-y-1.5">
+                  <h2 className="text-sm font-semibold text-slate-900">
                     {upcomingApt.reason}
-                  </div>
+                  </h2>
                   <div className="text-xs text-slate-600 flex items-center gap-1.5">
                     <Clock className="w-3.5 h-3.5 text-slate-400" />
-                    {formatDateTime(upcomingApt.slotStart)}
+                    <span>{formatDateTime(upcomingApt.slotStart)}</span>
                   </div>
                   <div className="text-xs text-slate-500">
-                    Clinician: <span className="font-semibold text-slate-700">{upcomingApt.clinicianDisplayName}</span> ({upcomingApt.department})
+                    Clinician: <span className="font-medium text-slate-800">{upcomingApt.clinicianDisplayName}</span> ({upcomingApt.department})
                   </div>
                 </div>
               ) : (
                 <div className="space-y-1.5 text-xs text-slate-600">
-                  <div className="text-sm font-semibold text-slate-900">
-                    Metro General Hospital Outpatient Pharmacy (Counter 3)
-                  </div>
+                  <h2 className="text-sm font-semibold text-slate-900">
+                    Metro General Hospital Outpatient Pharmacy
+                  </h2>
                   <div className="flex items-center gap-2 text-slate-500">
                     <Clock className="w-3.5 h-3.5 text-slate-400" /> Open: 8:00 AM – 8:00 PM (Mon–Sat)
                   </div>
                   <div className="flex items-center gap-2 text-slate-500">
-                    <Phone className="w-3.5 h-3.5 text-slate-400" /> Helpline: +91 11 2345 6789
+                    <Phone className="w-3.5 h-3.5 text-slate-400" /> Counter Helpline: +91 11 2345 6789
                   </div>
                 </div>
               )}
 
-              <div className="p-3 bg-blue-50/60 rounded-lg border border-blue-200 text-xs text-blue-900">
-                Have your synthetic patient ID <span className="font-mono font-bold font-tabular">P-9021</span> ready for any in-person consultations or counter visits.
+              <div className="p-3 bg-teal-50/50 rounded-lg border border-teal-100 text-xs text-teal-900 flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-teal-600 shrink-0 mt-0.5" />
+                <span>
+                  Always present synthetic patient ID <span className="font-mono font-semibold">P-9021</span> when collecting medicines at Counter 3.
+                </span>
               </div>
-            </CardContent>
+            </div>
 
-            <CardFooter className="p-4 border-t border-slate-100 flex items-center justify-between bg-slate-50/50">
-              <Link href="/patient/appointments" className="text-xs font-semibold text-slate-700 hover:text-slate-900">
-                All Appointments ({appointments.length})
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+              <Link href="/patient/appointments" className="text-xs font-medium text-slate-600 hover:text-slate-900">
+                All Consultations ({appointments.length})
               </Link>
               <Link href="/patient/history">
-                <Button size="sm" variant="outline" className="text-xs">
+                <Button size="sm" variant="ghost" className="text-xs h-8">
                   Past Medication History
                 </Button>
               </Link>
-            </CardFooter>
-          </Card>
+            </div>
+          </section>
         </div>
       )}
     </div>
