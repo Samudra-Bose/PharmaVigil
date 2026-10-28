@@ -51,49 +51,9 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<CurrentUserResponse["user"] | null>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const cached = localStorage.getItem("pharmavigil_user");
-        if (cached) return JSON.parse(cached);
-        if (api.getMockMode()) return DEFAULT_DEMO_USER;
-      } catch {
-        return null;
-      }
-    }
-    return null;
-  });
-
-  const [membership, setMembership] = useState<Membership | null>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const cached = localStorage.getItem("pharmavigil_membership");
-        if (cached) return JSON.parse(cached);
-        if (api.getMockMode()) return DEFAULT_DEMO_MEMBERSHIP;
-      } catch {
-        return null;
-      }
-    }
-    return null;
-  });
-
-  const [role, setRole] = useState<UserRole | null>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const cached = localStorage.getItem("pharmavigil_membership");
-        if (cached) {
-          const mem = JSON.parse(cached);
-          return (mem.assignedRole ||
-            mem.requestedRole ||
-            mem.role) as UserRole | null;
-        }
-        if (api.getMockMode()) return "PHARMACIST";
-      } catch {
-        return null;
-      }
-    }
-    return null;
-  });
+  const [user, setUser] = useState<CurrentUserResponse["user"] | null>(null);
+  const [membership, setMembership] = useState<Membership | null>(null);
+  const [role, setRole] = useState<UserRole | null>(null);
 
   const [hospital, setHospital] = useState<Hospital | null>(null);
   const [hospitalName, setHospitalName] = useState<string>(
@@ -121,9 +81,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const refreshSession = useCallback(async () => {
     let hasToken: string | null = null;
+    let cachedUser: CurrentUserResponse["user"] | null = null;
+    let cachedMem: Membership | null = null;
     try {
       if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
         hasToken = localStorage.getItem("pharmavigil_session_token");
+        const u = localStorage.getItem("pharmavigil_user");
+        if (u) cachedUser = JSON.parse(u);
+        const m = localStorage.getItem("pharmavigil_membership");
+        if (m) cachedMem = JSON.parse(m);
       }
     } catch {
       hasToken = null;
@@ -144,13 +110,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const assigned = (activeMem?.assignedRole ||
         activeMem?.requestedRole ||
         (activeMem as any)?.role) as UserRole | undefined;
-      setRole(assigned || null);
+      setRole(assigned || (isMockMode ? "PHARMACIST" : null));
       await resolveHospital(activeMem);
     } catch (err) {
       if (isMockMode && !pathname?.startsWith("/auth")) {
-        setUser(DEFAULT_DEMO_USER);
-        setMembership(DEFAULT_DEMO_MEMBERSHIP);
-        setRole("PHARMACIST");
+        setUser(cachedUser || DEFAULT_DEMO_USER);
+        setMembership(cachedMem || DEFAULT_DEMO_MEMBERSHIP);
+        const assigned = (cachedMem?.assignedRole ||
+          cachedMem?.requestedRole ||
+          (cachedMem as any)?.role) as UserRole | undefined;
+        setRole(assigned || "PHARMACIST");
       } else {
         setUser(null);
         setMembership(null);

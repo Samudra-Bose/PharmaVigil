@@ -28,6 +28,8 @@ import {
   ShieldAlert,
   FileSearch,
   BookOpenCheck,
+  ShieldCheck,
+  ArrowUpRight,
 } from "lucide-react";
 
 interface NavItem {
@@ -94,6 +96,7 @@ export const Sidebar: React.FC = () => {
         href: "/pharmacist",
         icon: ClipboardList,
         badge: "1",
+        badgeVariant: "urgent",
       },
       {
         label: "Inpatient Orders",
@@ -176,29 +179,41 @@ export const Sidebar: React.FC = () => {
   return (
     <aside
       className={cn(
-        "hidden lg:flex flex-col bg-white border-r border-slate-200/80 shrink-0 transition-all duration-200 select-none z-30",
-        collapsed ? "w-16" : "w-60"
+        "hidden lg:flex flex-col bg-[#111317] border-r border-[#222731] shrink-0 transition-all duration-200 select-none z-30 text-white",
+        collapsed ? "w-16" : "w-64"
       )}
       aria-label="Clinical Portal Navigation"
     >
-      {/* Workspace Context Header */}
-      <div className={cn("p-3 border-b border-slate-100 flex items-center", collapsed ? "justify-center" : "justify-between px-3.5")}>
+      {/* Workspace Context Header (Dark Eduplex Aesthetic) */}
+      <div
+        className={cn(
+          "p-3.5 border-b border-white/10 flex items-center",
+          collapsed ? "justify-center" : "justify-between px-4"
+        )}
+      >
         {!collapsed ? (
-          <div className="overflow-hidden min-w-0 pr-1">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-forest-900 flex items-center gap-1.5">
-              <Activity className="w-3.5 h-3.5 text-forest-900 shrink-0" />
-              <span className="truncate">{roleTitle}</span>
+          <div className="overflow-hidden min-w-0 pr-1 flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+              <Activity className="w-4 h-4 text-emerald-400" />
             </div>
-            <div
-              className="text-[11px] font-medium text-slate-500 truncate mt-0.5"
-              title={hospitalName}
-            >
-              {hospitalName}
+            <div className="overflow-hidden">
+              <div className="text-xs font-extrabold uppercase tracking-wider text-white truncate">
+                {roleTitle}
+              </div>
+              <div
+                className="text-[11px] font-medium text-slate-400 truncate mt-0.5"
+                title={hospitalName}
+              >
+                {hospitalName}
+              </div>
             </div>
           </div>
         ) : (
-          <div className="w-8 h-8 rounded-lg bg-forest-50 border border-forest-200/80 text-forest-900 flex items-center justify-center shrink-0" title={roleTitle}>
-            <Activity className="w-4 h-4 text-forest-900" />
+          <div
+            className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0"
+            title={roleTitle}
+          >
+            <Activity className="w-4 h-4 text-emerald-400" />
           </div>
         )}
 
@@ -206,21 +221,17 @@ export const Sidebar: React.FC = () => {
           onClick={toggleCollapsed}
           aria-label={collapsed ? "Expand sidebar navigation" : "Collapse sidebar navigation"}
           className={cn(
-            "p-1.5 rounded-lg text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-900",
+            "p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-400",
             collapsed && "hidden"
           )}
           title={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
         >
-          {collapsed ? (
-            <ChevronRight className="w-3.5 h-3.5" />
-          ) : (
-            <ChevronLeft className="w-3.5 h-3.5" />
-          )}
+          <ChevronLeft className="w-3.5 h-3.5" />
         </button>
       </div>
 
-      {/* Nav List */}
-      <nav className="flex-1 py-3 px-2 space-y-1 overflow-y-auto">
+      {/* Nav List with Eduplex Pistachio Active Pill */}
+      <nav className="flex-1 py-4 px-2.5 space-y-1.5 overflow-y-auto">
         {items.map((item) => {
           const Icon = item.icon;
           const isActive =
@@ -237,22 +248,22 @@ export const Sidebar: React.FC = () => {
               aria-current={isActive ? "page" : undefined}
               title={collapsed ? item.label : undefined}
               className={cn(
-                "flex items-center rounded-xl text-xs transition-all group relative",
-                collapsed ? "justify-center p-2.5" : "gap-3 px-3 py-2",
+                "flex items-center rounded-2xl text-xs transition-all group relative",
+                collapsed ? "justify-center p-3" : "gap-3 px-3.5 py-2.5",
                 isActive
-                  ? "bg-forest-900 text-white shadow-sm font-semibold"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium"
+                  ? "bg-[#bbf7d0] text-slate-950 font-bold shadow-md shadow-emerald-500/10"
+                  : "text-slate-400 hover:text-white hover:bg-white/5 font-medium"
               )}
             >
               <Icon
                 className={cn(
                   "w-4 h-4 shrink-0 transition-colors",
-                  isActive ? "text-emerald-300" : "text-slate-400 group-hover:text-slate-700"
+                  isActive ? "text-slate-950 stroke-[2.2]" : "text-slate-400 group-hover:text-white"
                 )}
               />
 
               {!collapsed && (
-                <span className="flex-1 truncate tracking-tight">
+                <span className="flex-1 truncate tracking-tight text-xs">
                   {item.label}
                 </span>
               )}
@@ -260,10 +271,12 @@ export const Sidebar: React.FC = () => {
               {!collapsed && item.badge && (
                 <span
                   className={cn(
-                    "text-[10px] font-mono px-1.5 py-0.2 rounded font-medium",
+                    "text-[10px] font-mono px-2 py-0.5 rounded-full font-bold",
                     item.badgeVariant === "urgent"
-                      ? "bg-rose-100 text-rose-800 border border-rose-200"
-                      : "bg-slate-100 text-slate-700 border border-slate-200",
+                      ? "bg-rose-500 text-white"
+                      : isActive
+                        ? "bg-slate-950 text-white"
+                        : "bg-white/10 text-slate-300"
                   )}
                 >
                   {item.badge}
@@ -272,25 +285,48 @@ export const Sidebar: React.FC = () => {
 
               {/* Indicator Pip for active state when collapsed */}
               {collapsed && isActive && (
-                <span className="absolute left-0.5 top-1/2 -translate-y-1/2 w-1 h-5 bg-emerald-400 rounded-r-full" />
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-6 bg-emerald-400 rounded-r-full" />
               )}
             </Link>
           );
         })}
       </nav>
 
+      {/* Eduplex Style Bottom Feature Card */}
+      {!collapsed && (
+        <div className="mx-2.5 mb-3 p-3.5 rounded-2xl bg-gradient-to-br from-[#1a202c] to-[#111827] border border-white/10 space-y-2 relative overflow-hidden">
+          <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center gap-1.5 text-emerald-400 font-mono font-bold text-[11px]">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>Gated Safety Engine</span>
+            </div>
+            <div className="w-5 h-5 rounded-full bg-white/10 text-slate-300 flex items-center justify-center">
+              <ArrowUpRight className="w-3 h-3" />
+            </div>
+          </div>
+          <p className="text-[11px] text-slate-400 leading-tight">
+            Deterministic rule checks enforced. Dispensing fails closed until review.
+          </p>
+        </div>
+      )}
+
       {/* Footer System Status */}
-      <div className={cn("p-2.5 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400 font-mono", collapsed ? "justify-center" : "px-3")}>
+      <div
+        className={cn(
+          "p-2.5 border-t border-white/10 flex items-center justify-between text-[10px] text-slate-400 font-mono",
+          collapsed ? "justify-center" : "px-3.5"
+        )}
+      >
         {!collapsed ? (
           <>
             <span>Hotkeys: </span>
-            <kbd className="px-1.5 py-0.5 bg-slate-50 rounded border border-slate-200 text-slate-600">⌥1..4</kbd>
+            <kbd className="px-1.5 py-0.5 bg-white/10 rounded border border-white/10 text-slate-300">⌥1..4</kbd>
           </>
         ) : (
           <button
             onClick={toggleCollapsed}
             aria-label="Expand sidebar navigation"
-            className="p-1 rounded text-slate-400 hover:text-slate-800"
+            className="p-1 rounded text-slate-400 hover:text-white"
             title="Expand Sidebar"
           >
             <ChevronRight className="w-3.5 h-3.5" />

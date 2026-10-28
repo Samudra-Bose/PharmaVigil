@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { Shield, Building2, User, LogOut, Menu } from "lucide-react";
@@ -12,6 +12,11 @@ import { cn } from "@/lib/utils";
 export const AppHeader: React.FC = () => {
   const { user, membership, role, hospitalName, logout, switchRole, isMockMode } = useAuth();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <>
@@ -19,7 +24,7 @@ export const AppHeader: React.FC = () => {
         <div className="w-full px-3 sm:px-5 lg:px-6 h-12 sm:h-13 flex items-center justify-between gap-2">
           {/* Brand & Left Mobile Trigger */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            {user && (
+            {mounted && user && (
               <button
                 type="button"
                 onClick={() => setMobileNavOpen(true)}
@@ -63,7 +68,9 @@ export const AppHeader: React.FC = () => {
           </div>
 
           {/* User Profile & Actions */}
-          {user ? (
+          {!mounted ? (
+            <div className="w-28 h-7 flex items-center justify-end" />
+          ) : user ? (
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               {/* Authenticated Role Badge & Quick Demo Persona Switcher */}
               {role && (
