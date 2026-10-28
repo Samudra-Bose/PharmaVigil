@@ -26,6 +26,7 @@ import {
   ChevronRight,
   HeartPulse,
   User,
+  History,
 } from "lucide-react";
 
 export default function PatientHomePage() {
@@ -58,10 +59,10 @@ export default function PatientHomePage() {
   const upcomingApt = appointments.find((a) => a.status === "SCHEDULED");
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 pb-10">
-      {/* 1. Rythea-Style Welcome Header */}
-      <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-lux border border-slate-100/90 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-1.5">
+    <div className="max-w-7xl mx-auto space-y-5 pb-10">
+      {/* 1. Patient Welcome Header */}
+      <div className="bg-white rounded-2xl p-5 sm:p-6 shadow-lux border border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1">
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-bold text-forest-900 uppercase tracking-wider bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
               Patient Care Hub
@@ -70,39 +71,39 @@ export default function PatientHomePage() {
               MRN: {patient?.syntheticHospitalPatientId || "P-9021"}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
             Welcome back, {patient?.displayName || "Rajan Sharma"}
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500">
+          <p className="text-xs text-slate-500">
             Cardiology Outpatient Clinic • <span className="font-semibold text-slate-700">Metro General Hospital</span>
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
           <Link href="/patient/appointments/new">
-            <button className="h-9 px-4 rounded-full bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/90 shadow-lux flex items-center gap-1.5 transition-all">
+            <button className="h-8 sm:h-9 px-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/90 shadow-2xs flex items-center gap-1.5 transition-all whitespace-nowrap">
               <PlusCircle className="w-3.5 h-3.5 text-slate-500" /> Book Visit
             </button>
           </Link>
           <Link href="/patient/prescriptions">
-            <button className="h-9 px-4 rounded-full bg-forest-900 hover:bg-forest-800 text-white font-semibold text-xs shadow-lux flex items-center gap-1.5 transition-all">
+            <button className="h-8 sm:h-9 px-4 rounded-xl bg-forest-900 hover:bg-forest-800 text-white font-semibold text-xs shadow-lux flex items-center gap-1.5 transition-all whitespace-nowrap">
               <Pill className="w-3.5 h-3.5 text-emerald-300" /> My Prescriptions
             </button>
           </Link>
         </div>
       </div>
 
-      {/* 2. Asymmetric Clinical Hero Bento Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        {/* Left Column (7 cols): Active Regimen & Dose Schedule */}
-        <div className="lg:col-span-7 flex flex-col gap-4">
-          <div className="bg-white rounded-3xl p-6 shadow-lux border border-slate-100/90 flex flex-col justify-between space-y-4">
-            <div className="space-y-4">
+      {/* 2. Focused Patient Care Workspace */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        {/* Left (8 cols): Current Prescription Schedule */}
+        <div className="lg:col-span-8 flex flex-col gap-4">
+          <div className="bg-white rounded-2xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between space-y-4">
+            <div className="space-y-3">
               <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono flex items-center gap-1.5">
-                  <Pill className="w-3.5 h-3.5 text-emerald-600" /> Current Prescription Regimen
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 font-mono flex items-center gap-1.5">
+                  <Pill className="w-3.5 h-3.5 text-emerald-700" /> Active Therapy Regimen
                 </span>
-                <Badge variant={isReady ? "authorized" : "moderate"} className="text-[11px]">
+                <Badge variant={isReady ? "authorized" : "moderate"} className="text-xs">
                   {isReady ? "Ready for Pharmacy Pick-up" : "Under Pharmacist Safety Review"}
                 </Badge>
               </div>
@@ -116,14 +117,14 @@ export default function PatientHomePage() {
                 </p>
               </div>
 
-              <div className="space-y-2.5">
+              <div className="space-y-2">
                 {activeRx?.items.map((item, idx) => (
                   <div
                     key={idx}
-                    className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between gap-3"
+                    className="p-3.5 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between gap-3"
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-9 h-9 rounded-xl bg-white border border-slate-200/80 flex items-center justify-center shrink-0">
+                      <div className="w-8 h-8 rounded-lg bg-white border border-slate-200/80 flex items-center justify-center shrink-0">
                         <Pill className="w-4 h-4 text-emerald-700" />
                       </div>
                       <div className="min-w-0">
@@ -136,7 +137,7 @@ export default function PatientHomePage() {
                       </div>
                     </div>
 
-                    <span className="text-xs font-semibold font-mono text-slate-700 bg-white px-2.5 py-1 rounded-full border border-slate-200/80 shrink-0">
+                    <span className="text-xs font-semibold font-mono text-slate-700 bg-white px-2.5 py-1 rounded-md border border-slate-200/80 shrink-0">
                       {item.frequency}
                     </span>
                   </div>
@@ -144,9 +145,12 @@ export default function PatientHomePage() {
               </div>
             </div>
 
-            <div className="pt-3 border-t border-slate-100 flex justify-end">
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span className="text-xs text-slate-500">
+                Instructions: Take with a full glass of water after meals.
+              </span>
               <Link href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`}>
-                <button className="h-8 px-3 rounded-full bg-forest-900 hover:bg-forest-800 text-white font-medium text-xs shadow-2xs flex items-center gap-1.5 transition-all">
+                <button className="h-8 px-3.5 rounded-xl bg-forest-900 hover:bg-forest-800 text-white font-medium text-xs shadow-2xs flex items-center gap-1.5 transition-all">
                   <span>View Dosing Schedule</span>
                   <ArrowRight className="w-3 h-3 text-emerald-300" />
                 </button>
@@ -155,20 +159,20 @@ export default function PatientHomePage() {
           </div>
         </div>
 
-        {/* Right Column (5 cols): Pharmacy Pickup & Upcoming Consultations */}
-        <div className="lg:col-span-5 flex flex-col gap-4">
-          <div className="bg-white rounded-3xl p-6 shadow-lux border border-slate-100/90 flex flex-col justify-between space-y-4">
-            <div className="space-y-4">
+        {/* Right (4 cols): Pharmacy Pick-up & Consultation Schedule */}
+        <div className="lg:col-span-4 flex flex-col gap-4">
+          <div className="bg-white rounded-2xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between space-y-4">
+            <div className="space-y-3">
               <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-blue-600" /> Upcoming Appointment
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 font-mono flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 text-blue-600" /> Upcoming Visit
                 </span>
                 {upcomingApt && <Badge variant="info">Scheduled</Badge>}
               </div>
 
               {upcomingApt ? (
-                <div className="p-4 rounded-2xl bg-blue-50/60 border border-blue-100 space-y-2">
-                  <h3 className="text-sm font-bold text-slate-900">
+                <div className="p-3.5 rounded-xl bg-blue-50/60 border border-blue-100 space-y-1.5">
+                  <h3 className="text-xs font-bold text-slate-900">
                     {upcomingApt.reason}
                   </h3>
                   <div className="text-xs text-slate-600 flex items-center gap-1.5">
@@ -180,38 +184,38 @@ export default function PatientHomePage() {
                   </div>
                 </div>
               ) : (
-                <div className="space-y-2 text-xs text-slate-600">
-                  <h3 className="text-sm font-bold text-slate-900">
-                    Metro General Hospital Outpatient Pharmacy
+                <div className="space-y-1.5 text-xs text-slate-600">
+                  <h3 className="text-xs font-bold text-slate-900">
+                    Outpatient Pharmacy (Counter 3)
                   </h3>
                   <div className="flex items-center gap-2 text-slate-500">
-                    <Clock className="w-3.5 h-3.5 text-slate-400" /> Open: 8:00 AM – 8:00 PM (Mon–Sat)
+                    <Clock className="w-3.5 h-3.5 text-slate-400" /> Hours: 8:00 AM – 8:00 PM (Mon–Sat)
                   </div>
                   <div className="flex items-center gap-2 text-slate-500">
-                    <Phone className="w-3.5 h-3.5 text-slate-400" /> Counter Helpline: +91 11 2345 6789
+                    <Phone className="w-3.5 h-3.5 text-slate-400" /> Helpline: +91 11 2345 6789
                   </div>
                 </div>
               )}
 
-              {/* Obsidian Pickup Notice Card */}
-              <div className="p-4 rounded-2xl bg-slate-950 text-white shadow-lux-black space-y-1.5">
-                <div className="flex items-center gap-2 text-emerald-400 text-xs font-semibold">
-                  <ShieldCheck className="w-4 h-4" />
-                  <span>Pharmacy Pickup Instructions</span>
+              {/* Pharmacy Pickup Instructions Card */}
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
+                <div className="flex items-center gap-1.5 text-forest-900 text-xs font-bold">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  <span>Pharmacy Counter Pickup</span>
                 </div>
-                <p className="text-[11px] text-slate-300 leading-relaxed">
-                  Present your synthetic Patient MRN <span className="font-mono font-bold text-white">P-9021</span> at Outpatient Counter 3. Dispensing requires pharmacist safety clearance.
+                <p className="text-[11px] text-slate-600 leading-relaxed">
+                  Present your patient MRN <span className="font-mono font-bold text-slate-900">P-9021</span> at Counter 3. Dispensing requires pharmacist safety clearance.
                 </p>
               </div>
             </div>
 
-            <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-              <Link href="/patient/appointments" className="text-xs font-semibold text-slate-600 hover:text-slate-900">
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+              <Link href="/patient/appointments" className="font-semibold text-slate-600 hover:text-slate-900">
                 All Consultations ({appointments.length})
               </Link>
               <Link href="/patient/history">
-                <button className="h-8 px-3 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium text-xs border border-slate-200/80 transition-all">
-                  Past Medication History
+                <button className="h-7 px-2.5 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium text-xs border border-slate-200/80 transition-all">
+                  Medication History
                 </button>
               </Link>
             </div>
