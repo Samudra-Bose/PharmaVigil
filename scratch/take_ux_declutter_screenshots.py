@@ -2,7 +2,7 @@ import os
 import sys
 from playwright.sync_api import sync_playwright
 
-OUT_DIR = "/home/samudra/.gemini/antigravity-cli/brain/065f48aa-5b00-4964-abd4-5dc98a9c15df/screenshots/ux-declutter"
+OUT_DIR = "/home/samudra/.gemini/antigravity-cli/brain/065f48aa-5b00-4964-abd4-5dc98a9c15df/screenshots/pinterest-bento"
 os.makedirs(OUT_DIR, exist_ok=True)
 
 PAGES = [
@@ -26,8 +26,7 @@ with sync_playwright() as p:
         for name, url in PAGES:
             try:
                 page.goto(url, wait_until="networkidle", timeout=15000)
-                # Wait an extra 500ms for animations/render
-                page.wait_for_timeout(500)
+                page.wait_for_timeout(600)
                 path = f"{OUT_DIR}/{name}_{vp_name}.png"
                 page.screenshot(path=path, full_page=True)
                 print(f"Captured {path}")
@@ -35,4 +34,4 @@ with sync_playwright() as p:
                 print(f"Error capturing {name} {vp_name}: {e}")
         context.close()
     browser.close()
-print("Done!")
+print("Bento screenshots capture done!")
