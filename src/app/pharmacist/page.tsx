@@ -411,8 +411,14 @@ export default function PharmacistDashboard() {
                     >
                       {/* Left: Pill Icon + Case ID + Patient */}
                       <div className="flex items-center gap-3 min-w-0">
-                        <div className="size-10 rounded-xl bg-slate-100 border border-slate-200/70 text-slate-700 flex items-center justify-center shrink-0">
-                          <Pill className="size-4 text-slate-700" />
+                        <div className={`size-10 rounded-xl flex items-center justify-center shrink-0 border ${
+                          c.status === "CHECK_FLAGGED"
+                            ? "bg-rose-50 border-rose-200 text-rose-700"
+                            : c.status === "DISPENSING_AUTHORIZED" || c.status === "CHECK_PASSED"
+                              ? "bg-emerald-50 border-emerald-200 text-emerald-700"
+                              : "bg-amber-50 border-amber-200 text-amber-700"
+                        }`}>
+                          <Pill className="size-4" />
                         </div>
                         <div className="min-w-0 flex flex-col gap-0.5">
                           <div className="flex items-center gap-2">
@@ -453,10 +459,16 @@ export default function PharmacistDashboard() {
                                 ? `/pharmacist/cases/${c.id}/results`
                                 : `/pharmacist/cases/${c.id}/medicines`
                           }
-                          className="h-7 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs shadow-2xs inline-flex items-center gap-1.5 transition-all cursor-pointer"
+                          className={`h-7 px-3 rounded-lg text-white font-semibold text-xs shadow-2xs inline-flex items-center gap-1.5 transition-all cursor-pointer ${
+                            c.status === "CHECK_FLAGGED"
+                              ? "bg-rose-700 hover:bg-rose-800"
+                              : c.status === "CHECK_PASSED" || c.status === "DISPENSING_AUTHORIZED"
+                                ? "bg-emerald-600 hover:bg-emerald-700"
+                                : "bg-slate-900 hover:bg-slate-800"
+                          }`}
                         >
                           <span>Review</span>
-                          <ArrowRight data-icon="inline-end" className="size-3 text-emerald-300" />
+                          <ArrowRight data-icon="inline-end" className="size-3 text-white/90" />
                         </Link>
                       </div>
                     </div>
