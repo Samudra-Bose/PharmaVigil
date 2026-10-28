@@ -13,16 +13,12 @@ function DoctorCaseDispositionRedirect() {
   useEffect(() => {
     async function findTaskAndRedirect() {
       try {
-        const tasks = await api.getDoctorTasks();
-        const matched = tasks.find((t) => t.caseId === caseId) || tasks[0];
-        if (matched) {
-          router.replace(`/doctor/tasks/${matched.id}/disposition?caseId=${caseId}`);
-        } else {
-          router.replace(`/doctor/tasks/task_001/disposition?caseId=${caseId}`);
-        }
+        const c = await api.getCase(caseId);
+        const alertId = c?.alerts?.[0]?.id || "alert_ddi_statin_macrolide_001";
+        router.replace(`/doctor/tasks/${alertId}/disposition?caseId=${caseId}`);
       } catch (err) {
         console.error("Failed to route disposition:", err);
-        router.replace(`/doctor/tasks/task_001/disposition?caseId=${caseId}`);
+        router.replace(`/doctor/tasks/alert_ddi_statin_macrolide_001/disposition?caseId=${caseId}`);
       }
     }
 

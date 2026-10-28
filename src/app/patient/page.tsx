@@ -69,6 +69,63 @@ export default function PatientHomePage() {
   const upcomingApt = appointments.find((a) => a.status === "SCHEDULED");
   const pastAppointments = appointments.filter((a) => a.status === "COMPLETED");
 
+  // Interactive UI state for Charts, Calendar, and Filters
+  const [timeRange, setTimeRange] = useState<"weekly" | "monthly" | "daily">("weekly");
+  const [activeDayIndex, setActiveDayIndex] = useState<number>(4); // Thursday
+  const [calendarMonth, setCalendarMonth] = useState<number>(9); // 0-indexed: 9 = October
+  const [calendarYear, setCalendarYear] = useState<number>(2026);
+  const [selectedCalendarDay, setSelectedCalendarDay] = useState<number>(30);
+
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  const handlePrevMonth = () => {
+    if (calendarMonth === 0) {
+      setCalendarMonth(11);
+      setCalendarYear((y) => y - 1);
+    } else {
+      setCalendarMonth((m) => m - 1);
+    }
+  };
+
+  const handleNextMonth = () => {
+    if (calendarMonth === 11) {
+      setCalendarMonth(0);
+      setCalendarYear((y) => y + 1);
+    } else {
+      setCalendarMonth((m) => m + 1);
+    }
+  };
+
+  const chartData = {
+    weekly: [
+      { day: "Su", taken: 3, total: 3, height: "h-28" },
+      { day: "Mo", taken: 3, total: 3, height: "h-32" },
+      { day: "Tu", taken: 3, total: 3, height: "h-36" },
+      { day: "We", taken: 3, total: 3, height: "h-36" },
+      { day: "Th", taken: 3, total: 3, height: "h-36" },
+      { day: "Fr", taken: 3, total: 3, height: "h-36" },
+      { day: "Sa", taken: 2, total: 3, height: "h-28" },
+    ],
+    monthly: [
+      { day: "W1", taken: 21, total: 21, height: "h-32" },
+      { day: "W2", taken: 20, total: 21, height: "h-30" },
+      { day: "W3", taken: 21, total: 21, height: "h-36" },
+      { day: "W4", taken: 21, total: 21, height: "h-36" },
+    ],
+    daily: [
+      { day: "08h", taken: 1, total: 1, height: "h-36" },
+      { day: "13h", taken: 1, total: 1, height: "h-36" },
+      { day: "20h", taken: 1, total: 1, height: "h-36" },
+    ],
+  };
+
+  const currentChartBars = chartData[timeRange];
+  const safeActiveDayIndex = activeDayIndex >= currentChartBars.length ? 0 : activeDayIndex;
+  const activeChartItem = currentChartBars[safeActiveDayIndex];
+
   return (
     <div className="flex flex-col gap-6 max-w-[1400px] mx-auto pb-12">
       {/* 1. Header with clean typography & distinct button hierarchy */}
@@ -252,45 +309,64 @@ export default function PatientHomePage() {
                   </span>
                 </div>
               </div>
-              <div className="text-xs font-semibold px-2.5 py-1 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-600">
-                Weekly ⌵
-              </div>
+              <select
+                aria-label="Filter dose adherence by time range"
+                value={timeRange}
+                onChange={(e) => {
+                  setTimeRange(e.target.value as "weekly" | "monthly" | "daily");
+                  setActiveDayIndex(0);
+                }}
+                className="text-xs font-semibold px-2.5 py-1 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 cursor-pointer hover:bg-slate-100 transition-colors focus:outline-none focus:ring-1 focus:ring-slate-300"
+              >
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="daily">Daily</option>
+              </select>
             </div>
 
             {/* Stylized Modern Bar Chart */}
             <div className="pt-6 pb-2">
               <div className="h-44 flex items-end justify-between gap-3 px-2 relative">
-                {/* Floating Tooltip above Thursday Bar */}
-                <div className="absolute top-1 left-[54%] -translate-x-1/2 bg-[#111317] text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-lg flex items-center gap-1 z-20 pointer-events-none">
+                {/* Floating Tooltip */}
+                <div
+                  className="absolute top-1 bg-[#111317] text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-lg flex items-center gap-1.5 z-20 pointer-events-none transition-all duration-200"
+                  style={{
+                    left: `${Math.max(15, Math.min(85, ((safeActiveDayIndex + 0.5) / currentChartBars.length) * 100))}%`,
+                    transform: "translateX(-50%)",
+                  }}
+                >
                   <span className="size-1.5 rounded-full bg-emerald-400" />
-                  <span>3 of 3 Doses Taken</span>
+                  <span>
+                    {activeChartItem.taken} of {activeChartItem.total} Doses Taken
+                  </span>
                 </div>
 
                 {/* Day Bars */}
-                {[
-                  { day: "Su", height: "h-28", active: false },
-                  { day: "Mo", height: "h-32", active: false },
-                  { day: "Tu", height: "h-36", active: false },
-                  { day: "We", height: "h-36", active: false },
-                  { day: "Th", height: "h-36", active: true },
-                  { day: "Fr", height: "h-36", active: false },
-                  { day: "Sa", height: "h-28", active: false },
-                ].map((item, i) => (
-                  <div key={i} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
-                    <div className="w-full max-w-[14px] bg-slate-100 rounded-full h-36 flex items-end">
-                      <div
-                        className={`w-full rounded-full transition-all ${
-                          item.active
-                            ? "bg-emerald-500 shadow-sm shadow-emerald-500/30"
-                            : "bg-[#111317] group-hover:bg-slate-700"
-                        } ${item.height}`}
-                      />
-                    </div>
-                    <span className={`text-[11px] font-mono ${item.active ? "font-bold text-slate-900" : "text-slate-400"}`}>
-                      {item.day}
-                    </span>
-                  </div>
-                ))}
+                {currentChartBars.map((item, i) => {
+                  const isActive = i === safeActiveDayIndex;
+                  return (
+                    <button
+                      key={item.day}
+                      type="button"
+                      onClick={() => setActiveDayIndex(i)}
+                      aria-label={`${item.day}: ${item.taken} of ${item.total} doses taken`}
+                      className="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none"
+                    >
+                      <div className="w-full max-w-[14px] bg-slate-100 rounded-full h-36 flex items-end">
+                        <div
+                          className={`w-full rounded-full transition-all duration-300 ${
+                            isActive
+                              ? "bg-emerald-500 shadow-sm shadow-emerald-500/30 ring-2 ring-emerald-300/50"
+                              : "bg-[#111317] group-hover:bg-slate-700"
+                          } ${item.height}`}
+                        />
+                      </div>
+                      <span className={`text-[11px] font-mono transition-colors ${isActive ? "font-bold text-slate-900" : "text-slate-400 group-hover:text-slate-600"}`}>
+                        {item.day}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -311,57 +387,65 @@ export default function PatientHomePage() {
 
             {/* List with intentional clinical squircles & right chevrons */}
             <div className="divide-y divide-slate-100 mt-2">
-              <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/60 rounded-xl px-2 transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
-                    <Pill className="size-4 text-slate-700" />
+              <Link href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`} className="block">
+                <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/80 rounded-xl px-2 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="size-9 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
+                      <Pill className="size-4 text-slate-700" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">Morning Dose (08:00 AM)</div>
+                      <div className="text-[11px] text-slate-500">Coumadin 5mg with water</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-xs font-bold text-slate-900">Morning Dose (08:00 AM)</div>
-                    <div className="text-[11px] text-slate-500">Coumadin 5mg with water</div>
-                  </div>
+                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 group-hover:translate-x-0.5 transition-all" />
                 </div>
-                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
-              </div>
+              </Link>
 
-              <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/60 rounded-xl px-2 transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
-                    <Pill className="size-4 text-slate-700" />
+              <Link href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`} className="block">
+                <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/80 rounded-xl px-2 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="size-9 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
+                      <Pill className="size-4 text-slate-700" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">Midday Maintenance (01:00 PM)</div>
+                      <div className="text-[11px] text-slate-500">Metformin 500mg with meal</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-xs font-bold text-slate-900">Midday Maintenance (01:00 PM)</div>
-                    <div className="text-[11px] text-slate-500">Metformin 500mg with meal</div>
-                  </div>
+                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 group-hover:translate-x-0.5 transition-all" />
                 </div>
-                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
-              </div>
+              </Link>
 
-              <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/60 rounded-xl px-2 transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-emerald-50 border border-emerald-200/70 text-emerald-800 flex items-center justify-center shrink-0">
-                    <Pill className="size-4 text-emerald-800" />
+              <Link href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`} className="block">
+                <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/80 rounded-xl px-2 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="size-9 rounded-xl bg-emerald-50 border border-emerald-200/70 text-emerald-800 flex items-center justify-center shrink-0">
+                      <Pill className="size-4 text-emerald-800" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">Evening Dose (08:00 PM)</div>
+                      <div className="text-[11px] text-slate-500">Disprin 100mg with water</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-xs font-bold text-slate-900">Evening Dose (08:00 PM)</div>
-                    <div className="text-[11px] text-slate-500">Disprin 100mg with water</div>
-                  </div>
+                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 group-hover:translate-x-0.5 transition-all" />
                 </div>
-                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
-              </div>
+              </Link>
 
-              <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/60 rounded-xl px-2 transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-amber-50 border border-amber-200/70 text-amber-700 flex items-center justify-center shrink-0">
-                    <HeartPulse className="size-4 text-amber-700" />
+              <Link href="/patient/history" className="block">
+                <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/80 rounded-xl px-2 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="size-9 rounded-xl bg-amber-50 border border-amber-200/70 text-amber-700 flex items-center justify-center shrink-0">
+                      <HeartPulse className="size-4 text-amber-700" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover:text-amber-800 transition-colors">Health Check & INR Log</div>
+                      <div className="text-[11px] text-slate-500">Target INR: 2.0 - 3.0</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-xs font-bold text-slate-900">Health Check & INR Log</div>
-                    <div className="text-[11px] text-slate-500">Target INR: 2.0 - 3.0</div>
-                  </div>
+                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 group-hover:translate-x-0.5 transition-all" />
                 </div>
-                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
-              </div>
+              </Link>
             </div>
           </div>
 
@@ -376,10 +460,26 @@ export default function PatientHomePage() {
           <div>
             {/* Calendar Widget */}
             <div className="flex items-center justify-between pb-2 text-xs">
-              <span className="font-bold text-slate-900">October, 2026</span>
+              <span className="font-bold text-slate-900">
+                {monthNames[calendarMonth]}, {calendarYear}
+              </span>
               <div className="flex items-center gap-1 text-slate-400">
-                <ChevronLeft className="size-3.5 cursor-pointer hover:text-slate-700" />
-                <ChevronRight className="size-3.5 cursor-pointer hover:text-slate-700" />
+                <button
+                  type="button"
+                  onClick={handlePrevMonth}
+                  aria-label="Previous month"
+                  className="p-1 hover:text-slate-700 hover:bg-slate-100 rounded transition-colors"
+                >
+                  <ChevronLeft className="size-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNextMonth}
+                  aria-label="Next month"
+                  className="p-1 hover:text-slate-700 hover:bg-slate-100 rounded transition-colors"
+                >
+                  <ChevronRight className="size-3.5" />
+                </button>
               </div>
             </div>
 
@@ -395,18 +495,20 @@ export default function PatientHomePage() {
 
               {[...Array(31)].map((_, i) => {
                 const day = i + 1;
-                const isConsultationDay = day === 30;
+                const isSelected = day === selectedCalendarDay;
                 return (
-                  <span
+                  <button
                     key={i}
-                    className={`py-1 rounded-full text-[10px] flex items-center justify-center ${
-                      isConsultationDay
+                    type="button"
+                    onClick={() => setSelectedCalendarDay(day)}
+                    className={`py-1 rounded-full text-[10px] flex items-center justify-center transition-colors ${
+                      isSelected
                         ? "bg-slate-900 text-white font-extrabold shadow-xs"
-                        : "text-slate-600 hover:bg-slate-50"
+                        : "text-slate-600 hover:bg-slate-100"
                     }`}
                   >
                     {day}
-                  </span>
+                  </button>
                 );
               })}
             </div>
@@ -416,32 +518,36 @@ export default function PatientHomePage() {
               <div className="flex items-center justify-between pb-1.5">
                 <span className="text-xs font-bold text-slate-900">Visits</span>
                 <Link href="/patient/appointments/new">
-                  <span className="size-4 rounded-full bg-slate-900 text-white flex items-center justify-center text-[10px] font-bold cursor-pointer">
+                  <span className="size-4 rounded-full bg-slate-900 hover:bg-slate-700 text-white flex items-center justify-center text-[10px] font-bold cursor-pointer transition-transform active:scale-95">
                     +
                   </span>
                 </Link>
               </div>
 
               <div className="flex flex-col gap-2 mt-1">
-                <div className="p-2 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-[11px]">
-                  <div>
-                    <div className="font-bold text-slate-900 truncate max-w-[110px]">Warfarin Follow-up</div>
-                    <div className="text-[10px] text-slate-400 font-mono">Oct 30, 10:00 AM</div>
+                <Link href="/patient/appointments" className="block group">
+                  <div className="p-2 rounded-xl bg-slate-50/80 group-hover:bg-slate-100 border border-slate-100 flex items-center justify-between text-[11px] transition-colors">
+                    <div>
+                      <div className="font-bold text-slate-900 truncate max-w-[110px] group-hover:text-emerald-800 transition-colors">Warfarin Follow-up</div>
+                      <div className="text-[10px] text-slate-400 font-mono">Oct 30, 10:00 AM</div>
+                    </div>
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                      Scheduled
+                    </span>
                   </div>
-                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                    Scheduled
-                  </span>
-                </div>
+                </Link>
 
-                <div className="p-2 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-[11px]">
-                  <div>
-                    <div className="font-bold text-slate-900 truncate max-w-[110px]">INR Blood Test</div>
-                    <div className="text-[10px] text-slate-400 font-mono">Nov 14, 08:30 AM</div>
+                <Link href="/patient/appointments" className="block group">
+                  <div className="p-2 rounded-xl bg-slate-50/80 group-hover:bg-slate-100 border border-slate-100 flex items-center justify-between text-[11px] transition-colors">
+                    <div>
+                      <div className="font-bold text-slate-900 truncate max-w-[110px] group-hover:text-sky-800 transition-colors">INR Blood Test</div>
+                      <div className="text-[10px] text-slate-400 font-mono">Nov 14, 08:30 AM</div>
+                    </div>
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-sky-100 text-sky-800">
+                      Lab
+                    </span>
                   </div>
-                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-sky-100 text-sky-800">
-                    Lab
-                  </span>
-                </div>
+                </Link>
               </div>
             </div>
           </div>
@@ -470,7 +576,7 @@ export default function PatientHomePage() {
 
           {/* Quick Action Links */}
           <div className="flex items-center gap-2">
-            <Link href="/patient/allergies">
+            <Link href="/patient/medication-history">
               <button className="h-8 px-3.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200/80 flex items-center gap-1.5 transition-all">
                 <PlusCircle data-icon="inline-start" className="size-3.5 text-slate-500" />
                 <span>Report Meds & Allergies</span>

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { Shield, Building2, User, LogOut, Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -10,8 +11,10 @@ import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { cn } from "@/lib/utils";
 
 export const AppHeader: React.FC = () => {
+  const router = useRouter();
   const { user, membership, role, hospitalName, logout, switchRole, isMockMode } = useAuth();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -69,14 +72,23 @@ export const AppHeader: React.FC = () => {
 
           {/* Center: Search pill bar (Eduplex Style) */}
           <div className="hidden lg:flex items-center flex-1 max-w-md mx-6">
-            <div className="relative w-full">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!searchQuery.trim()) return;
+                router.push(`/pharmacist/patients/search?q=${encodeURIComponent(searchQuery.trim())}`);
+              }}
+              className="relative w-full"
+            >
               <Search className="size-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search prescriptions, patients, clinical rules..."
                 className="w-full pl-9 pr-4 py-1.5 text-xs rounded-full bg-slate-50 border border-slate-200/80 text-slate-700 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 transition-all shadow-2xs"
               />
-            </div>
+            </form>
           </div>
 
           {/* User Profile & Actions */}

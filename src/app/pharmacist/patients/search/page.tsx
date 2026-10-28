@@ -1,18 +1,34 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { api } from "@/lib/api-client";
 import type { PatientRecord } from "@/lib/mock-data/fixtures";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Search, UserCheck, ArrowRight, ShieldCheck, User } from "lucide-react";
 
-export default function PatientSearchPage() {
+function PatientSearchContent() {
+  const searchParams = useSearchParams();
   const [query, setQuery] = useState("P-9021");
   const [results, setResults] = useState<PatientRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+
+  useEffect(() => {
+    const q = searchParams?.get("q");
+    if (q) {
+      setQuery(q);
+      setLoading(true);
+      api.searchPatients(q).then((data) => {
+        setResults(data);
+        setSearched(true);
+      }).finally(() => {
+        setLoading(false);
+      });
+    }
+  }, [searchParams]);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -190,5 +206,13 @@ export default function PatientSearchPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function PatientSearchPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-xs text-slate-400">Loading search...</div>}>
+      <PatientSearchContent />
+    </Suspense>
   );
 }

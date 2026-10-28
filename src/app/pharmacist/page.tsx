@@ -11,6 +11,7 @@ import { Badge, type BadgeVariant } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PrescriptionTableSkeleton } from "@/components/skeletons";
 import { ClinicalTooltip } from "@/components/clinical/ClinicalTooltip";
+import { clinicalToast } from "@/lib/toast";
 import { formatDateTime } from "@/lib/utils";
 import {
   Search,
@@ -379,45 +380,72 @@ export default function PharmacistDashboard() {
                   </span>
                 </div>
               </div>
-              <div className="text-xs font-semibold px-2.5 py-1 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-600">
-                Weekly ⌵
-              </div>
+              <select
+                value={timeRange}
+                onChange={(e) => setTimeRange(e.target.value as any)}
+                aria-label="Filter Hours Activity Range"
+                className="text-xs font-semibold px-2.5 py-1 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 cursor-pointer focus:outline-none focus:ring-1 focus:ring-slate-900 shadow-2xs"
+              >
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="daily">Daily</option>
+              </select>
             </div>
 
             {/* Stylized Modern Bar Chart */}
             <div className="pt-6 pb-2">
               <div className="h-44 flex items-end justify-between gap-3 px-2 relative">
-                {/* Floating Tooltip above Thursday Bar */}
-                <div className="absolute top-1 left-[54%] -translate-x-1/2 bg-[#111317] text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-lg flex items-center gap-1 z-20 pointer-events-none">
+                {/* Floating Tooltip above Active Bar */}
+                <div
+                  className="absolute top-1 -translate-x-1/2 bg-[#111317] text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-lg flex items-center gap-1 z-20 pointer-events-none transition-all duration-200"
+                  style={{
+                    left: `${((activeDayIndex + 0.5) / 7) * 100}%`,
+                  }}
+                >
                   <span className="size-1.5 rounded-full bg-emerald-400" />
-                  <span>6h 45 min • 14 Rx</span>
+                  <span>
+                    {activeDayIndex === 4
+                      ? "6h 45m • 14 Rx"
+                      : activeDayIndex === 3
+                        ? "7h 10m • 16 Rx"
+                        : "4h 30m • 8 Rx"}
+                  </span>
                 </div>
 
                 {/* Day Bars */}
                 {[
-                  { day: "Su", height: "h-14", active: false },
-                  { day: "Mo", height: "h-28", active: false },
-                  { day: "Tu", height: "h-20", active: false },
-                  { day: "We", height: "h-36", active: false },
-                  { day: "Th", height: "h-36", active: true },
-                  { day: "Fr", height: "h-16", active: false },
-                  { day: "Sa", height: "h-24", active: false },
-                ].map((item, i) => (
-                  <div key={i} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
-                    <div className="w-full max-w-[14px] bg-slate-100 rounded-full h-36 flex items-end">
-                      <div
-                        className={`w-full rounded-full transition-all ${
-                          item.active
-                            ? "bg-emerald-500 shadow-sm shadow-emerald-500/30"
-                            : "bg-[#111317] group-hover:bg-slate-700"
-                        } ${item.height}`}
-                      />
-                    </div>
-                    <span className={`text-[11px] font-mono ${item.active ? "font-bold text-slate-900" : "text-slate-400"}`}>
-                      {item.day}
-                    </span>
-                  </div>
-                ))}
+                  { day: "Su", height: "h-14" },
+                  { day: "Mo", height: "h-28" },
+                  { day: "Tu", height: "h-20" },
+                  { day: "We", height: "h-36" },
+                  { day: "Th", height: "h-36" },
+                  { day: "Fr", height: "h-16" },
+                  { day: "Sa", height: "h-24" },
+                ].map((item, i) => {
+                  const isActive = activeDayIndex === i;
+                  return (
+                    <button
+                      type="button"
+                      key={i}
+                      onClick={() => setActiveDayIndex(i)}
+                      className="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none"
+                      title={`Select ${item.day}`}
+                    >
+                      <div className="w-full max-w-[14px] bg-slate-100 rounded-full h-36 flex items-end">
+                        <div
+                          className={`w-full rounded-full transition-all ${
+                            isActive
+                              ? "bg-emerald-500 shadow-sm shadow-emerald-500/30"
+                              : "bg-[#111317] group-hover:bg-slate-700"
+                          } ${item.height}`}
+                        />
+                      </div>
+                      <span className={`text-[11px] font-mono ${isActive ? "font-bold text-slate-900" : "text-slate-400 group-hover:text-slate-700"}`}>
+                        {item.day}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -436,59 +464,73 @@ export default function PharmacistDashboard() {
               <span className="text-xs text-slate-400 font-medium">Deterministic CDS</span>
             </div>
 
-            {/* List with intentional clinical squircles & right chevrons */}
+            {/* Fully Functional Clinical Pipeline Navigation */}
             <div className="divide-y divide-slate-100 mt-2">
-              <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/60 rounded-xl px-2 transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
-                    <Camera className="size-4 text-slate-700" />
+              <Link href="/pharmacist/capture" className="block">
+                <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/60 rounded-xl px-2 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="size-9 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
+                      <Camera className="size-4 text-slate-700" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">OCR Capture</div>
+                      <div className="text-[11px] text-slate-500">99.4% Confidence Score</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-xs font-bold text-slate-900">OCR Capture</div>
-                    <div className="text-[11px] text-slate-500">99.4% Confidence Score</div>
-                  </div>
+                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
                 </div>
-                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
-              </div>
+              </Link>
 
-              <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/60 rounded-xl px-2 transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-rose-50 border border-rose-200/70 text-rose-700 flex items-center justify-center shrink-0">
-                    <ShieldAlert className="size-4 text-rose-700" />
+              <Link
+                href={`/pharmacist/cases/${activeFlaggedCase?.id || "case_rx_9021_01"}/results`}
+                className="block"
+              >
+                <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/60 rounded-xl px-2 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="size-9 rounded-xl bg-rose-50 border border-rose-200/70 text-rose-700 flex items-center justify-center shrink-0">
+                      <ShieldAlert className="size-4 text-rose-700" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover:text-rose-700 transition-colors">DDI Interaction Check</div>
+                      <div className="text-[11px] text-rose-700 font-semibold">CYP3A4 Flagged (Severe)</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-xs font-bold text-slate-900">DDI Interaction Check</div>
-                    <div className="text-[11px] text-rose-700 font-semibold">CYP3A4 Flagged (Severe)</div>
-                  </div>
+                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
                 </div>
-                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
-              </div>
+              </Link>
 
-              <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/60 rounded-xl px-2 transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-emerald-50 border border-emerald-200/70 text-emerald-800 flex items-center justify-center shrink-0">
-                    <Stethoscope className="size-4 text-emerald-800" />
+              <Link href="/doctor" className="block">
+                <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/60 rounded-xl px-2 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="size-9 rounded-xl bg-emerald-50 border border-emerald-200/70 text-emerald-800 flex items-center justify-center shrink-0">
+                      <Stethoscope className="size-4 text-emerald-800" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">Physician Review</div>
+                      <div className="text-[11px] text-slate-500">Attending: Dr. Sarah Chen</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-xs font-bold text-slate-900">Physician Review</div>
-                    <div className="text-[11px] text-slate-500">Attending: Dr. Sarah Chen</div>
-                  </div>
+                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
                 </div>
-                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
-              </div>
+              </Link>
 
-              <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/60 rounded-xl px-2 transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-amber-50 border border-amber-200/70 text-amber-700 flex items-center justify-center shrink-0">
-                    <Lock className="size-4 text-amber-700" />
+              <Link
+                href={`/pharmacist/cases/${activeFlaggedCase?.id || "case_rx_9021_01"}/authorize`}
+                className="block"
+              >
+                <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/60 rounded-xl px-2 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="size-9 rounded-xl bg-amber-50 border border-amber-200/70 text-amber-700 flex items-center justify-center shrink-0">
+                      <Lock className="size-4 text-amber-700" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover:text-amber-700 transition-colors">Dispensing Gate</div>
+                      <div className="text-[11px] text-amber-700 font-semibold">Locked (Fails Closed)</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-xs font-bold text-slate-900">Dispensing Gate</div>
-                    <div className="text-[11px] text-amber-700 font-semibold">Locked (Fails Closed)</div>
-                  </div>
+                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
                 </div>
-                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
-              </div>
+              </Link>
             </div>
           </div>
 
@@ -503,10 +545,28 @@ export default function PharmacistDashboard() {
           <div>
             {/* Calendar Widget */}
             <div className="flex items-center justify-between pb-2 text-xs">
-              <span className="font-bold text-slate-900">October, 2026</span>
+              <span className="font-bold text-slate-900">
+                {monthNames[calendarMonth]}, {calendarYear}
+              </span>
               <div className="flex items-center gap-1 text-slate-400">
-                <ChevronLeft className="size-3.5 cursor-pointer hover:text-slate-700" />
-                <ChevronRight className="size-3.5 cursor-pointer hover:text-slate-700" />
+                <button
+                  type="button"
+                  onClick={handlePrevMonth}
+                  className="p-1 hover:text-slate-900 transition-colors rounded"
+                  title="Previous month"
+                  aria-label="Previous month"
+                >
+                  <ChevronLeft className="size-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNextMonth}
+                  className="p-1 hover:text-slate-900 transition-colors rounded"
+                  title="Next month"
+                  aria-label="Next month"
+                >
+                  <ChevronRight className="size-3.5" />
+                </button>
               </div>
             </div>
 
@@ -522,18 +582,20 @@ export default function PharmacistDashboard() {
 
               {[...Array(31)].map((_, i) => {
                 const day = i + 1;
-                const isSelected = day === 28;
+                const isSelected = day === selectedCalendarDay;
                 return (
-                  <span
+                  <button
                     key={i}
-                    className={`py-1 rounded-full text-[10px] flex items-center justify-center ${
+                    type="button"
+                    onClick={() => setSelectedCalendarDay(day)}
+                    className={`py-1 rounded-full text-[10px] flex items-center justify-center transition-colors ${
                       isSelected
                         ? "bg-slate-900 text-white font-extrabold shadow-xs"
-                        : "text-slate-600 hover:bg-slate-50"
+                        : "text-slate-600 hover:bg-slate-100"
                     }`}
                   >
                     {day}
-                  </span>
+                  </button>
                 );
               })}
             </div>
@@ -544,33 +606,67 @@ export default function PharmacistDashboard() {
                 <span className="text-xs font-bold text-slate-900">Tasks</span>
                 <button
                   type="button"
-                  className="size-4 rounded-full bg-slate-900 text-white flex items-center justify-center text-[10px] font-bold"
-                  title="Add task"
+                  onClick={() => setShowAddTask((prev) => !prev)}
+                  className="size-5 rounded-full bg-slate-900 hover:bg-slate-800 text-white flex items-center justify-center text-xs font-bold transition-transform active:scale-95"
+                  title="Add custom task"
+                  aria-label="Add custom task"
                 >
                   +
                 </button>
               </div>
 
-              <div className="flex flex-col gap-2 mt-1">
-                <div className="p-2 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-[11px]">
-                  <div>
-                    <div className="font-bold text-slate-900">Review case_rx_9021</div>
-                    <div className="text-[10px] text-slate-400 font-mono">10:30 AM UTC</div>
-                  </div>
-                  <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200/60">
-                    Blocked
-                  </span>
-                </div>
+              {/* Inline Add Task Form */}
+              {showAddTask && (
+                <form onSubmit={handleAddTask} className="flex items-center gap-1.5 mb-2 mt-1">
+                  <input
+                    type="text"
+                    value={newTaskTitle}
+                    onChange={(e) => setNewTaskTitle(e.target.value)}
+                    placeholder="New task description..."
+                    autoFocus
+                    className="flex-1 text-[11px] px-2 py-1 rounded-lg border border-slate-200 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-900"
+                  />
+                  <button
+                    type="submit"
+                    className="px-2 py-1 text-[10px] font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg shadow-2xs"
+                  >
+                    Add
+                  </button>
+                </form>
+              )}
 
-                <div className="p-2 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-[11px]">
-                  <div>
-                    <div className="font-bold text-slate-900">Stock Reorder</div>
-                    <div className="text-[10px] text-slate-400 font-mono">02:00 PM UTC</div>
+              <div className="flex flex-col gap-2 mt-1">
+                {tasksList.map((t) => (
+                  <div
+                    key={t.id}
+                    className="p-2 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-[11px] hover:bg-white hover:border-slate-200 transition-all"
+                  >
+                    <div className="min-w-0 pr-1">
+                      {t.href ? (
+                        <Link href={t.href} className="font-bold text-slate-900 hover:text-emerald-700 transition-colors block truncate">
+                          {t.title}
+                        </Link>
+                      ) : (
+                        <div className="font-bold text-slate-900 truncate">{t.title}</div>
+                      )}
+                      <div className="text-[10px] text-slate-400 font-mono">{t.time}</div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => toggleTaskStatus(t.id)}
+                      className={`text-[9px] font-semibold px-2 py-0.5 rounded-full border transition-all cursor-pointer shrink-0 ${
+                        t.status === "Done"
+                          ? "bg-emerald-50 text-emerald-800 border-emerald-200/60 hover:bg-emerald-100"
+                          : t.status === "Blocked"
+                            ? "bg-rose-50 text-rose-700 border border-rose-200/60 hover:bg-rose-100"
+                            : "bg-amber-50 text-amber-800 border border-amber-200/60 hover:bg-amber-100"
+                      }`}
+                      title="Click to toggle status"
+                    >
+                      {t.status}
+                    </button>
                   </div>
-                  <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/60">
-                    Done
-                  </span>
-                </div>
+                ))}
               </div>
             </div>
           </div>
@@ -731,19 +827,19 @@ export default function PharmacistDashboard() {
           </span>
           <div className="flex flex-wrap items-center gap-2">
             <Link
-              href="/pharmacist/patients/confirm?id=P-9021"
+              href="/pharmacist/patients/P-9021/confirm"
               className="font-mono text-[11px] bg-slate-50 border border-slate-200/90 px-3 py-1 rounded-xl hover:bg-white text-slate-700 transition-colors shadow-2xs"
             >
               P-9021 (Rajan Sharma)
             </Link>
             <Link
-              href="/pharmacist/patients/confirm?id=P-9022"
+              href="/pharmacist/patients/P-9022/confirm"
               className="font-mono text-[11px] bg-slate-50 border border-slate-200/90 px-3 py-1 rounded-xl hover:bg-white text-slate-700 transition-colors shadow-2xs"
             >
               P-9022 (Sunita Verma)
             </Link>
             <Link
-              href="/pharmacist/patients/confirm?id=P-9023"
+              href="/pharmacist/patients/P-9023/confirm"
               className="font-mono text-[11px] bg-slate-50 border border-slate-200/90 px-3 py-1 rounded-xl hover:bg-white text-slate-700 transition-colors shadow-2xs"
             >
               P-9023 (Amit Kumar)

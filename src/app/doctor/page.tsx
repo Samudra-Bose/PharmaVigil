@@ -12,6 +12,7 @@ import { Badge, type BadgeVariant } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { ClinicalTooltip } from "@/components/clinical/ClinicalTooltip";
+import { clinicalToast } from "@/lib/toast";
 import { formatDateTime } from "@/lib/utils";
 import {
   Stethoscope,
@@ -38,6 +39,70 @@ export default function DoctorDashboard() {
   const [cases, setCases] = useState<FixtureCase[]>([INITIAL_FIXTURE_CASE]);
   const [loading, setLoading] = useState(false);
 
+  // Interactive UI state for Charts, Calendar, and Tasks
+  const [timeRange, setTimeRange] = useState<"weekly" | "monthly" | "daily">("weekly");
+  const [activeDayIndex, setActiveDayIndex] = useState<number>(4); // Thursday
+  const [calendarMonth, setCalendarMonth] = useState<number>(9); // 0-indexed: 9 = October
+  const [calendarYear, setCalendarYear] = useState<number>(2026);
+  const [selectedCalendarDay, setSelectedCalendarDay] = useState<number>(28);
+  const [showAddTask, setShowAddTask] = useState<boolean>(false);
+  const [newTaskTitle, setNewTaskTitle] = useState<string>("");
+  const [triageTasksList, setTriageTasksList] = useState([
+    {
+      id: "triage-1",
+      title: "Sign CYP3A4 Override",
+      code: "case_rx_9021",
+      status: "High",
+      href: "/doctor/tasks/alert_ddi_statin_macrolide_001/disposition?caseId=case_rx_9021_01",
+    },
+    {
+      id: "triage-2",
+      title: "Sign Discharge Rx",
+      code: "P-9022",
+      status: "Review",
+      href: "/doctor/prescriptions/new?caseId=case_rx_9022",
+    },
+  ]);
+
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  const handlePrevMonth = () => {
+    if (calendarMonth === 0) {
+      setCalendarMonth(11);
+      setCalendarYear((y) => y - 1);
+    } else {
+      setCalendarMonth((m) => m - 1);
+    }
+  };
+
+  const handleNextMonth = () => {
+    if (calendarMonth === 11) {
+      setCalendarMonth(0);
+      setCalendarYear((y) => y + 1);
+    } else {
+      setCalendarMonth((m) => m + 1);
+    }
+  };
+
+  const handleAddTriageTask = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTaskTitle.trim()) return;
+    const newTask = {
+      id: `triage-${Date.now()}`,
+      title: newTaskTitle.trim(),
+      code: "Ad-hoc Review",
+      status: "Review",
+      href: "/doctor/prescriptions",
+    };
+    setTriageTasksList([newTask, ...triageTasksList]);
+    setNewTaskTitle("");
+    setShowAddTask(false);
+    clinicalToast.success("Triage Task Added", `Scheduled: ${newTask.title}`);
+  };
+
   useEffect(() => {
     async function loadData() {
       try {
@@ -54,6 +119,7 @@ export default function DoctorDashboard() {
   }, []);
 
   const tasks: Array<{
+    id: string;
     caseId: string;
     alert: AlertSummary;
     revisionNumber: number;
@@ -62,6 +128,7 @@ export default function DoctorDashboard() {
   cases.forEach((c) => {
     c.alerts?.forEach((a) => {
       tasks.push({
+        id: a.id || `task_${c.id}`,
         caseId: c.id,
         alert: a,
         revisionNumber: c.currentRevisionNumber,
@@ -101,6 +168,35 @@ export default function DoctorDashboard() {
   };
 
   const primaryTask = tasks[0];
+
+  const chartData = {
+    weekly: [
+      { day: "Su", count: 1, height: "h-16", time: "45m" },
+      { day: "Mo", count: 3, height: "h-24", time: "1h 30m" },
+      { day: "Tu", count: 4, height: "h-28", time: "2h 10m" },
+      { day: "We", count: 5, height: "h-36", time: "2h 45m" },
+      { day: "Th", count: 4, height: "h-36", time: "2h 15m" },
+      { day: "Fr", count: 2, height: "h-20", time: "1h 10m" },
+      { day: "Sa", count: 1, height: "h-12", time: "30m" },
+    ],
+    monthly: [
+      { day: "W1", count: 18, height: "h-24", time: "11h" },
+      { day: "W2", count: 22, height: "h-28", time: "14h" },
+      { day: "W3", count: 29, height: "h-36", time: "18h" },
+      { day: "W4", count: 25, height: "h-32", time: "16h" },
+    ],
+    daily: [
+      { day: "08h", count: 1, height: "h-16", time: "30m" },
+      { day: "10h", count: 2, height: "h-24", time: "50m" },
+      { day: "12h", count: 4, height: "h-36", time: "1h 40m" },
+      { day: "14h", count: 3, height: "h-28", time: "1h 15m" },
+      { day: "16h", count: 2, height: "h-20", time: "45m" },
+    ],
+  };
+
+  const currentChartBars = chartData[timeRange];
+  const safeActiveDayIndex = activeDayIndex >= currentChartBars.length ? 0 : activeDayIndex;
+  const activeChartItem = currentChartBars[safeActiveDayIndex];
 
   return (
     <div className="flex flex-col gap-6 max-w-[1400px] mx-auto pb-12">
@@ -261,7 +357,7 @@ export default function DoctorDashboard() {
           <div className="mt-4 pt-3 border-t border-white/10 relative z-10">
             {primaryTask ? (
               <Link
-                href={`/doctor/cases/${primaryTask.caseId}/disposition`}
+                href={`/doctor/tasks/${primaryTask.id}/disposition?caseId=${primaryTask.caseId}`}
                 className="block"
               >
                 <button className="w-full h-8 px-3 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
@@ -294,45 +390,64 @@ export default function DoctorDashboard() {
                   </span>
                 </div>
               </div>
-              <div className="text-xs font-semibold px-2.5 py-1 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-600">
-                Weekly ⌵
-              </div>
+              <select
+                aria-label="Filter resolution throughput by time range"
+                value={timeRange}
+                onChange={(e) => {
+                  setTimeRange(e.target.value as "weekly" | "monthly" | "daily");
+                  setActiveDayIndex(0);
+                }}
+                className="text-xs font-semibold px-2.5 py-1 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 cursor-pointer hover:bg-slate-100 transition-colors focus:outline-none focus:ring-1 focus:ring-slate-300"
+              >
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="daily">Daily</option>
+              </select>
             </div>
 
             {/* Stylized Modern Bar Chart */}
             <div className="pt-6 pb-2">
               <div className="h-44 flex items-end justify-between gap-3 px-2 relative">
-                {/* Floating Tooltip above Thursday Bar */}
-                <div className="absolute top-1 left-[54%] -translate-x-1/2 bg-[#111317] text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-lg flex items-center gap-1 z-20 pointer-events-none">
+                {/* Floating Tooltip */}
+                <div
+                  className="absolute top-1 bg-[#111317] text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-lg flex items-center gap-1.5 z-20 pointer-events-none transition-all duration-200"
+                  style={{
+                    left: `${Math.max(15, Math.min(85, ((safeActiveDayIndex + 0.5) / currentChartBars.length) * 100))}%`,
+                    transform: "translateX(-50%)",
+                  }}
+                >
                   <span className="size-1.5 rounded-full bg-emerald-400" />
-                  <span>4 Cases Resolved • 2h 15m</span>
+                  <span>
+                    {activeChartItem.count} {activeChartItem.count === 1 ? "Case" : "Cases"} Resolved • {activeChartItem.time}
+                  </span>
                 </div>
 
                 {/* Day Bars */}
-                {[
-                  { day: "Su", height: "h-16", active: false },
-                  { day: "Mo", height: "h-24", active: false },
-                  { day: "Tu", height: "h-28", active: false },
-                  { day: "We", height: "h-36", active: false },
-                  { day: "Th", height: "h-36", active: true },
-                  { day: "Fr", height: "h-20", active: false },
-                  { day: "Sa", height: "h-12", active: false },
-                ].map((item, i) => (
-                  <div key={i} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
-                    <div className="w-full max-w-[14px] bg-slate-100 rounded-full h-36 flex items-end">
-                      <div
-                        className={`w-full rounded-full transition-all ${
-                          item.active
-                            ? "bg-emerald-500 shadow-sm shadow-emerald-500/30"
-                            : "bg-[#111317] group-hover:bg-slate-700"
-                        } ${item.height}`}
-                      />
-                    </div>
-                    <span className={`text-[11px] font-mono ${item.active ? "font-bold text-slate-900" : "text-slate-400"}`}>
-                      {item.day}
-                    </span>
-                  </div>
-                ))}
+                {currentChartBars.map((item, i) => {
+                  const isActive = i === safeActiveDayIndex;
+                  return (
+                    <button
+                      key={item.day}
+                      type="button"
+                      onClick={() => setActiveDayIndex(i)}
+                      aria-label={`${item.day}: ${item.count} cases resolved`}
+                      className="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none"
+                    >
+                      <div className="w-full max-w-[14px] bg-slate-100 rounded-full h-36 flex items-end">
+                        <div
+                          className={`w-full rounded-full transition-all duration-300 ${
+                            isActive
+                              ? "bg-emerald-500 shadow-sm shadow-emerald-500/30 ring-2 ring-emerald-300/50"
+                              : "bg-[#111317] group-hover:bg-slate-700"
+                          } ${item.height}`}
+                        />
+                      </div>
+                      <span className={`text-[11px] font-mono transition-colors ${isActive ? "font-bold text-slate-900" : "text-slate-400 group-hover:text-slate-600"}`}>
+                        {item.day}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -353,57 +468,72 @@ export default function DoctorDashboard() {
 
             {/* List with intentional clinical squircles & right chevrons */}
             <div className="divide-y divide-slate-100 mt-2">
-              <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/60 rounded-xl px-2 transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
-                    <Stethoscope className="size-4 text-slate-700" />
+              <Link href="/doctor/appointments" className="block">
+                <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/80 rounded-xl px-2 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="size-9 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
+                      <Stethoscope className="size-4 text-slate-700" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">Morning Ward Rounds</div>
+                      <div className="text-[11px] text-slate-500">Inpatient Unit (Room 402)</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-xs font-bold text-slate-900">Morning Ward Rounds</div>
-                    <div className="text-[11px] text-slate-500">Inpatient Unit (Room 402)</div>
-                  </div>
+                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 group-hover:translate-x-0.5 transition-all" />
                 </div>
-                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
-              </div>
+              </Link>
 
-              <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/60 rounded-xl px-2 transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-rose-50 border border-rose-200/70 text-rose-700 flex items-center justify-center shrink-0">
-                    <ShieldAlert className="size-4 text-rose-700" />
+              <Link
+                href={
+                  primaryTask
+                    ? `/doctor/tasks/${primaryTask.id}/disposition?caseId=${primaryTask.caseId}`
+                    : "/doctor/prescriptions"
+                }
+                className="block"
+              >
+                <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/80 rounded-xl px-2 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="size-9 rounded-xl bg-rose-50 border border-rose-200/70 text-rose-700 flex items-center justify-center shrink-0">
+                      <ShieldAlert className="size-4 text-rose-700" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover:text-rose-700 transition-colors">DDI Triage & Disposition</div>
+                      <div className="text-[11px] text-rose-700 font-semibold">{primaryTask?.caseId || "case_rx_9021_01"} Conflict</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-xs font-bold text-slate-900">DDI Triage & Disposition</div>
-                    <div className="text-[11px] text-rose-700 font-semibold">case_rx_9021_01 Conflict</div>
-                  </div>
+                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 group-hover:translate-x-0.5 transition-all" />
                 </div>
-                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
-              </div>
+              </Link>
 
-              <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/60 rounded-xl px-2 transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-emerald-50 border border-emerald-200/70 text-emerald-800 flex items-center justify-center shrink-0">
-                    <Pill className="size-4 text-emerald-800" />
+              <Link href="/doctor/prescriptions" className="block">
+                <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/80 rounded-xl px-2 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="size-9 rounded-xl bg-emerald-50 border border-emerald-200/70 text-emerald-800 flex items-center justify-center shrink-0">
+                      <Pill className="size-4 text-emerald-800" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">Therapy Re-authorization</div>
+                      <div className="text-[11px] text-slate-500">{tasks.length} Pending Attending Signatures</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-xs font-bold text-slate-900">Therapy Re-authorization</div>
-                    <div className="text-[11px] text-slate-500">3 Pending Attending Signatures</div>
-                  </div>
+                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 group-hover:translate-x-0.5 transition-all" />
                 </div>
-                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
-              </div>
+              </Link>
 
-              <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/60 rounded-xl px-2 transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
-                    <CalendarIcon className="size-4 text-slate-700" />
+              <Link href="/doctor/appointments" className="block">
+                <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/80 rounded-xl px-2 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="size-9 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
+                      <CalendarIcon className="size-4 text-slate-700" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">Outpatient Consultation</div>
+                      <div className="text-[11px] text-slate-500">10:00 AM UTC (Rajan Sharma)</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-xs font-bold text-slate-900">Outpatient Consultation</div>
-                    <div className="text-[11px] text-slate-500">10:00 AM UTC (Rajan Sharma)</div>
-                  </div>
+                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 group-hover:translate-x-0.5 transition-all" />
                 </div>
-                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
-              </div>
+              </Link>
             </div>
           </div>
 
@@ -418,10 +548,26 @@ export default function DoctorDashboard() {
           <div>
             {/* Calendar Widget */}
             <div className="flex items-center justify-between pb-2 text-xs">
-              <span className="font-bold text-slate-900">October, 2026</span>
+              <span className="font-bold text-slate-900">
+                {monthNames[calendarMonth]}, {calendarYear}
+              </span>
               <div className="flex items-center gap-1 text-slate-400">
-                <ChevronLeft className="size-3.5 cursor-pointer hover:text-slate-700" />
-                <ChevronRight className="size-3.5 cursor-pointer hover:text-slate-700" />
+                <button
+                  type="button"
+                  onClick={handlePrevMonth}
+                  aria-label="Previous month"
+                  className="p-1 hover:text-slate-700 hover:bg-slate-100 rounded transition-colors"
+                >
+                  <ChevronLeft className="size-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNextMonth}
+                  aria-label="Next month"
+                  className="p-1 hover:text-slate-700 hover:bg-slate-100 rounded transition-colors"
+                >
+                  <ChevronRight className="size-3.5" />
+                </button>
               </div>
             </div>
 
@@ -437,18 +583,20 @@ export default function DoctorDashboard() {
 
               {[...Array(31)].map((_, i) => {
                 const day = i + 1;
-                const isSelected = day === 28;
+                const isSelected = day === selectedCalendarDay;
                 return (
-                  <span
+                  <button
                     key={i}
-                    className={`py-1 rounded-full text-[10px] flex items-center justify-center ${
+                    type="button"
+                    onClick={() => setSelectedCalendarDay(day)}
+                    className={`py-1 rounded-full text-[10px] flex items-center justify-center transition-colors ${
                       isSelected
                         ? "bg-slate-900 text-white font-extrabold shadow-xs"
-                        : "text-slate-600 hover:bg-slate-50"
+                        : "text-slate-600 hover:bg-slate-100"
                     }`}
                   >
                     {day}
-                  </span>
+                  </button>
                 );
               })}
             </div>
@@ -457,31 +605,66 @@ export default function DoctorDashboard() {
             <div className="mt-3">
               <div className="flex items-center justify-between pb-1.5">
                 <span className="text-xs font-bold text-slate-900">Triage Tasks</span>
-                <span className="size-4 rounded-full bg-slate-900 text-white flex items-center justify-center text-[10px] font-bold">
-                  +
-                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowAddTask((prev) => !prev)}
+                  aria-label="Add triage task"
+                  className="size-4 rounded-full bg-slate-900 hover:bg-slate-700 text-white flex items-center justify-center text-[11px] font-bold transition-transform active:scale-95"
+                >
+                  {showAddTask ? "✕" : "+"}
+                </button>
               </div>
 
-              <div className="flex flex-col gap-2 mt-1">
-                <div className="p-2 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-[11px]">
-                  <div>
-                    <div className="font-bold text-slate-900 truncate max-w-[110px]">Sign CYP3A4 Override</div>
-                    <div className="text-[10px] text-slate-400 font-mono">case_rx_9021</div>
+              {showAddTask && (
+                <form onSubmit={handleAddTriageTask} className="mb-2.5 p-2 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5">
+                  <input
+                    type="text"
+                    value={newTaskTitle}
+                    onChange={(e) => setNewTaskTitle(e.target.value)}
+                    placeholder="New task title..."
+                    className="w-full text-xs px-2 py-1 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-900"
+                    autoFocus
+                  />
+                  <div className="flex justify-end gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setShowAddTask(false)}
+                      className="px-2 py-0.5 text-[10px] text-slate-500 hover:text-slate-700"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-2.5 py-0.5 text-[10px] bg-slate-900 text-white rounded font-medium"
+                    >
+                      Add
+                    </button>
                   </div>
-                  <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200/60">
-                    High
-                  </span>
-                </div>
+                </form>
+              )}
 
-                <div className="p-2 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-[11px]">
-                  <div>
-                    <div className="font-bold text-slate-900 truncate max-w-[110px]">Sign Discharge Rx</div>
-                    <div className="text-[10px] text-slate-400 font-mono">P-9022</div>
-                  </div>
-                  <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/60">
-                    Review
-                  </span>
-                </div>
+              <div className="flex flex-col gap-2 mt-1">
+                {triageTasksList.map((task) => (
+                  <Link key={task.id} href={task.href} className="block group">
+                    <div className="p-2 rounded-xl bg-slate-50/80 group-hover:bg-slate-100 border border-slate-100 flex items-center justify-between text-[11px] transition-colors">
+                      <div>
+                        <div className="font-bold text-slate-900 truncate max-w-[110px] group-hover:text-emerald-800 transition-colors">
+                          {task.title}
+                        </div>
+                        <div className="text-[10px] text-slate-400 font-mono">{task.code}</div>
+                      </div>
+                      <span
+                        className={`text-[9px] font-semibold px-2 py-0.5 rounded-full ${
+                          task.status === "High"
+                            ? "bg-rose-50 text-rose-700 border border-rose-200/60"
+                            : "bg-emerald-50 text-emerald-800 border border-emerald-200/60"
+                        }`}
+                      >
+                        {task.status}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
               </div>
             </div>
           </div>
@@ -558,7 +741,7 @@ export default function DoctorDashboard() {
                     {t.alert.severity}
                   </Badge>
 
-                  <Link href={`/doctor/cases/${t.caseId}/disposition`}>
+                  <Link href={`/doctor/tasks/${t.id}/disposition?caseId=${t.caseId}`}>
                     <button className="h-8 px-4 rounded-xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-2xs flex items-center gap-1.5 transition-all">
                       <span>Disposition</span>
                       <ArrowRight data-icon="inline-end" className="size-3 text-emerald-300" />
