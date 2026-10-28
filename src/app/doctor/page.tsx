@@ -103,19 +103,19 @@ export default function DoctorDashboard() {
   const primaryTask = tasks[0];
 
   return (
-    <div className="space-y-6 max-w-[1400px] mx-auto pb-12">
-      {/* 1. Eduplex-Style Greeting & Actions Header */}
+    <div className="flex flex-col gap-6 max-w-[1400px] mx-auto pb-12">
+      {/* 1. Header with clean typography & distinct button hierarchy */}
       <section
         aria-label="Doctor Greeting"
         className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
       >
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] uppercase font-mono font-bold tracking-wider text-rose-800 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-rose-800 bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200">
               Attending Physician Disposition
             </span>
             <span className="text-slate-300">•</span>
-            <span className="text-xs text-slate-500 font-mono">
+            <span className="text-xs text-slate-500 font-medium">
               Cardiology Outpatient Clinic
             </span>
           </div>
@@ -123,7 +123,7 @@ export default function DoctorDashboard() {
             <span>Welcome back, Dr. Arvind Patel</span>
             <span>👋</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+          <p className="text-xs sm:text-sm text-slate-500">
             Prioritized clinical triage of automated CDS safety checks requiring attending physician rationale.
           </p>
         </div>
@@ -132,37 +132,37 @@ export default function DoctorDashboard() {
         <div className="flex items-center gap-2.5 shrink-0">
           <Link href="/doctor/appointments">
             <button className="h-9 px-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/90 shadow-2xs flex items-center gap-2 transition-all whitespace-nowrap">
-              <CalendarIcon className="w-3.5 h-3.5 text-slate-500" />
+              <CalendarIcon data-icon="inline-start" className="size-3.5 text-slate-500" />
               <span>Consultations</span>
             </button>
           </Link>
 
           <Link href="/doctor/prescriptions">
             <button className="h-9 px-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/90 shadow-2xs flex items-center gap-2 transition-all whitespace-nowrap">
-              <FileText className="w-3.5 h-3.5 text-slate-500" />
+              <FileText data-icon="inline-start" className="size-3.5 text-slate-500" />
               <span>Prescriptions</span>
             </button>
           </Link>
 
           <Link href="/doctor/prescriptions/new">
             <button className="h-9 px-4 rounded-2xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-md shadow-slate-900/10 flex items-center gap-2 transition-all whitespace-nowrap">
-              <PlusCircle className="w-3.5 h-3.5 text-emerald-400" />
+              <PlusCircle data-icon="inline-start" className="size-3.5 text-emerald-400" />
               <span>+ New Revision</span>
             </button>
           </Link>
         </div>
       </section>
 
-      {/* 2. TOP TIER: 4-Card Bento Grid (Direct match to Eduplex reference: 3 Pastel + 1 Dark Card) */}
+      {/* 2. TOP TIER: 4-Card Bento Grid (3 Pastel + 1 Dark Action Card) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1: Pastel Peach Squircle */}
-        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200">
+        {/* Card 1: Pastel Coral / Peach Squircle */}
+        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200 hover:shadow-lux-hover">
           <div>
             <div className="flex items-center justify-between">
-              <div className="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-100/80 text-amber-600 flex items-center justify-center shrink-0">
-                <AlertTriangle className="w-5 h-5 text-amber-600" />
+              <div className="size-11 rounded-2xl bg-amber-50 border border-amber-100/80 text-amber-600 flex items-center justify-center shrink-0">
+                <AlertTriangle className="size-5 text-amber-600" />
               </div>
-              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-100">
+              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-100">
                 Critical Alert
               </span>
             </div>
@@ -173,24 +173,24 @@ export default function DoctorDashboard() {
           </div>
           <div className="pt-4 mt-3 border-t border-slate-100 flex items-center justify-between text-xs">
             <div>
-              <span className="text-[10px] uppercase font-mono text-slate-400 block">Severity</span>
+              <span className="text-[11px] font-medium text-slate-400 block">Severity</span>
               <span className="font-bold text-rose-700 font-mono">High Hazard</span>
             </div>
             <div className="text-right">
-              <span className="text-[10px] uppercase font-mono text-slate-400 block">Requiring Sign-off</span>
+              <span className="text-[11px] font-medium text-slate-400 block">Requiring Sign-off</span>
               <span className="font-bold text-slate-900 font-mono font-tabular">{tasks.length} Cases</span>
             </div>
           </div>
         </div>
 
         {/* Card 2: Pastel Lime Squircle */}
-        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200">
+        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200 hover:shadow-lux-hover">
           <div>
             <div className="flex items-center justify-between">
-              <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0">
-                <Stethoscope className="w-5 h-5 text-emerald-700" />
+              <div className="size-11 rounded-2xl bg-emerald-50 border border-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0">
+                <Stethoscope className="size-5 text-emerald-700" />
               </div>
-              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
+              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
                 Active Deck
               </span>
             </div>
@@ -201,24 +201,24 @@ export default function DoctorDashboard() {
           </div>
           <div className="pt-4 mt-3 border-t border-slate-100 flex items-center justify-between text-xs">
             <div>
-              <span className="text-[10px] uppercase font-mono text-slate-400 block">Resolution Rate</span>
+              <span className="text-[11px] font-medium text-slate-400 block">Resolution Rate</span>
               <span className="font-bold text-emerald-700 font-mono">94.2% Cleared</span>
             </div>
             <div className="text-right">
-              <span className="text-[10px] uppercase font-mono text-slate-400 block">Assigned</span>
+              <span className="text-[11px] font-medium text-slate-400 block">Assigned</span>
               <span className="font-bold text-slate-900 font-mono font-tabular">Cardiology Unit</span>
             </div>
           </div>
         </div>
 
         {/* Card 3: Pastel Sky Squircle */}
-        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200">
+        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200 hover:shadow-lux-hover">
           <div>
             <div className="flex items-center justify-between">
-              <div className="w-11 h-11 rounded-2xl bg-sky-50 border border-sky-100/80 text-sky-700 flex items-center justify-center shrink-0">
-                <User className="w-5 h-5 text-sky-700" />
+              <div className="size-11 rounded-2xl bg-sky-50 border border-sky-100/80 text-sky-700 flex items-center justify-center shrink-0">
+                <User className="size-5 text-sky-700" />
               </div>
-              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-100">
+              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-100">
                 Inpatient
               </span>
             </div>
@@ -229,25 +229,25 @@ export default function DoctorDashboard() {
           </div>
           <div className="pt-4 mt-3 border-t border-slate-100 flex items-center justify-between text-xs">
             <div>
-              <span className="text-[10px] uppercase font-mono text-slate-400 block">Primary Bed</span>
+              <span className="text-[11px] font-medium text-slate-400 block">Primary Bed</span>
               <span className="font-bold text-slate-900 font-mono">Room 402</span>
             </div>
             <div className="text-right">
-              <span className="text-[10px] uppercase font-mono text-slate-400 block">Patient</span>
+              <span className="text-[11px] font-medium text-slate-400 block">Patient</span>
               <span className="font-bold text-sky-700 font-mono">P-9021</span>
             </div>
           </div>
         </div>
 
-        {/* Card 4: DARK EDU-ACTION CARD (Direct match to Eduplex "Go Premium" card) */}
+        {/* Card 4: DARK ACTION CARD (Direct match to Eduplex reference) */}
         <div className="bg-[#111317] rounded-3xl p-5 shadow-lux-black border border-slate-800 text-white relative overflow-hidden flex flex-col justify-between">
-          <div className="space-y-2 relative z-10">
+          <div className="flex flex-col gap-2 relative z-10">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 text-emerald-400 font-mono font-bold text-[10px] uppercase tracking-wider">
-                <ShieldCheck className="w-3.5 h-3.5" />
+                <ShieldCheck className="size-3.5" />
                 <span>Physician Gate</span>
               </div>
-              <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+              <span className="size-2 rounded-full bg-rose-500 animate-pulse" />
             </div>
 
             <h3 className="text-base font-extrabold text-white leading-tight">
@@ -266,7 +266,7 @@ export default function DoctorDashboard() {
               >
                 <button className="w-full h-8 px-3 rounded-xl bg-[#bbf7d0] hover:bg-[#86efac] text-slate-950 font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
                   <span>Sign Disposition</span>
-                  <ArrowRight className="w-3 h-3 text-slate-950" />
+                  <ArrowRight data-icon="inline-end" className="size-3 text-slate-950" />
                 </button>
               </Link>
             ) : (
@@ -275,7 +275,7 @@ export default function DoctorDashboard() {
           </div>
 
           {/* Decorative background glow */}
-          <div className="absolute -bottom-6 -right-6 w-24 h-24 rounded-full bg-emerald-500/10 blur-xl pointer-events-none" />
+          <div className="absolute -bottom-6 -right-6 size-24 rounded-full bg-emerald-500/10 blur-xl pointer-events-none" />
         </div>
       </div>
 
@@ -288,8 +288,8 @@ export default function DoctorDashboard() {
               <div>
                 <h3 className="text-base font-bold text-slate-900">Resolution Throughput</h3>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                    <TrendingUp className="w-3 h-3" />
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                    <TrendingUp className="size-3" />
                     +8% faster disposition
                   </span>
                 </div>
@@ -299,12 +299,12 @@ export default function DoctorDashboard() {
               </div>
             </div>
 
-            {/* Stylized Modern Bar Chart (Direct match to Eduplex Hours Activity Chart) */}
+            {/* Stylized Modern Bar Chart */}
             <div className="pt-6 pb-2">
               <div className="h-44 flex items-end justify-between gap-3 px-2 relative">
-                {/* Floating Tooltip above Thursday Bar (Eduplex Feature) */}
+                {/* Floating Tooltip above Thursday Bar */}
                 <div className="absolute top-1 left-[54%] -translate-x-1/2 bg-[#111317] text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-lg flex items-center gap-1 z-20 pointer-events-none">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#bbf7d0]" />
+                  <span className="size-1.5 rounded-full bg-[#bbf7d0]" />
                   <span>4 Cases Resolved • 2h 15m</span>
                 </div>
 
@@ -337,9 +337,9 @@ export default function DoctorDashboard() {
             </div>
           </div>
 
-          <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+          <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
             <span>Clinical Audit Standard:</span>
-            <span className="font-semibold text-emerald-700">100% Deterministic</span>
+            <span className="font-semibold text-emerald-700 font-mono">100% Deterministic</span>
           </div>
         </div>
 
@@ -348,80 +348,80 @@ export default function DoctorDashboard() {
           <div>
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <h3 className="text-base font-bold text-slate-900">Clinical Schedule</h3>
-              <span className="text-[10px] font-mono text-slate-400">Cardiology Ward</span>
+              <span className="text-xs text-slate-400 font-medium">Cardiology Ward</span>
             </div>
 
-            {/* List with squircle pastel icons & right chevrons (Eduplex "Daily Schedule" style) */}
+            {/* List with squircle pastel icons & right chevrons */}
             <div className="divide-y divide-slate-100 mt-2">
               <div className="py-2.5 flex items-center justify-between group cursor-pointer">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-orange-50 border border-orange-100 text-orange-600 flex items-center justify-center shrink-0">
-                    <Stethoscope className="w-4 h-4" />
+                  <div className="size-9 rounded-xl bg-orange-50 border border-orange-100 text-orange-600 flex items-center justify-center shrink-0">
+                    <Stethoscope className="size-4" />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-slate-900">Morning Ward Rounds</div>
                     <div className="text-[11px] text-slate-500">Inpatient Unit (Room 402)</div>
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
+                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
               </div>
 
               <div className="py-2.5 flex items-center justify-between group cursor-pointer">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-purple-50 border border-purple-100 text-purple-600 flex items-center justify-center shrink-0">
-                    <ShieldAlert className="w-4 h-4" />
+                  <div className="size-9 rounded-xl bg-purple-50 border border-purple-100 text-purple-600 flex items-center justify-center shrink-0">
+                    <ShieldAlert className="size-4" />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-slate-900">DDI Triage & Disposition</div>
                     <div className="text-[11px] text-rose-600 font-medium">case_rx_9021_01 Conflict</div>
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
+                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
               </div>
 
               <div className="py-2.5 flex items-center justify-between group cursor-pointer">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-                    <Pill className="w-4 h-4" />
+                  <div className="size-9 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                    <Pill className="size-4" />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-slate-900">Therapy Re-authorization</div>
                     <div className="text-[11px] text-slate-500">3 Pending Attending Signatures</div>
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
+                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
               </div>
 
               <div className="py-2.5 flex items-center justify-between group cursor-pointer">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-100 text-amber-700 flex items-center justify-center shrink-0">
-                    <CalendarIcon className="w-4 h-4" />
+                  <div className="size-9 rounded-xl bg-amber-50 border border-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                    <CalendarIcon className="size-4" />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-slate-900">Outpatient Consultation</div>
                     <div className="text-[11px] text-slate-500">10:00 AM UTC (Rajan Sharma)</div>
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
+                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
               </div>
             </div>
           </div>
 
-          <div className="pt-3 border-t border-slate-100 text-[11px] text-slate-400 font-mono flex items-center justify-between">
+          <div className="pt-3 border-t border-slate-100 text-xs text-slate-400 font-medium flex items-center justify-between">
             <span>Attending License:</span>
-            <span className="text-slate-700 font-medium">MD-CARD-7491</span>
+            <span className="text-slate-700 font-mono">MD-CARD-7491</span>
           </div>
         </div>
 
         {/* Col 3: Mini Calendar & Clinical Tasks (~20% width: 3 cols) */}
         <div className="lg:col-span-3 bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between">
           <div>
-            {/* Calendar Widget (Eduplex Mini Calendar) */}
+            {/* Calendar Widget */}
             <div className="flex items-center justify-between pb-2 text-xs">
               <span className="font-bold text-slate-900">October, 2026</span>
               <div className="flex items-center gap-1 text-slate-400">
-                <ChevronLeft className="w-3.5 h-3.5 cursor-pointer hover:text-slate-700" />
-                <ChevronRight className="w-3.5 h-3.5 cursor-pointer hover:text-slate-700" />
+                <ChevronLeft className="size-3.5 cursor-pointer hover:text-slate-700" />
+                <ChevronRight className="size-3.5 cursor-pointer hover:text-slate-700" />
               </div>
             </div>
 
@@ -457,12 +457,12 @@ export default function DoctorDashboard() {
             <div className="mt-3">
               <div className="flex items-center justify-between pb-1.5">
                 <span className="text-xs font-bold text-slate-900">Triage Tasks</span>
-                <span className="w-4 h-4 rounded-full bg-[#bbf7d0] text-slate-950 flex items-center justify-center text-[10px] font-bold">
+                <span className="size-4 rounded-full bg-[#bbf7d0] text-slate-950 flex items-center justify-center text-[10px] font-bold">
                   +
                 </span>
               </div>
 
-              <div className="space-y-2 mt-1">
+              <div className="flex flex-col gap-2 mt-1">
                 <div className="p-2 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-[11px]">
                   <div>
                     <div className="font-bold text-slate-900 truncate max-w-[110px]">Sign CYP3A4 Override</div>
@@ -492,8 +492,8 @@ export default function DoctorDashboard() {
         </div>
       </div>
 
-      {/* 4. BOTTOM TIER: Clinical Safety Queue Ledger (Eduplex "Course You're Taking" Style) */}
-      <div className="bg-white rounded-3xl p-6 shadow-lux border border-slate-100 space-y-4">
+      {/* 4. BOTTOM TIER: Clinical Safety Queue Ledger */}
+      <div className="bg-white rounded-3xl p-6 shadow-lux border border-slate-100 flex flex-col gap-4">
         {/* Ledger Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
           <div>
@@ -526,17 +526,17 @@ export default function DoctorDashboard() {
               >
                 {/* Left: Squircle Icon + Case ID + Rule */}
                 <div className="flex items-center gap-3.5 min-w-0">
-                  <div className="w-11 h-11 rounded-2xl bg-rose-50 border border-rose-100 text-rose-700 flex items-center justify-center shrink-0">
-                    <AlertTriangle className="w-5 h-5 text-rose-700" />
+                  <div className="size-11 rounded-2xl bg-rose-50 border border-rose-100 text-rose-700 flex items-center justify-center shrink-0">
+                    <AlertTriangle className="size-5 text-rose-700" />
                   </div>
-                  <div className="min-w-0 space-y-0.5">
+                  <div className="min-w-0 flex flex-col gap-0.5">
                     <div className="flex items-center gap-2">
                       <span className="font-mono font-bold text-sm text-slate-900 font-tabular">
                         {t.caseId}
                       </span>
                       <span className="text-slate-300">•</span>
                       <span className="font-mono text-xs text-slate-600 flex items-center gap-1">
-                        <User className="w-3 h-3 text-slate-400" />
+                        <User className="size-3 text-slate-400" />
                         {t.patientId}
                       </span>
                       <span className="text-[10px] font-mono px-1.5 py-0.2 bg-slate-100 text-slate-600 rounded">
@@ -561,7 +561,7 @@ export default function DoctorDashboard() {
                   <Link href={`/doctor/cases/${t.caseId}/disposition`}>
                     <button className="h-8 px-4 rounded-xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-2xs flex items-center gap-1.5 transition-all">
                       <span>Disposition</span>
-                      <ArrowRight className="w-3 h-3 text-emerald-300" />
+                      <ArrowRight data-icon="inline-end" className="size-3 text-emerald-300" />
                     </button>
                   </Link>
                 </div>

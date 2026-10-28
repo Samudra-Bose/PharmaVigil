@@ -70,20 +70,20 @@ export default function PatientHomePage() {
   const pastAppointments = appointments.filter((a) => a.status === "COMPLETED");
 
   return (
-    <div className="max-w-[1400px] mx-auto space-y-6 pb-12">
-      {/* 1. Eduplex-Style Greeting & Actions Header */}
+    <div className="flex flex-col gap-6 max-w-[1400px] mx-auto pb-12">
+      {/* 1. Header with clean typography & distinct button hierarchy */}
       <section
         aria-label="Patient Greeting"
         className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
       >
-        <div className="space-y-1">
+        <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] uppercase font-mono font-bold tracking-wider text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+            <span className="text-xs font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
               Patient Care Hub
             </span>
             <span className="text-slate-300">•</span>
-            <span className="text-xs text-slate-500 font-mono">
-              MRN: <span className="font-semibold text-slate-700">{patient?.syntheticHospitalPatientId || "P-9021"}</span>
+            <span className="text-xs text-slate-500 font-medium">
+              MRN: <span className="font-semibold text-slate-700 font-mono">{patient?.syntheticHospitalPatientId || "P-9021"}</span>
             </span>
           </div>
 
@@ -101,30 +101,30 @@ export default function PatientHomePage() {
         <div className="flex items-center gap-2.5 shrink-0">
           <Link href="/patient/appointments/new">
             <button className="h-9 px-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/90 shadow-2xs flex items-center gap-2 transition-all whitespace-nowrap">
-              <CalendarIcon className="w-3.5 h-3.5 text-slate-500" />
+              <CalendarIcon data-icon="inline-start" className="size-3.5 text-slate-500" />
               <span>Book Visit</span>
             </button>
           </Link>
 
           <Link href="/patient/prescriptions">
             <button className="h-9 px-4 rounded-2xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-md shadow-slate-900/10 flex items-center gap-2 transition-all whitespace-nowrap">
-              <Pill className="w-3.5 h-3.5 text-emerald-400" />
+              <Pill data-icon="inline-start" className="size-3.5 text-emerald-400" />
               <span>My Prescriptions</span>
             </button>
           </Link>
         </div>
       </section>
 
-      {/* 2. TOP TIER: 4-Card Bento Grid (Direct match to Eduplex reference: 3 Pastel + 1 Dark Card) */}
+      {/* 2. TOP TIER: 4-Card Bento Grid (3 Pastel + 1 Dark Action Card) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Pastel Coral / Peach Squircle */}
-        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200">
+        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200 hover:shadow-lux-hover">
           <div>
             <div className="flex items-center justify-between">
-              <div className="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-100/80 text-amber-600 flex items-center justify-center shrink-0">
-                <Pill className="w-5 h-5 text-amber-600" />
+              <div className="size-11 rounded-2xl bg-amber-50 border border-amber-100/80 text-amber-600 flex items-center justify-center shrink-0">
+                <Pill className="size-5 text-amber-600" />
               </div>
-              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
+              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
                 Revision v{activeRx?.currentRevisionNumber || 1}
               </span>
             </div>
@@ -135,24 +135,24 @@ export default function PatientHomePage() {
           </div>
           <div className="pt-4 mt-3 border-t border-slate-100 flex items-center justify-between text-xs">
             <div>
-              <span className="text-[10px] uppercase font-mono text-slate-400 block">Prescribed</span>
+              <span className="text-[11px] font-medium text-slate-400 block">Prescribed</span>
               <span className="font-bold text-slate-900 font-mono font-tabular">{activeRx?.items.length || 2} Medicines</span>
             </div>
             <div className="text-right">
-              <span className="text-[10px] uppercase font-mono text-slate-400 block">Frequency</span>
+              <span className="text-[11px] font-medium text-slate-400 block">Frequency</span>
               <span className="font-bold text-emerald-700 font-mono">Once Daily</span>
             </div>
           </div>
         </div>
 
         {/* Card 2: Pastel Lime / Mint Squircle */}
-        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200">
+        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200 hover:shadow-lux-hover">
           <div>
             <div className="flex items-center justify-between">
-              <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0">
-                <ShieldCheck className="w-5 h-5 text-emerald-700" />
+              <div className="size-11 rounded-2xl bg-emerald-50 border border-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0">
+                <ShieldCheck className="size-5 text-emerald-700" />
               </div>
-              <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${isReady ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}`}>
+              <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${isReady ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-amber-50 text-amber-700 border border-amber-200"}`}>
                 {isReady ? "Clear" : "In Review"}
               </span>
             </div>
@@ -163,24 +163,24 @@ export default function PatientHomePage() {
           </div>
           <div className="pt-4 mt-3 border-t border-slate-100 flex items-center justify-between text-xs">
             <div>
-              <span className="text-[10px] uppercase font-mono text-slate-400 block">Review</span>
-              <span className="font-bold text-slate-900 font-mono">{isReady ? "Authorized" : "Pharmacist Review"}</span>
+              <span className="text-[11px] font-medium text-slate-400 block">Review</span>
+              <span className="font-bold text-slate-900">{isReady ? "Authorized" : "Pharmacist Review"}</span>
             </div>
             <div className="text-right">
-              <span className="text-[10px] uppercase font-mono text-slate-400 block">Gate</span>
+              <span className="text-[11px] font-medium text-slate-400 block">Gate</span>
               <span className="font-bold text-emerald-700 font-mono">Fails Closed</span>
             </div>
           </div>
         </div>
 
         {/* Card 3: Pastel Sky / Indigo Squircle */}
-        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200">
+        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200 hover:shadow-lux-hover">
           <div>
             <div className="flex items-center justify-between">
-              <div className="w-11 h-11 rounded-2xl bg-sky-50 border border-sky-100/80 text-sky-700 flex items-center justify-center shrink-0">
-                <Stethoscope className="w-5 h-5 text-sky-700" />
+              <div className="size-11 rounded-2xl bg-sky-50 border border-sky-100/80 text-sky-700 flex items-center justify-center shrink-0">
+                <Stethoscope className="size-5 text-sky-700" />
               </div>
-              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-100">
+              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-100">
                 Scheduled
               </span>
             </div>
@@ -191,25 +191,25 @@ export default function PatientHomePage() {
           </div>
           <div className="pt-4 mt-3 border-t border-slate-100 flex items-center justify-between text-xs">
             <div>
-              <span className="text-[10px] uppercase font-mono text-slate-400 block">Date</span>
+              <span className="text-[11px] font-medium text-slate-400 block">Date</span>
               <span className="font-bold text-slate-900 font-mono">Oct 30, 2026</span>
             </div>
             <div className="text-right">
-              <span className="text-[10px] uppercase font-mono text-slate-400 block">Time</span>
+              <span className="text-[11px] font-medium text-slate-400 block">Time</span>
               <span className="font-bold text-sky-700 font-mono">10:00 AM UTC</span>
             </div>
           </div>
         </div>
 
-        {/* Card 4: DARK EDU-ACTION CARD (Direct match to Eduplex "Go Premium" card) */}
+        {/* Card 4: DARK ACTION CARD (Direct match to Eduplex reference) */}
         <div className="bg-[#111317] rounded-3xl p-5 shadow-lux-black border border-slate-800 text-white relative overflow-hidden flex flex-col justify-between">
-          <div className="space-y-2 relative z-10">
+          <div className="flex flex-col gap-2 relative z-10">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 text-emerald-400 font-mono font-bold text-[10px] uppercase tracking-wider">
-                <Building2 className="w-3.5 h-3.5" />
+                <Building2 className="size-3.5" />
                 <span>Pharmacy Counter</span>
               </div>
-              <span className="w-2 h-2 rounded-full bg-emerald-400" />
+              <span className="size-2 rounded-full bg-emerald-400" />
             </div>
 
             <h3 className="text-base font-extrabold text-white leading-tight">
@@ -227,13 +227,13 @@ export default function PatientHomePage() {
             >
               <button className="w-full h-8 px-3 rounded-xl bg-[#bbf7d0] hover:bg-[#86efac] text-slate-950 font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
                 <span>View Dosing Schedule</span>
-                <ArrowRight className="w-3 h-3 text-slate-950" />
+                <ArrowRight data-icon="inline-end" className="size-3 text-slate-950" />
               </button>
             </Link>
           </div>
 
           {/* Decorative background glow */}
-          <div className="absolute -bottom-6 -right-6 w-24 h-24 rounded-full bg-emerald-500/10 blur-xl pointer-events-none" />
+          <div className="absolute -bottom-6 -right-6 size-24 rounded-full bg-emerald-500/10 blur-xl pointer-events-none" />
         </div>
       </div>
 
@@ -246,8 +246,8 @@ export default function PatientHomePage() {
               <div>
                 <h3 className="text-base font-bold text-slate-900">Dose Adherence</h3>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                    <TrendingUp className="w-3 h-3" />
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                    <TrendingUp className="size-3" />
                     100% adherence this week
                   </span>
                 </div>
@@ -257,12 +257,12 @@ export default function PatientHomePage() {
               </div>
             </div>
 
-            {/* Stylized Modern Bar Chart (Direct match to Eduplex Hours Activity Chart) */}
+            {/* Stylized Modern Bar Chart */}
             <div className="pt-6 pb-2">
               <div className="h-44 flex items-end justify-between gap-3 px-2 relative">
-                {/* Floating Tooltip above Thursday Bar (Eduplex Feature) */}
+                {/* Floating Tooltip above Thursday Bar */}
                 <div className="absolute top-1 left-[54%] -translate-x-1/2 bg-[#111317] text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-lg flex items-center gap-1 z-20 pointer-events-none">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#bbf7d0]" />
+                  <span className="size-1.5 rounded-full bg-[#bbf7d0]" />
                   <span>3 of 3 Doses Taken</span>
                 </div>
 
@@ -295,9 +295,9 @@ export default function PatientHomePage() {
             </div>
           </div>
 
-          <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+          <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
             <span>Overall Course Adherence:</span>
-            <span className="font-semibold text-emerald-700">96.4% Good</span>
+            <span className="font-semibold text-emerald-700 font-mono">96.4% Good</span>
           </div>
         </div>
 
@@ -306,66 +306,66 @@ export default function PatientHomePage() {
           <div>
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <h3 className="text-base font-bold text-slate-900">Daily Schedule</h3>
-              <span className="text-[10px] font-mono text-slate-400">Cardiology Regimen</span>
+              <span className="text-xs text-slate-400 font-medium">Cardiology Regimen</span>
             </div>
 
-            {/* List with squircle pastel icons & right chevrons (Eduplex "Daily Schedule" style) */}
+            {/* List with squircle pastel icons & right chevrons */}
             <div className="divide-y divide-slate-100 mt-2">
               <div className="py-2.5 flex items-center justify-between group cursor-pointer">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-orange-50 border border-orange-100 text-orange-600 flex items-center justify-center shrink-0">
-                    <Pill className="w-4 h-4" />
+                  <div className="size-9 rounded-xl bg-orange-50 border border-orange-100 text-orange-600 flex items-center justify-center shrink-0">
+                    <Pill className="size-4" />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-slate-900">Morning Dose (08:00 AM)</div>
                     <div className="text-[11px] text-slate-500">Coumadin 5mg with water</div>
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
+                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
               </div>
 
               <div className="py-2.5 flex items-center justify-between group cursor-pointer">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-purple-50 border border-purple-100 text-purple-600 flex items-center justify-center shrink-0">
-                    <Pill className="w-4 h-4" />
+                  <div className="size-9 rounded-xl bg-purple-50 border border-purple-100 text-purple-600 flex items-center justify-center shrink-0">
+                    <Pill className="size-4" />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-slate-900">Midday Maintenance (01:00 PM)</div>
                     <div className="text-[11px] text-slate-500">Metformin 500mg with meal</div>
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
+                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
               </div>
 
               <div className="py-2.5 flex items-center justify-between group cursor-pointer">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-                    <Pill className="w-4 h-4" />
+                  <div className="size-9 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                    <Pill className="size-4" />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-slate-900">Evening Dose (08:00 PM)</div>
                     <div className="text-[11px] text-slate-500">Disprin 100mg with water</div>
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
+                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
               </div>
 
               <div className="py-2.5 flex items-center justify-between group cursor-pointer">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-100 text-amber-700 flex items-center justify-center shrink-0">
-                    <HeartPulse className="w-4 h-4" />
+                  <div className="size-9 rounded-xl bg-amber-50 border border-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                    <HeartPulse className="size-4" />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-slate-900">Health Check & INR Log</div>
                     <div className="text-[11px] text-slate-500">Target INR: 2.0 - 3.0</div>
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
+                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
               </div>
             </div>
           </div>
 
-          <div className="pt-3 border-t border-slate-100 text-[11px] text-slate-400 font-mono flex items-center justify-between">
+          <div className="pt-3 border-t border-slate-100 text-xs text-slate-400 font-medium flex items-center justify-between">
             <span>Prescribed by:</span>
             <span className="text-slate-700 font-medium">Dr. Arvind Patel</span>
           </div>
@@ -374,12 +374,12 @@ export default function PatientHomePage() {
         {/* Col 3: Mini Calendar & Clinical Consultations (~20% width: 3 cols) */}
         <div className="lg:col-span-3 bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between">
           <div>
-            {/* Calendar Widget (Eduplex Mini Calendar) */}
+            {/* Calendar Widget */}
             <div className="flex items-center justify-between pb-2 text-xs">
               <span className="font-bold text-slate-900">October, 2026</span>
               <div className="flex items-center gap-1 text-slate-400">
-                <ChevronLeft className="w-3.5 h-3.5 cursor-pointer hover:text-slate-700" />
-                <ChevronRight className="w-3.5 h-3.5 cursor-pointer hover:text-slate-700" />
+                <ChevronLeft className="size-3.5 cursor-pointer hover:text-slate-700" />
+                <ChevronRight className="size-3.5 cursor-pointer hover:text-slate-700" />
               </div>
             </div>
 
@@ -411,18 +411,18 @@ export default function PatientHomePage() {
               })}
             </div>
 
-            {/* Appointments Widget (Eduplex Assignments style) */}
+            {/* Appointments Widget */}
             <div className="mt-3">
               <div className="flex items-center justify-between pb-1.5">
                 <span className="text-xs font-bold text-slate-900">Visits</span>
                 <Link href="/patient/appointments/new">
-                  <span className="w-4 h-4 rounded-full bg-[#bbf7d0] text-slate-950 flex items-center justify-center text-[10px] font-bold cursor-pointer">
+                  <span className="size-4 rounded-full bg-[#bbf7d0] text-slate-950 flex items-center justify-center text-[10px] font-bold cursor-pointer">
                     +
                   </span>
                 </Link>
               </div>
 
-              <div className="space-y-2 mt-1">
+              <div className="flex flex-col gap-2 mt-1">
                 <div className="p-2 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-[11px]">
                   <div>
                     <div className="font-bold text-slate-900 truncate max-w-[110px]">Warfarin Follow-up</div>
@@ -452,8 +452,8 @@ export default function PatientHomePage() {
         </div>
       </div>
 
-      {/* 4. BOTTOM TIER: Prescriptions & Meds Ledger (Eduplex "Course You're Taking" Style) */}
-      <div className="bg-white rounded-3xl p-6 shadow-lux border border-slate-100 space-y-4">
+      {/* 4. BOTTOM TIER: Prescriptions & Meds Ledger */}
+      <div className="bg-white rounded-3xl p-6 shadow-lux border border-slate-100 flex flex-col gap-4">
         {/* Ledger Header & Navigation Actions */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
           <div>
@@ -472,14 +472,14 @@ export default function PatientHomePage() {
           <div className="flex items-center gap-2">
             <Link href="/patient/allergies">
               <button className="h-8 px-3.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200/80 flex items-center gap-1.5 transition-all">
-                <PlusCircle className="w-3.5 h-3.5 text-slate-500" />
+                <PlusCircle data-icon="inline-start" className="size-3.5 text-slate-500" />
                 <span>Report Meds & Allergies</span>
               </button>
             </Link>
 
             <Link href="/patient/history">
               <button className="h-8 px-3.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200/80 flex items-center gap-1.5 transition-all">
-                <History className="w-3.5 h-3.5 text-slate-500" />
+                <History data-icon="inline-start" className="size-3.5 text-slate-500" />
                 <span>History</span>
               </button>
             </Link>
@@ -495,10 +495,10 @@ export default function PatientHomePage() {
             >
               {/* Left: Squircle Icon + Drug + Brand */}
               <div className="flex items-center gap-3.5 min-w-0">
-                <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
-                  <Pill className="w-5 h-5 text-emerald-800" />
+                <div className="size-11 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
+                  <Pill className="size-5 text-emerald-800" />
                 </div>
-                <div className="min-w-0 space-y-0.5">
+                <div className="min-w-0 flex flex-col gap-0.5">
                   <div className="text-sm font-bold text-slate-900 truncate">
                     {item.canonicalIngredientIds.join(", ")} {item.strengthValue}{item.strengthUnit}
                   </div>
@@ -527,7 +527,7 @@ export default function PatientHomePage() {
                 <Link href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`}>
                   <button className="h-8 px-3.5 rounded-xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-2xs flex items-center gap-1 transition-all">
                     <span>Details</span>
-                    <ArrowRight className="w-3 h-3 text-emerald-300" />
+                    <ArrowRight data-icon="inline-end" className="size-3 text-emerald-300" />
                   </button>
                 </Link>
               </div>
@@ -538,7 +538,7 @@ export default function PatientHomePage() {
         {/* Long-term Baseline Medications */}
         {patient?.activeMedications && patient.activeMedications.length > 0 && (
           <div className="pt-4 border-t border-slate-100">
-            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 font-mono mb-2">
+            <div className="text-xs font-bold text-slate-500 mb-2">
               Long-Term Baseline Maintenance
             </div>
             <div className="divide-y divide-slate-100">
@@ -561,7 +561,7 @@ export default function PatientHomePage() {
         {/* Safety Gating Status Footer */}
         <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500">
           <div className="flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
+            <AlertCircle className="size-4 text-amber-500 shrink-0" />
             <span>
               {isReady
                 ? "Prescription cleared by pharmacy. Ready for pickup."

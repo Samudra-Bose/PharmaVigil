@@ -130,19 +130,19 @@ export default function PharmacistDashboard() {
   );
 
   return (
-    <div className="space-y-6 max-w-[1400px] mx-auto pb-12">
-      {/* 1. Eduplex-Style Greeting & Primary Actions Header */}
+    <div className="flex flex-col gap-6 max-w-[1400px] mx-auto pb-12">
+      {/* 1. Header with clean typography & distinct button hierarchy */}
       <section
         aria-label="Welcome and Quick Actions"
         className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
       >
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] uppercase font-mono font-bold tracking-wider text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
               CDS Deterministic Verification
             </span>
             <span className="text-slate-300">•</span>
-            <span className="text-xs text-slate-500 font-mono">
+            <span className="text-xs text-slate-500 font-medium">
               Cardiology Outpatient Clinic
             </span>
           </div>
@@ -150,39 +150,39 @@ export default function PharmacistDashboard() {
             <span>Welcome back, Priya Sharma</span>
             <span>👋</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+          <p className="text-xs sm:text-sm text-slate-500">
             Deterministic clinical safety verification, drug-drug interaction screening, and gated dispensing authorization.
           </p>
         </div>
 
-        {/* Action Buttons: Clean, rounded, distinct hierarchy */}
+        {/* Action Controls */}
         <div className="flex items-center gap-2.5 shrink-0">
           <Link href="/pharmacist/patients/search">
             <button className="h-9 px-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/90 shadow-2xs flex items-center gap-2 transition-all whitespace-nowrap">
-              <User className="w-3.5 h-3.5 text-slate-500" />
+              <User data-icon="inline-start" className="size-3.5 text-slate-500" />
               <span>Search Patient</span>
             </button>
           </Link>
 
           <Link href="/pharmacist/capture">
             <button className="h-9 px-4 rounded-2xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-md shadow-slate-900/10 flex items-center gap-2 transition-all whitespace-nowrap">
-              <Camera className="w-3.5 h-3.5 text-emerald-400" />
+              <Camera data-icon="inline-start" className="size-3.5 text-emerald-400" />
               <span>+ New Capture</span>
             </button>
           </Link>
         </div>
       </section>
 
-      {/* 2. TOP TIER: 4-Card Bento Grid (Direct match to Eduplex reference: 3 Pastel + 1 Dark Card) */}
+      {/* 2. TOP TIER: 4-Card Bento Grid (3 Pastel + 1 Dark Action Card) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Pastel Coral / Peach Squircle */}
-        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200">
+        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200 hover:shadow-lux-hover">
           <div>
             <div className="flex items-center justify-between">
-              <div className="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-100/80 text-amber-600 flex items-center justify-center shrink-0">
-                <AlertTriangle className="w-5 h-5 text-amber-600" />
+              <div className="size-11 rounded-2xl bg-amber-50 border border-amber-100/80 text-amber-600 flex items-center justify-center shrink-0">
+                <AlertTriangle className="size-5 text-amber-600" />
               </div>
-              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-100">
+              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-100">
                 Requires Action
               </span>
             </div>
@@ -193,24 +193,24 @@ export default function PharmacistDashboard() {
           </div>
           <div className="pt-4 mt-3 border-t border-slate-100 flex items-center justify-between text-xs">
             <div>
-              <span className="text-[10px] uppercase font-mono text-slate-400 block">Severity</span>
+              <span className="text-[11px] font-medium text-slate-400 block">Severity</span>
               <span className="font-bold text-rose-700 font-mono">Severe DDI</span>
             </div>
             <div className="text-right">
-              <span className="text-[10px] uppercase font-mono text-slate-400 block">Cases</span>
+              <span className="text-[11px] font-medium text-slate-400 block">Cases</span>
               <span className="font-bold text-slate-900 font-mono font-tabular">{countFlagged} Blocked</span>
             </div>
           </div>
         </div>
 
         {/* Card 2: Pastel Lime / Mint Squircle */}
-        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200">
+        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200 hover:shadow-lux-hover">
           <div>
             <div className="flex items-center justify-between">
-              <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0">
-                <Layers className="w-5 h-5 text-emerald-700" />
+              <div className="size-11 rounded-2xl bg-emerald-50 border border-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0">
+                <Layers className="size-5 text-emerald-700" />
               </div>
-              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
+              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
                 Active Queue
               </span>
             </div>
@@ -221,24 +221,24 @@ export default function PharmacistDashboard() {
           </div>
           <div className="pt-4 mt-3 border-t border-slate-100 flex items-center justify-between text-xs">
             <div>
-              <span className="text-[10px] uppercase font-mono text-slate-400 block">Throughput</span>
+              <span className="text-[11px] font-medium text-slate-400 block">Throughput</span>
               <span className="font-bold text-emerald-700 font-mono">98.6% Target</span>
             </div>
             <div className="text-right">
-              <span className="text-[10px] uppercase font-mono text-slate-400 block">Queue</span>
+              <span className="text-[11px] font-medium text-slate-400 block">Queue</span>
               <span className="font-bold text-slate-900 font-mono font-tabular">{cases.length} Total</span>
             </div>
           </div>
         </div>
 
         {/* Card 3: Pastel Sky / Indigo Squircle */}
-        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200">
+        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200 hover:shadow-lux-hover">
           <div>
             <div className="flex items-center justify-between">
-              <div className="w-11 h-11 rounded-2xl bg-sky-50 border border-sky-100/80 text-sky-700 flex items-center justify-center shrink-0">
-                <FileCheck2 className="w-5 h-5 text-sky-700" />
+              <div className="size-11 rounded-2xl bg-sky-50 border border-sky-100/80 text-sky-700 flex items-center justify-center shrink-0">
+                <FileCheck2 className="size-5 text-sky-700" />
               </div>
-              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-100">
+              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-100">
                 Deterministic
               </span>
             </div>
@@ -249,25 +249,25 @@ export default function PharmacistDashboard() {
           </div>
           <div className="pt-4 mt-3 border-t border-slate-100 flex items-center justify-between text-xs">
             <div>
-              <span className="text-[10px] uppercase font-mono text-slate-400 block">Verified</span>
+              <span className="text-[11px] font-medium text-slate-400 block">Verified</span>
               <span className="font-bold text-sky-700 font-mono">100% Gated</span>
             </div>
             <div className="text-right">
-              <span className="text-[10px] uppercase font-mono text-slate-400 block">Released</span>
+              <span className="text-[11px] font-medium text-slate-400 block">Released</span>
               <span className="font-bold text-slate-900 font-mono font-tabular">{countAuthorized} Authorized</span>
             </div>
           </div>
         </div>
 
-        {/* Card 4: DARK EDU-ACTION CARD (Direct match to Eduplex "Go Premium" card) */}
+        {/* Card 4: DARK ACTION CARD (Direct match to Eduplex reference) */}
         <div className="bg-[#111317] rounded-3xl p-5 shadow-lux-black border border-slate-800 text-white relative overflow-hidden flex flex-col justify-between">
-          <div className="space-y-2 relative z-10">
+          <div className="flex flex-col gap-2 relative z-10">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 text-emerald-400 font-mono font-bold text-[10px] uppercase tracking-wider">
-                <ShieldCheck className="w-3.5 h-3.5" />
+                <ShieldCheck className="size-3.5" />
                 <span>Gated Safety Engine</span>
               </div>
-              <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+              <span className="size-2 rounded-full bg-rose-500 animate-pulse" />
             </div>
 
             <h3 className="text-base font-extrabold text-white leading-tight">
@@ -286,7 +286,7 @@ export default function PharmacistDashboard() {
               >
                 <button className="w-full h-8 px-3 rounded-xl bg-[#bbf7d0] hover:bg-[#86efac] text-slate-950 font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
                   <span>Review Hazard</span>
-                  <ArrowRight className="w-3 h-3 text-slate-950" />
+                  <ArrowRight data-icon="inline-end" className="size-3 text-slate-950" />
                 </button>
               </Link>
             ) : (
@@ -294,8 +294,8 @@ export default function PharmacistDashboard() {
             )}
           </div>
 
-          {/* Decorative Background Graphic */}
-          <div className="absolute -bottom-6 -right-6 w-24 h-24 rounded-full bg-emerald-500/10 blur-xl pointer-events-none" />
+          {/* Decorative background glow */}
+          <div className="absolute -bottom-6 -right-6 size-24 rounded-full bg-emerald-500/10 blur-xl pointer-events-none" />
         </div>
       </div>
 
@@ -308,8 +308,8 @@ export default function PharmacistDashboard() {
               <div>
                 <h3 className="text-base font-bold text-slate-900">Hours Activity</h3>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                    <TrendingUp className="w-3 h-3" />
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                    <TrendingUp className="size-3" />
                     +14% vs last week
                   </span>
                 </div>
@@ -319,12 +319,12 @@ export default function PharmacistDashboard() {
               </div>
             </div>
 
-            {/* Stylized Modern Bar Chart (Direct match to Eduplex Hours Activity Chart) */}
+            {/* Stylized Modern Bar Chart */}
             <div className="pt-6 pb-2">
               <div className="h-44 flex items-end justify-between gap-3 px-2 relative">
-                {/* Floating Tooltip above Thursday Bar (Eduplex Feature) */}
+                {/* Floating Tooltip above Thursday Bar */}
                 <div className="absolute top-1 left-[54%] -translate-x-1/2 bg-[#111317] text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-lg flex items-center gap-1 z-20 pointer-events-none">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#bbf7d0]" />
+                  <span className="size-1.5 rounded-full bg-[#bbf7d0]" />
                   <span>6h 45 min • 14 Rx</span>
                 </div>
 
@@ -357,9 +357,9 @@ export default function PharmacistDashboard() {
             </div>
           </div>
 
-          <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+          <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
             <span>Safety Throughput:</span>
-            <span className="font-semibold text-emerald-700">100% Deterministic</span>
+            <span className="font-semibold text-emerald-700 font-mono">100% Deterministic</span>
           </div>
         </div>
 
@@ -368,80 +368,80 @@ export default function PharmacistDashboard() {
           <div>
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <h3 className="text-base font-bold text-slate-900">Clinical Pipeline</h3>
-              <span className="text-[10px] font-mono text-slate-400">Deterministic CDS</span>
+              <span className="text-xs text-slate-400 font-medium">Deterministic CDS</span>
             </div>
 
-            {/* List with squircle pastel icons & right chevrons (Eduplex "Daily Schedule" style) */}
+            {/* List with squircle pastel icons & right chevrons */}
             <div className="divide-y divide-slate-100 mt-2">
               <div className="py-2.5 flex items-center justify-between group cursor-pointer">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-orange-50 border border-orange-100 text-orange-600 flex items-center justify-center shrink-0">
-                    <Camera className="w-4 h-4" />
+                  <div className="size-9 rounded-xl bg-orange-50 border border-orange-100 text-orange-600 flex items-center justify-center shrink-0">
+                    <Camera className="size-4" />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-slate-900">OCR Capture</div>
                     <div className="text-[11px] text-slate-500">99.4% Confidence Score</div>
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
+                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
               </div>
 
               <div className="py-2.5 flex items-center justify-between group cursor-pointer">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-purple-50 border border-purple-100 text-purple-600 flex items-center justify-center shrink-0">
-                    <ShieldAlert className="w-4 h-4" />
+                  <div className="size-9 rounded-xl bg-purple-50 border border-purple-100 text-purple-600 flex items-center justify-center shrink-0">
+                    <ShieldAlert className="size-4" />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-slate-900">DDI Interaction Check</div>
                     <div className="text-[11px] text-rose-600 font-medium">CYP3A4 Flagged (Severe)</div>
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
+                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
               </div>
 
               <div className="py-2.5 flex items-center justify-between group cursor-pointer">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-                    <Stethoscope className="w-4 h-4" />
+                  <div className="size-9 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                    <Stethoscope className="size-4" />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-slate-900">Physician Review</div>
                     <div className="text-[11px] text-slate-500">Attending: Dr. Sarah Chen</div>
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
+                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
               </div>
 
               <div className="py-2.5 flex items-center justify-between group cursor-pointer">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-100 text-amber-700 flex items-center justify-center shrink-0">
-                    <Lock className="w-4 h-4" />
+                  <div className="size-9 rounded-xl bg-amber-50 border border-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                    <Lock className="size-4" />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-slate-900">Dispensing Gate</div>
                     <div className="text-[11px] text-amber-700 font-medium">Locked (Fails Closed)</div>
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
+                <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
               </div>
             </div>
           </div>
 
-          <div className="pt-3 border-t border-slate-100 text-[11px] text-slate-400 font-mono flex items-center justify-between">
+          <div className="pt-3 border-t border-slate-100 text-xs text-slate-400 font-medium flex items-center justify-between">
             <span>Audit Trail:</span>
-            <span className="text-slate-700 font-medium">v1.0 Immutable</span>
+            <span className="text-slate-700 font-mono">v1.0 Immutable</span>
           </div>
         </div>
 
         {/* Col 3: Mini Calendar & Priority Tasks (~20% width: 3 cols) */}
         <div className="lg:col-span-3 bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between">
           <div>
-            {/* Calendar Widget (Eduplex Mini Calendar) */}
+            {/* Calendar Widget */}
             <div className="flex items-center justify-between pb-2 text-xs">
               <span className="font-bold text-slate-900">October, 2026</span>
               <div className="flex items-center gap-1 text-slate-400">
-                <ChevronLeft className="w-3.5 h-3.5 cursor-pointer hover:text-slate-700" />
-                <ChevronRight className="w-3.5 h-3.5 cursor-pointer hover:text-slate-700" />
+                <ChevronLeft className="size-3.5 cursor-pointer hover:text-slate-700" />
+                <ChevronRight className="size-3.5 cursor-pointer hover:text-slate-700" />
               </div>
             </div>
 
@@ -473,20 +473,20 @@ export default function PharmacistDashboard() {
               })}
             </div>
 
-            {/* Assignments / Tasks Widget (Eduplex Style) */}
+            {/* Tasks Widget */}
             <div className="mt-3">
               <div className="flex items-center justify-between pb-1.5">
                 <span className="text-xs font-bold text-slate-900">Tasks</span>
                 <button
                   type="button"
-                  className="w-4 h-4 rounded-full bg-[#bbf7d0] text-slate-950 flex items-center justify-center text-[10px] font-bold"
+                  className="size-4 rounded-full bg-[#bbf7d0] text-slate-950 flex items-center justify-center text-[10px] font-bold"
                   title="Add task"
                 >
                   +
                 </button>
               </div>
 
-              <div className="space-y-2 mt-1">
+              <div className="flex flex-col gap-2 mt-1">
                 <div className="p-2 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-[11px]">
                   <div>
                     <div className="font-bold text-slate-900">Review case_rx_9021</div>
@@ -516,8 +516,8 @@ export default function PharmacistDashboard() {
         </div>
       </div>
 
-      {/* 4. BOTTOM TIER: Active Prescriptions & Cases Ledger (Eduplex "Course You're Taking" Style) */}
-      <div className="bg-white rounded-3xl p-6 shadow-lux border border-slate-100 space-y-4">
+      {/* 4. BOTTOM TIER: Active Prescriptions & Cases Ledger */}
+      <div className="bg-white rounded-3xl p-6 shadow-lux border border-slate-100 flex flex-col gap-4">
         {/* Ledger Header & Segmented Pill Tabs */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
           <div>
@@ -600,17 +600,17 @@ export default function PharmacistDashboard() {
                 >
                   {/* Left: Squircle Icon + Case ID + Patient */}
                   <div className="flex items-center gap-3.5 min-w-0">
-                    <div className="w-11 h-11 rounded-2xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
-                      <Pill className="w-5 h-5 text-slate-700" />
+                    <div className="size-11 rounded-2xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
+                      <Pill className="size-5 text-slate-700" />
                     </div>
-                    <div className="min-w-0 space-y-0.5">
+                    <div className="min-w-0 flex flex-col gap-0.5">
                       <div className="flex items-center gap-2">
                         <span className="font-mono font-bold text-sm text-slate-900 font-tabular">
                           {c.id}
                         </span>
                         <span className="text-slate-300">•</span>
                         <span className="font-mono text-xs text-slate-600 flex items-center gap-1">
-                          <User className="w-3 h-3 text-slate-400" />
+                          <User className="size-3 text-slate-400" />
                           {c.patientId}
                         </span>
                         <span className="text-[10px] font-mono px-1.5 py-0.2 bg-slate-100 text-slate-600 rounded">
@@ -649,7 +649,7 @@ export default function PharmacistDashboard() {
                     >
                       <button className="h-8 px-4 rounded-xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-2xs flex items-center gap-1.5 transition-all">
                         <span>Review</span>
-                        <ArrowRight className="w-3 h-3 text-emerald-300" />
+                        <ArrowRight data-icon="inline-end" className="size-3 text-emerald-300" />
                       </button>
                     </Link>
                   </div>
@@ -661,7 +661,7 @@ export default function PharmacistDashboard() {
 
         {/* Quick Synthetic Demo Patient Links */}
         <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between text-xs text-slate-500 gap-2">
-          <span className="text-[11px] text-slate-400 font-mono">
+          <span className="text-xs text-slate-400 font-medium">
             Synthetic Patient Records:
           </span>
           <div className="flex flex-wrap items-center gap-2">
