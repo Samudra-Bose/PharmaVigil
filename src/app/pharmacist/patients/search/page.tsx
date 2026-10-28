@@ -187,18 +187,19 @@ function PatientSearchContent() {
                     </div>
                   </div>
 
-                  <Link
-                    href={`/pharmacist/patients/${patient.syntheticHospitalPatientId}/confirm`}
+                  <Button
+                    asChild
+                    size="sm"
+                    variant="primary"
+                    className="gap-1.5 text-xs shrink-0 w-full sm:w-auto"
                   >
-                    <Button
-                      size="sm"
-                      variant="primary"
-                      className="gap-1.5 text-xs shrink-0 w-full sm:w-auto"
+                    <Link
+                      href={`/pharmacist/patients/${patient.syntheticHospitalPatientId}/confirm`}
                     >
                       <UserCheck className="w-3.5 h-3.5" /> Explicitly Confirm
                       Identity <ArrowRight className="w-3 h-3" />
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                 </div>
               ))}
             </div>

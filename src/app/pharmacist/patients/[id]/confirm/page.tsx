@@ -105,11 +105,11 @@ export default function ConfirmPatientPage() {
 
           {/* Action Footer */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-            <Link href="/pharmacist/patients/search">
-              <Button size="sm" variant="ghost" className="gap-1.5 text-xs">
+            <Button asChild size="sm" variant="ghost" className="gap-1.5 text-xs">
+              <Link href="/pharmacist/patients/search">
                 <ArrowLeft className="w-3.5 h-3.5" /> Cancel / Wrong Patient
-              </Button>
-            </Link>
+              </Link>
+            </Button>
 
             <Button
               size="md"

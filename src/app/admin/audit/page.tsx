@@ -173,11 +173,11 @@ export default function AdminAuditPage() {
           </p>
         </div>
 
-        <Link href="/admin">
-          <Button size="sm" variant="outline" className="text-xs gap-1.5">
+        <Button asChild size="sm" variant="outline" className="text-xs gap-1.5">
+          <Link href="/admin">
             <ArrowLeft className="w-3.5 h-3.5" /> Back to Governance
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </div>
 
       {/* Filter and Query Strip */}

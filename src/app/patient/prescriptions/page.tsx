@@ -41,11 +41,11 @@ export default function PatientPrescriptionsListPage() {
           </p>
         </div>
 
-        <Link href="/patient">
-          <Button size="sm" variant="outline" className="text-xs gap-1.5">
+        <Button asChild size="sm" variant="outline" className="text-xs gap-1.5">
+          <Link href="/patient">
             <ArrowLeft className="w-3.5 h-3.5" /> Back to Overview
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </div>
 
       {loading ? (
@@ -87,15 +87,16 @@ export default function PatientPrescriptionsListPage() {
                     </div>
                   </div>
 
-                  <Link href={`/patient/prescriptions/${c.id}`}>
-                    <Button
-                      size="sm"
-                      variant="primary"
-                      className="text-xs gap-1.5 shrink-0"
-                    >
+                  <Button
+                    asChild
+                    size="sm"
+                    variant="primary"
+                    className="text-xs gap-1.5 shrink-0"
+                  >
+                    <Link href={`/patient/prescriptions/${c.id}`}>
                       View Schedule <ArrowRight className="w-3.5 h-3.5" />
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                 </CardContent>
               </Card>
             );

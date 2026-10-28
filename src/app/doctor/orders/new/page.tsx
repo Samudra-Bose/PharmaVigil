@@ -603,16 +603,17 @@ export default function NewDoctorOrderPage() {
 
         {/* Action Buttons */}
         <div className="flex items-center justify-between pt-2">
-          <Link href="/doctor/orders">
-            <Button
-              type="button"
-              size="sm"
-              variant="outline"
-              className="text-xs gap-1.5"
-            >
+          <Button
+            asChild
+            type="button"
+            size="sm"
+            variant="outline"
+            className="text-xs gap-1.5"
+          >
+            <Link href="/doctor/orders">
               <ArrowLeft className="w-3.5 h-3.5" /> Cancel & Back
-            </Button>
-          </Link>
+            </Link>
+          </Button>
 
           <Button
             type="submit"

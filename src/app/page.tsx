@@ -164,11 +164,12 @@ export default function HomePage() {
           </div>
 
           <div className="flex items-center gap-2.5 shrink-0">
-            <Link href={getWorkspaceHref(role)}>
-              <button className="h-9 px-4 rounded-xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-sm flex items-center gap-2 transition-all cursor-pointer">
-                <span>Open {role === "PHARMACIST" ? "Pharmacist Workspace" : role === "DOCTOR" ? "Doctor Triage" : role === "PATIENT" ? "Patient Hub" : "Admin Deck"}</span>
-                <ArrowRight data-icon="inline-end" className="size-3.5 text-emerald-400" />
-              </button>
+            <Link
+              href={getWorkspaceHref(role)}
+              className="h-9 px-4 rounded-xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-sm inline-flex items-center gap-2 transition-all cursor-pointer"
+            >
+              <span>Open {role === "PHARMACIST" ? "Pharmacist Workspace" : role === "DOCTOR" ? "Doctor Triage" : role === "PATIENT" ? "Patient Hub" : "Admin Deck"}</span>
+              <ArrowRight data-icon="inline-end" className="size-3.5 text-emerald-400" />
             </Link>
           </div>
         </div>
@@ -202,11 +203,12 @@ export default function HomePage() {
             <Link href="/pharmacist/patients/search" className="text-xs text-slate-500 hover:text-slate-800">
               Search Patient
             </Link>
-            <Link href="/pharmacist">
-              <button className="h-8 px-3 rounded-lg bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs flex items-center gap-1 transition-all cursor-pointer">
-                <span>Open</span>
-                <ArrowRight className="size-3 text-emerald-400" />
-              </button>
+            <Link
+              href="/pharmacist"
+              className="h-8 px-3 rounded-lg bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs inline-flex items-center gap-1 transition-all cursor-pointer"
+            >
+              <span>Open</span>
+              <ArrowRight className="size-3 text-emerald-400" />
             </Link>
           </div>
         </div>
@@ -237,11 +239,12 @@ export default function HomePage() {
             <Link href="/doctor/prescriptions/new" className="text-xs text-slate-500 hover:text-slate-800">
               + New Revision
             </Link>
-            <Link href="/doctor">
-              <button className="h-8 px-3 rounded-lg bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs flex items-center gap-1 transition-all cursor-pointer">
-                <span>Open</span>
-                <ArrowRight className="size-3 text-emerald-400" />
-              </button>
+            <Link
+              href="/doctor"
+              className="h-8 px-3 rounded-lg bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs inline-flex items-center gap-1 transition-all cursor-pointer"
+            >
+              <span>Open</span>
+              <ArrowRight className="size-3 text-emerald-400" />
             </Link>
           </div>
         </div>
@@ -272,11 +275,12 @@ export default function HomePage() {
             <Link href="/patient/appointments/new" className="text-xs text-slate-500 hover:text-slate-800">
               Book Visit
             </Link>
-            <Link href="/patient">
-              <button className="h-8 px-3 rounded-lg bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs flex items-center gap-1 transition-all cursor-pointer">
-                <span>Open</span>
-                <ArrowRight className="size-3 text-emerald-400" />
-              </button>
+            <Link
+              href="/patient"
+              className="h-8 px-3 rounded-lg bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs inline-flex items-center gap-1 transition-all cursor-pointer"
+            >
+              <span>Open</span>
+              <ArrowRight className="size-3 text-emerald-400" />
             </Link>
           </div>
         </div>
@@ -307,11 +311,12 @@ export default function HomePage() {
             <Link href="/admin/audit" className="text-xs text-slate-500 hover:text-slate-800">
               Audit Trail
             </Link>
-            <Link href="/admin">
-              <button className="h-8 px-3 rounded-lg bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs flex items-center gap-1 transition-all cursor-pointer">
-                <span>Open</span>
-                <ArrowRight className="size-3 text-emerald-400" />
-              </button>
+            <Link
+              href="/admin"
+              className="h-8 px-3 rounded-lg bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs inline-flex items-center gap-1 transition-all cursor-pointer"
+            >
+              <span>Open</span>
+              <ArrowRight className="size-3 text-emerald-400" />
             </Link>
           </div>
         </div>

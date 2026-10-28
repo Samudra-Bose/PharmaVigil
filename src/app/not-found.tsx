@@ -18,11 +18,11 @@ export default function NotFound() {
           foreign tenant existence.
         </p>
         <div className="mt-6 pt-4 border-t border-slate-100 flex justify-center">
-          <Link href="/">
-            <Button size="sm" variant="primary" className="gap-2">
+          <Button asChild size="sm" variant="primary" className="gap-2">
+            <Link href="/">
               <ArrowLeft className="w-4 h-4" /> Return to Safe Portal
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         </div>
       </div>
     </div>

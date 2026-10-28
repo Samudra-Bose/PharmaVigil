@@ -222,18 +222,20 @@ export default function PharmacistDashboard() {
 
         {/* Primary Operational Action */}
         <div className="flex items-center gap-2.5 shrink-0">
-          <Link href="/pharmacist/patients/search">
-            <button className="h-9 px-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/80 shadow-2xs flex items-center gap-2 transition-all whitespace-nowrap">
-              <User data-icon="inline-start" className="size-3.5 text-slate-500" />
-              <span>Search Patient</span>
-            </button>
+          <Link
+            href="/pharmacist/patients/search"
+            className="h-9 px-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/80 shadow-2xs inline-flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer"
+          >
+            <User data-icon="inline-start" className="size-3.5 text-slate-500" />
+            <span>Search Patient</span>
           </Link>
 
-          <Link href="/pharmacist/capture">
-            <button className="h-9 px-4 rounded-xl bg-[#064e3b] hover:bg-[#047857] text-white font-semibold text-xs shadow-sm flex items-center gap-2 transition-all whitespace-nowrap">
-              <Camera data-icon="inline-start" className="size-3.5 text-emerald-300" />
-              <span>+ Capture Prescription</span>
-            </button>
+          <Link
+            href="/pharmacist/capture"
+            className="h-9 px-4 rounded-xl bg-[#064e3b] hover:bg-[#047857] text-white font-semibold text-xs shadow-sm inline-flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer"
+          >
+            <Camera data-icon="inline-start" className="size-3.5 text-emerald-300" />
+            <span>+ Capture Prescription</span>
           </Link>
         </div>
       </section>
@@ -300,11 +302,12 @@ export default function PharmacistDashboard() {
             </div>
             <div className="mt-2">
               {activeFlaggedCase ? (
-                <Link href={`/pharmacist/cases/${activeFlaggedCase.id}/results`} className="block">
-                  <button className="w-full h-7 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-[11px] shadow-2xs flex items-center justify-center gap-1.5 transition-all">
-                    <span>Inspect Hazard ({activeFlaggedCase.id})</span>
-                    <ArrowRight className="size-3 text-emerald-400" />
-                  </button>
+                <Link
+                  href={`/pharmacist/cases/${activeFlaggedCase.id}/results`}
+                  className="w-full h-7 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-[11px] shadow-2xs inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                >
+                  <span>Inspect Hazard ({activeFlaggedCase.id})</span>
+                  <ArrowRight className="size-3 text-emerald-400" />
                 </Link>
               ) : (
                 <span className="text-xs text-slate-500 font-mono">All clinical checks clear</span>
@@ -448,11 +451,10 @@ export default function PharmacistDashboard() {
                                 ? `/pharmacist/cases/${c.id}/results`
                                 : `/pharmacist/cases/${c.id}/medicines`
                           }
+                          className="h-7 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs shadow-2xs inline-flex items-center gap-1.5 transition-all cursor-pointer"
                         >
-                          <button className="h-7 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs shadow-2xs flex items-center gap-1.5 transition-all">
-                            <span>Review</span>
-                            <ArrowRight data-icon="inline-end" className="size-3 text-emerald-300" />
-                          </button>
+                          <span>Review</span>
+                          <ArrowRight data-icon="inline-end" className="size-3 text-emerald-300" />
                         </Link>
                       </div>
                     </div>

@@ -160,11 +160,12 @@ export default function AdminDashboardPage() {
 
         {/* Action Controls */}
         <div className="flex items-center gap-2.5 shrink-0">
-          <Link href="/admin/demo-reset">
-            <button className="h-9 px-4 rounded-xl bg-white hover:bg-rose-50 text-rose-700 font-semibold text-xs border border-rose-200/90 shadow-2xs flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer">
-              <RotateCcw data-icon="inline-start" className="size-3.5 text-rose-600" />
-              <span>Scoped Demo Reset</span>
-            </button>
+          <Link
+            href="/admin/demo-reset"
+            className="h-9 px-4 rounded-xl bg-white hover:bg-rose-50 text-rose-700 font-semibold text-xs border border-rose-200/90 shadow-2xs inline-flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer"
+          >
+            <RotateCcw data-icon="inline-start" className="size-3.5 text-rose-600" />
+            <span>Scoped Demo Reset</span>
           </Link>
         </div>
       </section>
@@ -197,11 +198,12 @@ export default function AdminDashboardPage() {
             </div>
 
             <div className="flex items-center gap-2.5 shrink-0">
-              <Link href={`/admin/memberships/${pendingMember.id}`}>
-                <button className="h-9 px-4 rounded-xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-sm flex items-center gap-2 transition-all cursor-pointer">
-                  <span>Review Credentials</span>
-                  <ArrowRight data-icon="inline-end" className="size-3.5 text-emerald-400" />
-                </button>
+              <Link
+                href={`/admin/memberships/${pendingMember.id}`}
+                className="h-9 px-4 rounded-xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-sm inline-flex items-center gap-2 transition-all cursor-pointer"
+              >
+                <span>Review Credentials</span>
+                <ArrowRight data-icon="inline-end" className="size-3.5 text-emerald-400" />
               </Link>
             </div>
           </div>
@@ -255,17 +257,19 @@ export default function AdminDashboardPage() {
               </div>
 
               <div className="flex items-center gap-2">
-                <Link href="/admin/users">
-                  <button className="h-8 px-3 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200/80 flex items-center gap-1.5 transition-all cursor-pointer">
-                    <Users data-icon="inline-start" className="size-3.5 text-slate-500" />
-                    <span>Directory</span>
-                  </button>
+                <Link
+                  href="/admin/users"
+                  className="h-8 px-3 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200/80 inline-flex items-center gap-1.5 transition-all cursor-pointer"
+                >
+                  <Users data-icon="inline-start" className="size-3.5 text-slate-500" />
+                  <span>Directory</span>
                 </Link>
-                <Link href="/admin/memberships">
-                  <button className="h-8 px-3 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200/80 flex items-center gap-1.5 transition-all cursor-pointer">
-                    <UserCheck data-icon="inline-start" className="size-3.5 text-slate-500" />
-                    <span>Applications</span>
-                  </button>
+                <Link
+                  href="/admin/memberships"
+                  className="h-8 px-3 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200/80 inline-flex items-center gap-1.5 transition-all cursor-pointer"
+                >
+                  <UserCheck data-icon="inline-start" className="size-3.5 text-slate-500" />
+                  <span>Applications</span>
                 </Link>
               </div>
             </div>
@@ -312,11 +316,12 @@ export default function AdminDashboardPage() {
                       {m.status}
                     </span>
 
-                    <Link href={`/admin/memberships/${m.id}`}>
-                      <button className="h-7 px-3 rounded-lg bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs flex items-center gap-1 transition-all cursor-pointer">
-                        <span>Manage</span>
-                        <ArrowRight data-icon="inline-end" className="size-3 text-emerald-400" />
-                      </button>
+                    <Link
+                      href={`/admin/memberships/${m.id}`}
+                      className="h-7 px-3 rounded-lg bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs inline-flex items-center gap-1 transition-all cursor-pointer"
+                    >
+                      <span>Manage</span>
+                      <ArrowRight data-icon="inline-end" className="size-3 text-emerald-400" />
                     </Link>
                   </div>
                 </div>

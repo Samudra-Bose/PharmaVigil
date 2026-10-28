@@ -115,15 +115,16 @@ export default function DoctorOrdersPage() {
           </p>
         </div>
 
-        <Link href="/doctor/orders/new">
-          <Button
-            size="sm"
-            variant="primary"
-            className="text-xs gap-1.5 shadow-xs"
-          >
+        <Button
+          asChild
+          size="sm"
+          variant="primary"
+          className="text-xs gap-1.5 shadow-xs"
+        >
+          <Link href="/doctor/orders/new">
             <Plus className="w-3.5 h-3.5" /> + Prescribe Inpatient Order
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </div>
 
       {/* Filter and Search Bar */}

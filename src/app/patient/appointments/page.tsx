@@ -80,16 +80,16 @@ export default function PatientAppointmentsPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Link href="/patient">
-            <Button size="sm" variant="ghost" className="text-xs gap-1.5">
+          <Button asChild size="sm" variant="ghost" className="text-xs gap-1.5">
+            <Link href="/patient">
               <ArrowLeft className="w-3.5 h-3.5" /> Back
-            </Button>
-          </Link>
-          <Link href="/patient/appointments/new">
-            <Button size="sm" variant="primary" className="text-xs gap-1.5">
+            </Link>
+          </Button>
+          <Button asChild size="sm" variant="primary" className="text-xs gap-1.5">
+            <Link href="/patient/appointments/new">
               <Plus className="w-3.5 h-3.5" /> Book Consultation
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         </div>
       </div>
 

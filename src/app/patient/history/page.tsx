@@ -42,11 +42,11 @@ export default function PatientHistoryPage() {
           </p>
         </div>
 
-        <Link href="/patient">
-          <Button size="sm" variant="outline" className="text-xs gap-1.5">
+        <Button asChild size="sm" variant="outline" className="text-xs gap-1.5">
+          <Link href="/patient">
             <ArrowLeft className="w-3.5 h-3.5" /> Back to Overview
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </div>
 
       {loading ? (

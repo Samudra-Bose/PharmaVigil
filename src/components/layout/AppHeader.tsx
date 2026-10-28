@@ -173,16 +173,12 @@ export const AppHeader: React.FC = () => {
             </div>
           ) : (
             <div className="flex items-center gap-1.5">
-              <Link href="/auth/login">
-                <Button size="sm" variant="outline" className="h-7 text-xs">
-                  Sign In
-                </Button>
-              </Link>
-              <Link href="/auth/register">
-                <Button size="sm" variant="primary" className="h-7 text-xs">
-                  Register
-                </Button>
-              </Link>
+              <Button asChild size="sm" variant="outline" className="h-7 text-xs">
+                <Link href="/auth/login">Sign In</Link>
+              </Button>
+              <Button asChild size="sm" variant="primary" className="h-7 text-xs">
+                <Link href="/auth/register">Register</Link>
+              </Button>
             </div>
           )}
         </div>

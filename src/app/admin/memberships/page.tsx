@@ -78,11 +78,11 @@ export default function AdminMembershipsPage() {
           </p>
         </div>
 
-        <Link href="/admin">
-          <Button size="sm" variant="outline" className="text-xs gap-1.5">
+        <Button asChild size="sm" variant="outline" className="text-xs gap-1.5">
+          <Link href="/admin">
             <ArrowLeft className="w-3.5 h-3.5" /> Back to Dashboard
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </div>
 
       {loading ? (
@@ -171,15 +171,16 @@ export default function AdminMembershipsPage() {
                             <CheckCircle2 className="w-3 h-3 mr-1" /> Reactivate
                           </Button>
                         )}
-                        <Link href={`/admin/memberships/${m.id}`}>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="text-xs gap-1 h-7"
-                          >
+                        <Button
+                          asChild
+                          size="sm"
+                          variant="outline"
+                          className="text-xs gap-1 h-7"
+                        >
+                          <Link href={`/admin/memberships/${m.id}`}>
                             Manage <ArrowRight className="w-3 h-3" />
-                          </Button>
-                        </Link>
+                          </Link>
+                        </Button>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -257,15 +258,16 @@ export default function AdminMembershipsPage() {
                       <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Reactivate
                     </Button>
                   )}
-                  <Link href={`/admin/memberships/${m.id}`}>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="text-xs gap-1 h-8"
-                    >
+                  <Button
+                    asChild
+                    size="sm"
+                    variant="outline"
+                    className="text-xs gap-1 h-8"
+                  >
+                    <Link href={`/admin/memberships/${m.id}`}>
                       Manage <ArrowRight className="w-3.5 h-3.5" />
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                 </div>
               </div>
             ))}

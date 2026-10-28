@@ -225,25 +225,28 @@ export default function DoctorDashboard() {
 
         {/* Action Controls */}
         <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap shrink-0">
-          <Link href="/doctor/appointments">
-            <button className="h-9 px-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/80 shadow-2xs flex items-center gap-2 transition-all whitespace-nowrap">
-              <CalendarIcon data-icon="inline-start" className="size-3.5 text-slate-500" />
-              <span>Consultations</span>
-            </button>
+          <Link
+            href="/doctor/appointments"
+            className="h-9 px-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/80 shadow-2xs inline-flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer"
+          >
+            <CalendarIcon data-icon="inline-start" className="size-3.5 text-slate-500" />
+            <span>Consultations</span>
           </Link>
 
-          <Link href="/doctor/prescriptions">
-            <button className="h-9 px-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/80 shadow-2xs flex items-center gap-2 transition-all whitespace-nowrap">
-              <FileText data-icon="inline-start" className="size-3.5 text-slate-500" />
-              <span>Prescriptions</span>
-            </button>
+          <Link
+            href="/doctor/prescriptions"
+            className="h-9 px-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/80 shadow-2xs inline-flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer"
+          >
+            <FileText data-icon="inline-start" className="size-3.5 text-slate-500" />
+            <span>Prescriptions</span>
           </Link>
 
-          <Link href="/doctor/prescriptions/new">
-            <button className="h-9 px-4 rounded-xl bg-[#064e3b] hover:bg-[#047857] text-white font-semibold text-xs shadow-sm flex items-center gap-2 transition-all whitespace-nowrap">
-              <PlusCircle data-icon="inline-start" className="size-3.5 text-emerald-300" />
-              <span>+ New Revision</span>
-            </button>
+          <Link
+            href="/doctor/prescriptions/new"
+            className="h-9 px-4 rounded-xl bg-[#064e3b] hover:bg-[#047857] text-white font-semibold text-xs shadow-sm inline-flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer"
+          >
+            <PlusCircle data-icon="inline-start" className="size-3.5 text-emerald-300" />
+            <span>+ New Revision</span>
           </Link>
         </div>
       </section>
@@ -287,12 +290,10 @@ export default function DoctorDashboard() {
           <div className="shrink-0 flex items-center gap-3">
             <Link
               href={`/doctor/tasks/${primaryTask.id}/disposition?caseId=${primaryTask.caseId}`}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto h-9 px-4 rounded-xl bg-rose-700 hover:bg-rose-800 text-white font-semibold text-xs shadow-sm inline-flex items-center justify-center gap-2 transition-all cursor-pointer"
             >
-              <button className="w-full sm:w-auto h-9 px-4 rounded-xl bg-rose-700 hover:bg-rose-800 text-white font-semibold text-xs shadow-sm flex items-center justify-center gap-2 transition-all">
-                <span>Sign Disposition</span>
-                <ArrowRight data-icon="inline-end" className="size-3 text-white" />
-              </button>
+              <span>Sign Disposition</span>
+              <ArrowRight data-icon="inline-end" className="size-3 text-white" />
             </Link>
           </div>
         </section>
@@ -417,11 +418,12 @@ export default function DoctorDashboard() {
                         {t.alert.severity}
                       </Badge>
 
-                      <Link href={`/doctor/tasks/${t.id}/disposition?caseId=${t.caseId}`}>
-                        <button className="h-7 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs shadow-2xs flex items-center gap-1.5 transition-all">
-                          <span>Disposition</span>
-                          <ArrowRight data-icon="inline-end" className="size-3 text-emerald-300" />
-                        </button>
+                      <Link
+                        href={`/doctor/tasks/${t.id}/disposition?caseId=${t.caseId}`}
+                        className="h-7 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs shadow-2xs inline-flex items-center gap-1.5 transition-all cursor-pointer"
+                      >
+                        <span>Disposition</span>
+                        <ArrowRight data-icon="inline-end" className="size-3 text-emerald-300" />
                       </Link>
                     </div>
                   </div>

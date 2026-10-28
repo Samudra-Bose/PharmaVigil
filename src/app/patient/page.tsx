@@ -153,18 +153,20 @@ export default function PatientHomePage() {
 
         {/* Primary Navigation Actions */}
         <div className="flex items-center gap-2.5 shrink-0">
-          <Link href="/patient/appointments/new">
-            <button className="h-9 px-4 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/90 shadow-2xs flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer">
-              <CalendarIcon data-icon="inline-start" className="size-3.5 text-slate-500" />
-              <span>Book Visit</span>
-            </button>
+          <Link
+            href="/patient/appointments/new"
+            className="h-9 px-4 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/90 shadow-2xs inline-flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer"
+          >
+            <CalendarIcon data-icon="inline-start" className="size-3.5 text-slate-500" />
+            <span>Book Visit</span>
           </Link>
 
-          <Link href="/patient/prescriptions">
-            <button className="h-9 px-4 rounded-xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-md shadow-slate-900/10 flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer">
-              <Pill data-icon="inline-start" className="size-3.5 text-emerald-400" />
-              <span>My Prescriptions</span>
-            </button>
+          <Link
+            href="/patient/prescriptions"
+            className="h-9 px-4 rounded-xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-md shadow-slate-900/10 inline-flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer"
+          >
+            <Pill data-icon="inline-start" className="size-3.5 text-emerald-400" />
+            <span>My Prescriptions</span>
           </Link>
         </div>
       </section>
@@ -204,11 +206,12 @@ export default function PatientHomePage() {
           </div>
 
           <div className="flex items-center gap-2.5 shrink-0">
-            <Link href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`}>
-              <button className="h-9 px-4 rounded-xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-sm flex items-center gap-2 transition-all cursor-pointer">
-                <span>View Dosing Schedule</span>
-                <ArrowRight data-icon="inline-end" className="size-3.5 text-emerald-400" />
-              </button>
+            <Link
+              href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`}
+              className="h-9 px-4 rounded-xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-sm inline-flex items-center gap-2 transition-all cursor-pointer"
+            >
+              <span>View Dosing Schedule</span>
+              <ArrowRight data-icon="inline-end" className="size-3.5 text-emerald-400" />
             </Link>
           </div>
         </div>
@@ -254,18 +257,20 @@ export default function PatientHomePage() {
               </div>
 
               <div className="flex items-center gap-2">
-                <Link href="/patient/medication-history">
-                  <button className="h-8 px-3 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200/80 flex items-center gap-1.5 transition-all cursor-pointer">
-                    <PlusCircle data-icon="inline-start" className="size-3.5 text-slate-500" />
-                    <span>Report Meds</span>
-                  </button>
+                <Link
+                  href="/patient/medication-history"
+                  className="h-8 px-3 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200/80 inline-flex items-center gap-1.5 transition-all cursor-pointer"
+                >
+                  <PlusCircle data-icon="inline-start" className="size-3.5 text-slate-500" />
+                  <span>Report Meds</span>
                 </Link>
 
-                <Link href="/patient/history">
-                  <button className="h-8 px-3 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200/80 flex items-center gap-1.5 transition-all cursor-pointer">
-                    <History data-icon="inline-start" className="size-3.5 text-slate-500" />
-                    <span>History</span>
-                  </button>
+                <Link
+                  href="/patient/history"
+                  className="h-8 px-3 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200/80 inline-flex items-center gap-1.5 transition-all cursor-pointer"
+                >
+                  <History data-icon="inline-start" className="size-3.5 text-slate-500" />
+                  <span>History</span>
                 </Link>
               </div>
             </div>
@@ -302,11 +307,12 @@ export default function PatientHomePage() {
                       {item.frequency}
                     </span>
 
-                    <Link href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`}>
-                      <button className="h-7 px-3 rounded-lg bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs flex items-center gap-1 transition-all cursor-pointer">
-                        <span>Details</span>
-                        <ArrowRight data-icon="inline-end" className="size-3 text-emerald-400" />
-                      </button>
+                    <Link
+                      href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`}
+                      className="h-7 px-3 rounded-lg bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs inline-flex items-center gap-1 transition-all cursor-pointer"
+                    >
+                      <span>Details</span>
+                      <ArrowRight data-icon="inline-end" className="size-3 text-emerald-400" />
                     </Link>
                   </div>
                 </div>
@@ -470,10 +476,11 @@ export default function PatientHomePage() {
                 <div className="text-[10px] text-slate-400 uppercase font-semibold">Date & Time</div>
                 <div className="font-bold text-slate-900 font-mono">Oct 30, 2026 • 10:00 AM</div>
               </div>
-              <Link href="/patient/appointments">
-                <button className="h-7 px-2.5 rounded-lg bg-white border border-slate-200/80 text-slate-700 font-semibold text-xs hover:bg-slate-50 transition-colors cursor-pointer">
-                  View Visit
-                </button>
+              <Link
+                href="/patient/appointments"
+                className="h-7 px-2.5 rounded-lg bg-white border border-slate-200/80 text-slate-700 font-semibold text-xs hover:bg-slate-50 transition-colors inline-flex items-center cursor-pointer"
+              >
+                View Visit
               </Link>
             </div>
           </div>

@@ -67,11 +67,11 @@ export default function ScopedDemoResetPage() {
           </p>
         </div>
 
-        <Link href="/admin">
-          <Button size="sm" variant="ghost" className="text-xs gap-1.5">
+        <Button asChild size="sm" variant="ghost" className="text-xs gap-1.5">
+          <Link href="/admin">
             <ArrowLeft className="w-3.5 h-3.5" /> Cancel
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </div>
 
       {/* Safety Warning Alert */}

@@ -55,11 +55,11 @@ export default function MembershipDetailPage() {
           </p>
         </div>
 
-        <Link href="/admin/memberships">
-          <Button size="sm" variant="ghost" className="text-xs gap-1.5">
+        <Button asChild size="sm" variant="ghost" className="text-xs gap-1.5">
+          <Link href="/admin/memberships">
             <ArrowLeft className="w-3.5 h-3.5" /> Back
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </div>
 
       <form
