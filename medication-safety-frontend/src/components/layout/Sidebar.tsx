@@ -37,13 +37,18 @@ export const Sidebar: React.FC = () => {
   const { role, hospitalName } = useAuth();
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // Load persistence
+  // Responsive default: collapse on medium desktop (768px - 1180px), expand on wide screens
   useEffect(() => {
+    setMounted(true);
     try {
       const saved = localStorage.getItem("pharmavigil_sidebar_collapsed");
       if (saved !== null) {
         setCollapsed(saved === "true");
+      } else if (window.innerWidth < 1200) {
+        // Default to compact mode on viewports under 1200px (e.g. 900px, 1024px)
+        setCollapsed(true);
       }
     } catch {
       // Ignore in SSR
@@ -68,7 +73,7 @@ export const Sidebar: React.FC = () => {
   let roleTitle = "Portal";
 
   if (role === "PHARMACIST") {
-    roleTitle = "Pharmacy Operations";
+    roleTitle = "Pharmacy CDS";
     items = [
       { label: "Work Queue", href: "/pharmacist", icon: ClipboardList, badge: "1" },
       { label: "Patient Search", href: "/pharmacist/patients/search", icon: Search },
@@ -81,10 +86,10 @@ export const Sidebar: React.FC = () => {
       { label: "Triage Task Queue", href: "/doctor", icon: AlertTriangle, badge: "1", badgeVariant: "urgent" },
       { label: "Prescriptions Ledger", href: "/doctor/prescriptions", icon: FileText },
       { label: "Author Revision", href: "/doctor/prescriptions/new", icon: PlusCircle },
-      { label: "Consultation Queue", href: "/doctor/appointments", icon: Calendar },
+      { label: "Consultations", href: "/doctor/appointments", icon: Calendar },
     ];
   } else if (role === "PATIENT") {
-    roleTitle = "Patient Health Hub";
+    roleTitle = "Patient Hub";
     items = [
       { label: "Health Overview", href: "/patient", icon: LayoutDashboard },
       { label: "My Prescriptions", href: "/patient/prescriptions", icon: Pill },
@@ -92,10 +97,10 @@ export const Sidebar: React.FC = () => {
       { label: "Medication History", href: "/patient/history", icon: Clock },
     ];
   } else if (role === "HOSPITAL_ADMIN") {
-    roleTitle = "Hospital Administration";
+    roleTitle = "Hospital Governance";
     items = [
-      { label: "Admin Dashboard", href: "/admin", icon: LayoutDashboard },
-      { label: "Membership Requests", href: "/admin/memberships", icon: UserCheck, badge: "1" },
+      { label: "Governance Dashboard", href: "/admin", icon: LayoutDashboard },
+      { label: "Staff Memberships", href: "/admin/memberships", icon: UserCheck, badge: "1" },
       { label: "Clinician Directory", href: "/admin/users", icon: Users },
       { label: "Scoped Demo Reset", href: "/admin/demo-reset", icon: RotateCcw },
     ];
@@ -104,15 +109,15 @@ export const Sidebar: React.FC = () => {
   return (
     <aside
       className={cn(
-        "hidden md:flex flex-col bg-slate-50/70 border-r border-slate-200/80 shrink-0 transition-all duration-200 select-none",
-        collapsed ? "w-14" : "w-56"
+        "hidden md:flex flex-col bg-slate-50/70 border-r border-slate-200/80 shrink-0 transition-all duration-200 select-none z-30",
+        collapsed ? "w-14" : "w-52"
       )}
       aria-label="Clinical Portal Navigation"
     >
       {/* Workspace Context Header */}
-      <div className={cn("p-3 border-b border-slate-200/60 flex items-center justify-between", collapsed ? "justify-center px-1" : "")}>
+      <div className={cn("p-2.5 border-b border-slate-200/60 flex items-center justify-between", collapsed ? "justify-center px-1" : "px-3")}>
         {!collapsed && (
-          <div className="overflow-hidden">
+          <div className="overflow-hidden min-w-0 pr-1">
             <div className="text-[10px] font-semibold uppercase tracking-wider text-teal-800 flex items-center gap-1.5">
               <Activity className="w-3.5 h-3.5 text-teal-600 shrink-0" />
               <span className="truncate">{roleTitle}</span>
@@ -134,7 +139,7 @@ export const Sidebar: React.FC = () => {
       </div>
 
       {/* Nav List */}
-      <nav className="flex-1 py-2.5 px-2 space-y-0.5 overflow-y-auto">
+      <nav className="flex-1 py-2 px-1.5 space-y-0.5 overflow-y-auto">
         {items.map((item) => {
           const Icon = item.icon;
           const isActive =
@@ -150,7 +155,8 @@ export const Sidebar: React.FC = () => {
               aria-current={isActive ? "page" : undefined}
               title={collapsed ? item.label : undefined}
               className={cn(
-                "flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs transition-all group relative",
+                "flex items-center rounded-md text-xs transition-all group relative",
+                collapsed ? "justify-center p-2" : "gap-2.5 px-2.5 py-1.5",
                 isActive
                   ? "bg-white text-slate-900 shadow-2xs font-semibold border border-slate-200/90"
                   : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/40 font-medium"
@@ -158,7 +164,7 @@ export const Sidebar: React.FC = () => {
             >
               <Icon
                 className={cn(
-                  "w-3.5 h-3.5 shrink-0 transition-colors",
+                  "w-4 h-4 shrink-0 transition-colors",
                   isActive ? "text-teal-700" : "text-slate-400 group-hover:text-slate-700"
                 )}
               />
@@ -182,7 +188,7 @@ export const Sidebar: React.FC = () => {
 
               {/* Indicator Pip for active state when collapsed */}
               {collapsed && isActive && (
-                <span className="absolute left-1 top-1/2 -translate-y-1/2 w-1 h-4 bg-teal-600 rounded-r-full" />
+                <span className="absolute left-0.5 top-1/2 -translate-y-1/2 w-1 h-4 bg-teal-600 rounded-r-full" />
               )}
             </Link>
           );
@@ -190,7 +196,7 @@ export const Sidebar: React.FC = () => {
       </nav>
 
       {/* Footer System Status */}
-      <div className={cn("p-2.5 border-t border-slate-200/60 text-[10px] text-slate-400 font-mono text-center", collapsed ? "hidden" : "block")}>
+      <div className={cn("p-2 border-t border-slate-200/60 text-[10px] text-slate-400 font-mono text-center", collapsed ? "hidden" : "block")}>
         <span>Hotkeys: </span>
         <kbd className="px-1 py-0.2 bg-white rounded border border-slate-200 text-slate-600">⌥1..4</kbd>
       </div>
