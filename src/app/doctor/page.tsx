@@ -420,10 +420,10 @@ export default function DoctorDashboard() {
 
                       <Link
                         href={`/doctor/tasks/${t.id}/disposition?caseId=${t.caseId}`}
-                        className="h-7 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs shadow-2xs inline-flex items-center gap-1.5 transition-all cursor-pointer"
+                        className="h-7 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm shadow-blue-600/20 inline-flex items-center gap-1.5 transition-all cursor-pointer"
                       >
                         <span>Disposition</span>
-                        <ArrowRight data-icon="inline-end" className="size-3 text-emerald-300" />
+                        <ArrowRight data-icon="inline-end" className="size-3 text-white/90" />
                       </Link>
                     </div>
                   </div>
