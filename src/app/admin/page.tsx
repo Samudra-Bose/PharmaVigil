@@ -200,42 +200,46 @@ export default function AdminDashboardPage() {
             <div className="flex items-center gap-2.5 shrink-0">
               <Link
                 href={`/admin/memberships/${pendingMember.id}`}
-                className="h-9 px-4 rounded-xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-sm inline-flex items-center gap-2 transition-all cursor-pointer"
+                className="h-9 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-sm shadow-indigo-600/25 inline-flex items-center gap-2 transition-all cursor-pointer"
               >
                 <span>Review Credentials</span>
-                <ArrowRight data-icon="inline-end" className="size-3.5 text-emerald-400" />
+                <ArrowRight data-icon="inline-end" className="size-3.5 text-indigo-100" />
               </Link>
             </div>
           </div>
         </div>
       )}
 
-      {/* 3. Governance Pulse Bar (4-Stat Hairline Strip) */}
-      <div className="bg-white rounded-2xl border border-slate-200/70 p-4 shadow-lux">
+      {/* 3. Governance Pulse Bar (4-Stat Themed Strip) */}
+      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-lux overflow-hidden">
         <div className="grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 lg:divide-x divide-slate-100">
-          <div className="px-3 py-2 first:pl-0">
-            <div className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Clinicians Registered</div>
-            <div className="text-lg font-bold text-slate-900 mt-0.5 font-mono">
+          <div className="p-4 sm:p-5 flex flex-col justify-between bg-indigo-50/20">
+            <div className="text-[11px] font-semibold text-indigo-900 uppercase tracking-wider">Clinicians Registered</div>
+            <div className="text-xl font-extrabold text-indigo-700 mt-1 font-mono">
               {memberships.length} Users
             </div>
+            <p className="text-[11px] text-indigo-600/70 mt-0.5">Verified Medical Staff</p>
           </div>
-          <div className="px-3 py-2">
-            <div className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Pending Decisions</div>
-            <div className="text-lg font-bold text-amber-700 mt-0.5 font-mono">
+          <div className="p-4 sm:p-5 flex flex-col justify-between bg-amber-50/20">
+            <div className="text-[11px] font-semibold text-amber-900 uppercase tracking-wider">Pending Decisions</div>
+            <div className="text-xl font-extrabold text-amber-700 mt-1 font-mono">
               {pendingCount} Applicant{pendingCount === 1 ? "" : "s"}
             </div>
+            <p className="text-[11px] text-amber-600/70 mt-0.5">Awaiting Credential Sign-off</p>
           </div>
-          <div className="px-3 py-2">
-            <div className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Security Boundary</div>
-            <div className="text-lg font-bold text-emerald-700 mt-0.5 font-mono">
+          <div className="p-4 sm:p-5 flex flex-col justify-between bg-emerald-50/20">
+            <div className="text-[11px] font-semibold text-emerald-900 uppercase tracking-wider">Security Boundary</div>
+            <div className="text-xl font-extrabold text-emerald-700 mt-1 font-mono">
               Strict RBAC
             </div>
+            <p className="text-[11px] text-emerald-600/70 mt-0.5">Zero Cross-Tenant Leak</p>
           </div>
-          <div className="px-3 py-2 last:pr-0">
-            <div className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Compliance Benchmark</div>
-            <div className="text-lg font-bold text-slate-900 mt-0.5 font-mono">
+          <div className="p-4 sm:p-5 flex flex-col justify-between bg-slate-50/40">
+            <div className="text-[11px] font-semibold text-slate-700 uppercase tracking-wider">Compliance Benchmark</div>
+            <div className="text-xl font-extrabold text-slate-900 mt-1 font-mono">
               SOC 2 / HIPAA
             </div>
+            <p className="text-[11px] text-slate-500 mt-0.5">Immutable Audit Trails</p>
           </div>
         </div>
       </div>
