@@ -75,7 +75,7 @@ export default function BookAppointmentPage() {
       <div className="flex items-center justify-between pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-slate-700" />
+            <Calendar className="w-5 h-5 text-violet-600" />
             Book Clinical Consultation
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -203,11 +203,11 @@ export default function BookAppointmentPage() {
             <div className="pt-4 border-t border-slate-100 flex justify-end gap-2">
               <Button
                 type="submit"
-                variant="primary"
+                variant="violet"
                 loading={submitting}
                 className="gap-2 text-xs"
               >
-                <Check className="w-4 h-4 text-emerald-400" /> Confirm & Book
+                <Check className="w-4 h-4 text-violet-200" /> Confirm & Book
                 Appointment
               </Button>
             </div>

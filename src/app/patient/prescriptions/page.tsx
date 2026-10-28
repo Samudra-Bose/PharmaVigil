@@ -32,7 +32,7 @@ export default function PatientPrescriptionsListPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <Pill className="w-5 h-5 text-slate-700" />
+            <Pill className="w-5 h-5 text-violet-600" />
             My Prescribed Medications
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -90,7 +90,7 @@ export default function PatientPrescriptionsListPage() {
                   <Button
                     asChild
                     size="sm"
-                    variant="primary"
+                    variant="violet"
                     className="text-xs gap-1.5 shrink-0"
                   >
                     <Link href={`/patient/prescriptions/${c.id}`}>

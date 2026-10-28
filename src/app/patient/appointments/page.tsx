@@ -70,7 +70,7 @@ export default function PatientAppointmentsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-slate-700" />
+            <Calendar className="w-5 h-5 text-violet-600" />
             My Hospital Appointments
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -85,7 +85,7 @@ export default function PatientAppointmentsPage() {
               <ArrowLeft className="w-3.5 h-3.5" /> Back
             </Link>
           </Button>
-          <Button asChild size="sm" variant="primary" className="text-xs gap-1.5">
+          <Button asChild size="sm" variant="violet" className="text-xs gap-1.5">
             <Link href="/patient/appointments/new">
               <Plus className="w-3.5 h-3.5" /> Book Consultation
             </Link>
@@ -114,7 +114,7 @@ export default function PatientAppointmentsPage() {
                 {upcoming.map((apt) => (
                   <Card
                     key={apt.id}
-                    className="shadow-2xs border-l-4 border-l-blue-600"
+                    className="shadow-2xs border-l-4 border-l-violet-600"
                   >
                     <CardContent className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div className="space-y-1.5">

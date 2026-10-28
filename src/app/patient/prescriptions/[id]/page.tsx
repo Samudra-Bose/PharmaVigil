@@ -44,7 +44,7 @@ export default function PatientPrescriptionDetailPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <Pill className="w-5 h-5 text-slate-700" />
+            <Pill className="w-5 h-5 text-violet-600" />
             Medication Schedule & Instructions
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -64,7 +64,7 @@ export default function PatientPrescriptionDetailPage() {
       ) : (
         <div className="space-y-6">
           {/* Status Alert Card */}
-          <Card className="shadow-2xs">
+          <Card className={`shadow-2xs ${isReady ? "border-emerald-200/80 bg-gradient-to-r from-emerald-50/40 via-white to-teal-50/20" : "border-violet-200/80 bg-gradient-to-r from-violet-50/40 via-white to-purple-50/20"}`}>
             <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <div className="text-xs text-slate-500 font-medium">
