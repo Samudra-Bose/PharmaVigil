@@ -61,11 +61,11 @@ function DoctorTaskDetailContent() {
           </p>
         </div>
 
-        <Link href="/doctor">
-          <Button size="sm" variant="outline" className="text-xs gap-1.5">
+        <Button asChild size="sm" variant="outline" className="text-xs gap-1.5">
+          <Link href="/doctor">
             <ArrowLeft className="w-3.5 h-3.5" /> Back to Task Deck
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </div>
 
       <RuleNoticeBanner ruleSetVersion="v1.0.0-illustrative" />
