@@ -120,7 +120,7 @@ export default function AdminRulesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
         <div>
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-md bg-teal-50 text-teal-700 border border-teal-200">
+            <div className="p-1.5 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200">
               <BookOpenCheck className="w-5 h-5" />
             </div>
             <h1 className="text-xl font-bold tracking-tight text-slate-900">
