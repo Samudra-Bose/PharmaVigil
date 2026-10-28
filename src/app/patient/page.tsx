@@ -22,17 +22,13 @@ import {
   CheckCircle2,
   ShieldCheck,
   ChevronRight,
-  ChevronLeft,
   User,
   History,
-  FileText,
   AlertCircle,
   Stethoscope,
   TrendingUp,
   HeartPulse,
   Sparkles,
-  ArrowUpRight,
-  Check,
 } from "lucide-react";
 
 export default function PatientHomePage() {
@@ -65,75 +61,17 @@ export default function PatientHomePage() {
   const activeRx = cases[0];
   const isReady = activeRx?.status === "DISPENSING_AUTHORIZED";
   const upcomingApt = appointments.find((a) => a.status === "SCHEDULED");
-  const pastAppointments = appointments.filter((a) => a.status === "COMPLETED");
-
-  // Interactive UI state for Charts, Calendar, and Filters
-  const [timeRange, setTimeRange] = useState<"weekly" | "monthly" | "daily">("weekly");
-  const [activeDayIndex, setActiveDayIndex] = useState<number>(4); // Thursday
-  const [calendarMonth, setCalendarMonth] = useState<number>(9); // 0-indexed: 9 = October
-  const [calendarYear, setCalendarYear] = useState<number>(2026);
-  const [selectedCalendarDay, setSelectedCalendarDay] = useState<number>(30);
-
-  const monthNames = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
-
-  const handlePrevMonth = () => {
-    if (calendarMonth === 0) {
-      setCalendarMonth(11);
-      setCalendarYear((y) => y - 1);
-    } else {
-      setCalendarMonth((m) => m - 1);
-    }
-  };
-
-  const handleNextMonth = () => {
-    if (calendarMonth === 11) {
-      setCalendarMonth(0);
-      setCalendarYear((y) => y + 1);
-    } else {
-      setCalendarMonth((m) => m + 1);
-    }
-  };
-
-  const chartData = {
-    weekly: [
-      { day: "Su", taken: 3, total: 3, height: "h-28" },
-      { day: "Mo", taken: 3, total: 3, height: "h-32" },
-      { day: "Tu", taken: 3, total: 3, height: "h-36" },
-      { day: "We", taken: 3, total: 3, height: "h-36" },
-      { day: "Th", taken: 3, total: 3, height: "h-36" },
-      { day: "Fr", taken: 3, total: 3, height: "h-36" },
-      { day: "Sa", taken: 2, total: 3, height: "h-28" },
-    ],
-    monthly: [
-      { day: "W1", taken: 21, total: 21, height: "h-32" },
-      { day: "W2", taken: 20, total: 21, height: "h-30" },
-      { day: "W3", taken: 21, total: 21, height: "h-36" },
-      { day: "W4", taken: 21, total: 21, height: "h-36" },
-    ],
-    daily: [
-      { day: "08h", taken: 1, total: 1, height: "h-36" },
-      { day: "13h", taken: 1, total: 1, height: "h-36" },
-      { day: "20h", taken: 1, total: 1, height: "h-36" },
-    ],
-  };
-
-  const currentChartBars = chartData[timeRange];
-  const safeActiveDayIndex = activeDayIndex >= currentChartBars.length ? 0 : activeDayIndex;
-  const activeChartItem = currentChartBars[safeActiveDayIndex];
 
   return (
-    <div className="flex flex-col gap-6 max-w-[1400px] mx-auto pb-12">
-      {/* 1. Header with calm typography & distinct button hierarchy */}
+    <div className="flex flex-col gap-6 max-w-6xl mx-auto pb-12">
+      {/* 1. Calm Editorial Header with MRN and Primary Actions */}
       <section
         aria-label="Patient Greeting"
         className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
       >
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-emerald-800 bg-emerald-50/80 px-2.5 py-0.5 rounded-full border border-emerald-200/80">
+            <span className="text-xs font-semibold text-violet-800 bg-violet-50 px-2.5 py-0.5 rounded-full border border-violet-200/80">
               Patient Care Hub
             </span>
             <span className="text-slate-300">•</span>
@@ -155,7 +93,7 @@ export default function PatientHomePage() {
         <div className="flex items-center gap-2.5 shrink-0">
           <Link
             href="/patient/appointments/new"
-            className="h-9 px-4 rounded-xl bg-white hover:bg-violet-50/70 text-slate-700 hover:text-violet-900 font-semibold text-xs border border-slate-200/90 shadow-2xs inline-flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer"
+            className="h-9 px-4 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/90 shadow-2xs inline-flex items-center gap-2 transition-all cursor-pointer"
           >
             <CalendarIcon data-icon="inline-start" className="size-3.5 text-slate-500" />
             <span>Book Visit</span>
@@ -163,7 +101,7 @@ export default function PatientHomePage() {
 
           <Link
             href="/patient/prescriptions"
-            className="h-9 px-4 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-semibold text-xs shadow-sm shadow-violet-600/20 inline-flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer"
+            className="h-9 px-4 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-semibold text-xs shadow-sm shadow-violet-600/20 inline-flex items-center gap-2 transition-all cursor-pointer"
           >
             <Pill data-icon="inline-start" className="size-3.5 text-violet-100" />
             <span>My Prescriptions</span>
@@ -171,8 +109,8 @@ export default function PatientHomePage() {
         </div>
       </section>
 
-      {/* 2. Prominent Active Regimen Focal Card (Warm Editorial Theme) */}
-      <div className="bg-gradient-to-r from-violet-50/50 via-white to-purple-50/20 rounded-2xl border border-violet-200/80 p-5 sm:p-6 shadow-lux">
+      {/* 2. Prominent Active Regimen Focal Hero Card */}
+      <div className="bg-gradient-to-r from-violet-50/60 via-white to-purple-50/30 rounded-2xl border border-violet-200/80 p-5 sm:p-6 shadow-lux">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-slate-100">
           <div className="flex items-start gap-3.5">
             <div className={`size-12 rounded-2xl flex items-center justify-center shrink-0 border ${
@@ -242,9 +180,9 @@ export default function PatientHomePage() {
 
       {/* 3. Balanced Asymmetric 2-Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Column (7 cols): Regimen Ledger, Daily Dosing Schedule, Baseline History */}
+        {/* Left Column (7 cols): Prescribed Items & Daily Administration Timeline */}
         <div className="lg:col-span-7 flex flex-col gap-6">
-          {/* Section A: Verified Prescription Regimen */}
+          {/* Section A: Verified Prescription Regimen Details */}
           <div className="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-lux flex flex-col gap-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
               <div>
@@ -335,7 +273,7 @@ export default function PatientHomePage() {
             </div>
           </div>
 
-          {/* Section B: Daily Dosing Schedule (Refined Editorial Timeline) */}
+          {/* Section B: Daily Dosing Schedule (Clean Editorial Timeline) */}
           <div className="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-lux flex flex-col gap-3">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div>
@@ -388,7 +326,7 @@ export default function PatientHomePage() {
                 <div className="py-2.5 flex items-center justify-between hover:bg-slate-50/70 rounded-xl px-2 transition-colors">
                   <div className="flex items-center gap-3">
                     <span className="text-xs font-mono font-bold text-slate-400 w-16">08:00 PM</span>
-                    <div className="size-8 rounded-lg bg-emerald-50 text-emerald-800 flex items-center justify-center shrink-0 border border-emerald-200/60">
+                    <div className="size-8 rounded-lg bg-violet-50 text-violet-800 flex items-center justify-center shrink-0 border border-violet-200/60">
                       <Pill className="size-4" />
                     </div>
                     <div>
@@ -447,10 +385,10 @@ export default function PatientHomePage() {
           )}
         </div>
 
-        {/* Right Column (5 cols): Upcoming Visit, Adherence Chart, Mini Calendar */}
+        {/* Right Column (5 cols): Upcoming Visit & Clinical Adherence Card */}
         <div className="lg:col-span-5 flex flex-col gap-6">
           {/* Upcoming Consultation Card */}
-          <div className="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-lux flex flex-col gap-3">
+          <div className="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-lux flex flex-col gap-4">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
                 <span className="size-2 rounded-full bg-emerald-500" />
@@ -461,8 +399,8 @@ export default function PatientHomePage() {
               </span>
             </div>
 
-            <div className="flex items-center gap-3 py-1">
-              <div className="size-11 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
+            <div className="flex items-center gap-3.5">
+              <div className="size-11 rounded-xl bg-violet-50 border border-violet-200/80 text-violet-700 flex items-center justify-center shrink-0">
                 <Stethoscope className="size-5" />
               </div>
               <div>
@@ -471,199 +409,93 @@ export default function PatientHomePage() {
               </div>
             </div>
 
-            <div className="pt-2 flex items-center justify-between text-xs bg-slate-50/70 p-3 rounded-xl border border-slate-100">
+            <div className="flex items-center justify-between text-xs bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/70">
               <div>
-                <div className="text-[10px] text-slate-400 uppercase font-semibold">Date & Time</div>
-                <div className="font-bold text-slate-900 font-mono">Oct 30, 2026 • 10:00 AM</div>
+                <div className="text-[10px] text-slate-400 uppercase font-semibold">Appointment Time</div>
+                <div className="font-bold text-slate-900 font-mono mt-0.5">
+                  {upcomingApt?.slotStart
+                    ? new Date(upcomingApt.slotStart).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                    : "Oct 30, 2026 • 10:00 AM"}
+                </div>
               </div>
               <Link
                 href="/patient/appointments"
-                className="h-7 px-2.5 rounded-lg bg-white border border-slate-200/80 text-slate-700 font-semibold text-xs hover:bg-slate-50 transition-colors inline-flex items-center cursor-pointer"
+                className="h-7 px-3 rounded-lg bg-white border border-slate-200/80 text-slate-700 font-semibold text-xs hover:bg-slate-50 transition-colors inline-flex items-center shadow-2xs cursor-pointer"
               >
                 View Visit
               </Link>
             </div>
-          </div>
 
-          {/* Dose Adherence Activity Chart */}
-          <div className="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-lux flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <div>
-                  <h3 className="text-sm font-bold text-slate-900">Dose Adherence</h3>
-                  <div className="flex items-center gap-1.5 mt-0.5">
-                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700">
-                      <TrendingUp className="size-3" />
-                      100% adherence this week
-                    </span>
-                  </div>
-                </div>
-                <select
-                  aria-label="Filter dose adherence by time range"
-                  value={timeRange}
-                  onChange={(e) => {
-                    setTimeRange(e.target.value as "weekly" | "monthly" | "daily");
-                    setActiveDayIndex(0);
-                  }}
-                  className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200/80 text-slate-700 cursor-pointer hover:bg-slate-100 transition-colors focus:outline-none"
-                >
-                  <option value="weekly">Weekly</option>
-                  <option value="monthly">Monthly</option>
-                  <option value="daily">Daily</option>
-                </select>
-              </div>
-
-              {/* Modern Minimal Bar Chart */}
-              <div className="pt-5 pb-2">
-                <div className="h-36 flex items-end justify-between gap-3 px-2 relative">
-                  {/* Floating Tooltip */}
-                  <div
-                    className="absolute top-0 bg-[#111317] text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-md flex items-center gap-1.5 z-20 pointer-events-none transition-all duration-200"
-                    style={{
-                      left: `${Math.max(15, Math.min(85, ((safeActiveDayIndex + 0.5) / currentChartBars.length) * 100))}%`,
-                      transform: "translateX(-50%)",
-                    }}
-                  >
-                    <span className="size-1.5 rounded-full bg-emerald-400" />
-                    <span>
-                      {activeChartItem.taken} of {activeChartItem.total} Taken
-                    </span>
-                  </div>
-
-                  {/* Day Bars */}
-                  {currentChartBars.map((item, i) => {
-                    const isActive = i === safeActiveDayIndex;
-                    return (
-                      <button
-                        key={item.day}
-                        type="button"
-                        onClick={() => setActiveDayIndex(i)}
-                        aria-label={`${item.day}: ${item.taken} of ${item.total} doses taken`}
-                        className="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none"
-                      >
-                        <div className="w-full max-w-[12px] bg-slate-100 rounded-full h-28 flex items-end">
-                          <div
-                            className={`w-full rounded-full transition-all duration-300 ${
-                              isActive
-                                ? "bg-emerald-600 ring-2 ring-emerald-300/50"
-                                : "bg-slate-800 group-hover:bg-slate-700"
-                            } ${item.height}`}
-                          />
-                        </div>
-                        <span className={`text-[10px] font-mono transition-colors ${isActive ? "font-bold text-slate-900" : "text-slate-400"}`}>
-                          {item.day}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
-              <span>Course Adherence:</span>
-              <span className="font-semibold text-emerald-800 font-mono">96.4% Good</span>
+            <div className="flex items-center justify-between pt-1">
+              <Link
+                href="/patient/appointments"
+                className="text-xs font-semibold text-violet-700 hover:text-violet-900 transition-colors"
+              >
+                View All Appointments ({appointments.length})
+              </Link>
+              <Link
+                href="/patient/appointments/new"
+                className="text-xs font-semibold text-slate-500 hover:text-slate-800 transition-colors"
+              >
+                + Schedule Follow-up
+              </Link>
             </div>
           </div>
 
-          {/* Mini Calendar & Visits */}
-          <div className="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-lux flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between pb-2 text-xs">
-                <span className="font-bold text-slate-900">
-                  {monthNames[calendarMonth]}, {calendarYear}
-                </span>
-                <div className="flex items-center gap-1 text-slate-400">
-                  <button
-                    type="button"
-                    onClick={handlePrevMonth}
-                    aria-label="Previous month"
-                    className="p-1 hover:text-slate-700 hover:bg-slate-100 rounded transition-colors cursor-pointer"
-                  >
-                    <ChevronLeft className="size-3.5" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleNextMonth}
-                    aria-label="Next month"
-                    className="p-1 hover:text-slate-700 hover:bg-slate-100 rounded transition-colors cursor-pointer"
-                  >
-                    <ChevronRight className="size-3.5" />
-                  </button>
-                </div>
+          {/* Adherence & Health Stability Card */}
+          <div className="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-lux flex flex-col gap-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="size-4 text-emerald-600" />
+                <h3 className="text-sm font-bold text-slate-900">Course Adherence</h3>
               </div>
-
-              {/* Days Grid */}
-              <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-mono py-2 border-b border-slate-100">
-                <span className="text-slate-400 font-bold">S</span>
-                <span className="text-slate-400 font-bold">M</span>
-                <span className="text-slate-400 font-bold">T</span>
-                <span className="text-slate-400 font-bold">W</span>
-                <span className="text-slate-400 font-bold">T</span>
-                <span className="text-slate-400 font-bold">F</span>
-                <span className="text-slate-400 font-bold">S</span>
-
-                {[...Array(31)].map((_, i) => {
-                  const day = i + 1;
-                  const isSelected = day === selectedCalendarDay;
-                  return (
-                    <button
-                      key={i}
-                      type="button"
-                      onClick={() => setSelectedCalendarDay(day)}
-                      className={`py-1 rounded-full text-[10px] flex items-center justify-center transition-colors cursor-pointer ${
-                        isSelected
-                          ? "bg-slate-900 text-white font-bold"
-                          : "text-slate-600 hover:bg-slate-100"
-                      }`}
-                    >
-                      {day}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Upcoming Clinic Visits */}
-              <div className="mt-3">
-                <div className="flex items-center justify-between pb-1.5">
-                  <span className="text-xs font-bold text-slate-900">Upcoming Visits</span>
-                  <Link href="/patient/appointments/new">
-                    <span className="size-4 rounded-full bg-slate-900 hover:bg-slate-700 text-white flex items-center justify-center text-[10px] font-bold cursor-pointer transition-transform active:scale-95">
-                      +
-                    </span>
-                  </Link>
-                </div>
-
-                <div className="flex flex-col gap-2 mt-1">
-                  <Link href="/patient/appointments" className="block group">
-                    <div className="p-2 rounded-xl bg-slate-50/80 group-hover:bg-slate-100 border border-slate-100 flex items-center justify-between text-[11px] transition-colors">
-                      <div>
-                        <div className="font-bold text-slate-900 truncate max-w-[130px] group-hover:text-emerald-800 transition-colors">Warfarin Follow-up</div>
-                        <div className="text-[10px] text-slate-400 font-mono">Oct 30, 10:00 AM</div>
-                      </div>
-                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                        Scheduled
-                      </span>
-                    </div>
-                  </Link>
-
-                  <Link href="/patient/appointments" className="block group">
-                    <div className="p-2 rounded-xl bg-slate-50/80 group-hover:bg-slate-100 border border-slate-100 flex items-center justify-between text-[11px] transition-colors">
-                      <div>
-                        <div className="font-bold text-slate-900 truncate max-w-[130px] group-hover:text-sky-800 transition-colors">INR Blood Test</div>
-                        <div className="text-[10px] text-slate-400 font-mono">Nov 14, 08:30 AM</div>
-                      </div>
-                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-sky-100 text-sky-800">
-                        Lab
-                      </span>
-                    </div>
-                  </Link>
-                </div>
-              </div>
+              <span className="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/60">
+                96.4%
+              </span>
             </div>
 
-            <div className="pt-2 text-[10px] font-mono text-slate-400 text-right">
-              Clinic: Room 402
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-slate-600 font-medium">Weekly Completion</span>
+                <span className="font-bold text-slate-900 font-mono">20 of 21 Doses</span>
+              </div>
+              <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+                <div className="h-full bg-emerald-500 rounded-full" style={{ width: "96.4%" }} />
+              </div>
+              <p className="text-[11px] text-slate-500 mt-0.5">
+                Excellent regimen stability. Zero missed doses recorded in the last 48 hours.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">
+              <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                <div className="text-[10px] text-slate-400 uppercase font-semibold">INR Status</div>
+                <div className="text-xs font-bold text-slate-900 mt-0.5 font-mono">2.3 Therapeutic</div>
+              </div>
+              <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                <div className="text-[10px] text-slate-400 uppercase font-semibold">CDS Safe Gate</div>
+                <div className="text-xs font-bold text-emerald-700 mt-0.5">Active</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Help & Pharmacy Helpline */}
+          <div className="bg-slate-50/70 rounded-2xl border border-slate-200/70 p-4 text-xs flex flex-col gap-2">
+            <div className="flex items-center gap-2 text-slate-900 font-bold">
+              <Phone className="size-3.5 text-slate-600" />
+              <span>Pharmacy Care Helpline</span>
+            </div>
+            <p className="text-slate-500 text-[11px]">
+              Questions regarding medication dosage or pickup? Direct line to dispensing pharmacists.
+            </p>
+            <div className="font-mono font-bold text-slate-800 text-xs mt-1">
+              +91 11 2345 6789 <span className="font-normal text-slate-400">(Ext. 402)</span>
             </div>
           </div>
         </div>

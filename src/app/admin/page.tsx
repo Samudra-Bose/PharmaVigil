@@ -13,13 +13,11 @@ import {
   CheckCircle2,
   Lock,
   ChevronRight,
-  ChevronLeft,
-  Activity,
-  TrendingUp,
   User,
   ShieldAlert,
-  Check,
   AlertCircle,
+  FileCode2,
+  Sparkles,
 } from "lucide-react";
 
 const INITIAL_MEMBERSHIPS = [
@@ -75,74 +73,16 @@ export default function AdminDashboardPage() {
   const activeCount = memberships.filter((m) => m.status === "ACTIVE").length;
   const pendingMember = memberships.find((m) => m.status === "PENDING");
 
-  // Interactive UI state for Charts and Calendar
-  const [timeRange, setTimeRange] = useState<"weekly" | "monthly" | "daily">("weekly");
-  const [activeDayIndex, setActiveDayIndex] = useState<number>(4); // Thursday
-  const [calendarMonth, setCalendarMonth] = useState<number>(9); // 0-indexed: 9 = October
-  const [calendarYear, setCalendarYear] = useState<number>(2026);
-  const [selectedCalendarDay, setSelectedCalendarDay] = useState<number>(28);
-
-  const monthNames = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
-
-  const handlePrevMonth = () => {
-    if (calendarMonth === 0) {
-      setCalendarMonth(11);
-      setCalendarYear((y) => y - 1);
-    } else {
-      setCalendarMonth((m) => m - 1);
-    }
-  };
-
-  const handleNextMonth = () => {
-    if (calendarMonth === 11) {
-      setCalendarMonth(0);
-      setCalendarYear((y) => y + 1);
-    } else {
-      setCalendarMonth((m) => m + 1);
-    }
-  };
-
-  const chartData = {
-    weekly: [
-      { day: "Su", count: 0, height: "h-8", time: "0 verified" },
-      { day: "Mo", count: 2, height: "h-20", time: "2 verified" },
-      { day: "Tu", count: 3, height: "h-28", time: "3 verified" },
-      { day: "We", count: 4, height: "h-36", time: "4 verified" },
-      { day: "Th", count: 3, height: "h-36", time: "3 verified" },
-      { day: "Fr", count: 1, height: "h-16", time: "1 verified" },
-      { day: "Sa", count: 0, height: "h-8", time: "0 verified" },
-    ],
-    monthly: [
-      { day: "W1", count: 8, height: "h-24", time: "8 verified" },
-      { day: "W2", count: 12, height: "h-32", time: "12 verified" },
-      { day: "W3", count: 15, height: "h-36", time: "15 verified" },
-      { day: "W4", count: 10, height: "h-28", time: "10 verified" },
-    ],
-    daily: [
-      { day: "09h", count: 1, height: "h-20", time: "1 verified" },
-      { day: "11h", count: 2, height: "h-36", time: "2 verified" },
-      { day: "14h", count: 1, height: "h-24", time: "1 verified" },
-      { day: "16h", count: 1, height: "h-20", time: "1 verified" },
-    ],
-  };
-
-  const currentChartBars = chartData[timeRange];
-  const safeActiveDayIndex = activeDayIndex >= currentChartBars.length ? 0 : activeDayIndex;
-  const activeChartItem = currentChartBars[safeActiveDayIndex];
-
   return (
-    <div className="flex flex-col gap-6 max-w-[1400px] mx-auto pb-12">
-      {/* 1. Header with calm typography & distinct button hierarchy */}
+    <div className="flex flex-col gap-6 max-w-6xl mx-auto pb-12">
+      {/* 1. Calm Editorial Header with Tenancy and Scoped Reset Action */}
       <section
         aria-label="Admin Greeting"
         className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
       >
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-slate-800 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
+            <span className="text-xs font-semibold text-indigo-900 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200/80">
               Hospital Governance & Credentialing
             </span>
             <span className="text-slate-300">•</span>
@@ -344,7 +284,7 @@ export default function AdminDashboardPage() {
 
             <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
               <span>All credentialing events are cryptographically recorded in the audit trail.</span>
-              <Link href="/admin/audit" className="text-emerald-700 font-semibold hover:underline">
+              <Link href="/admin/audit" className="text-indigo-700 font-semibold hover:underline">
                 View Audit Trail
               </Link>
             </div>
@@ -438,182 +378,110 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Right Column (4 cols): Credentialing Activity + Calendar + Directory */}
+        {/* Right Column (4 cols): Quick Administrative Direct Portals & Security Isolation */}
         <div className="lg:col-span-4 flex flex-col gap-6">
-          {/* Credentialing Throughput Activity Chart */}
-          <div className="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-lux flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <div>
-                  <h3 className="text-sm font-bold text-slate-900">Credentialing Throughput</h3>
-                  <div className="flex items-center gap-1.5 mt-0.5">
-                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700">
-                      <TrendingUp className="size-3" />
-                      +12% faster verification
-                    </span>
-                  </div>
-                </div>
-                <select
-                  aria-label="Filter credentialing throughput by time range"
-                  value={timeRange}
-                  onChange={(e) => {
-                    setTimeRange(e.target.value as "weekly" | "monthly" | "daily");
-                    setActiveDayIndex(0);
-                  }}
-                  className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200/80 text-slate-700 cursor-pointer hover:bg-slate-100 transition-colors focus:outline-none"
-                >
-                  <option value="weekly">Weekly</option>
-                  <option value="monthly">Monthly</option>
-                  <option value="daily">Daily</option>
-                </select>
-              </div>
-
-              {/* Minimal Bar Chart */}
-              <div className="pt-5 pb-2">
-                <div className="h-36 flex items-end justify-between gap-3 px-2 relative">
-                  {/* Floating Tooltip */}
-                  <div
-                    className="absolute top-0 bg-[#111317] text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-md flex items-center gap-1.5 z-20 pointer-events-none transition-all duration-200"
-                    style={{
-                      left: `${Math.max(15, Math.min(85, ((safeActiveDayIndex + 0.5) / currentChartBars.length) * 100))}%`,
-                      transform: "translateX(-50%)",
-                    }}
-                  >
-                    <span className="size-1.5 rounded-full bg-emerald-400" />
-                    <span>
-                      {activeChartItem.count} {activeChartItem.count === 1 ? "Staff" : "Staff"} Handled
-                    </span>
-                  </div>
-
-                  {/* Day Bars */}
-                  {currentChartBars.map((item, i) => {
-                    const isActive = i === safeActiveDayIndex;
-                    return (
-                      <button
-                        key={item.day}
-                        type="button"
-                        onClick={() => setActiveDayIndex(i)}
-                        aria-label={`${item.day}: ${item.count} applications handled`}
-                        className="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none"
-                      >
-                        <div className="w-full max-w-[12px] bg-slate-100 rounded-full h-28 flex items-end">
-                          <div
-                            className={`w-full rounded-full transition-all duration-300 ${
-                              isActive
-                                ? "bg-emerald-600 ring-2 ring-emerald-300/50"
-                                : "bg-slate-800 group-hover:bg-slate-700"
-                            } ${item.height}`}
-                          />
-                        </div>
-                        <span className={`text-[10px] font-mono transition-colors ${isActive ? "font-bold text-slate-900" : "text-slate-400"}`}>
-                          {item.day}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+          {/* Quick Direct Portals */}
+          <div className="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-lux flex flex-col gap-3">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <h3 className="text-sm font-bold text-slate-900">Governance Portals</h3>
+              <span className="text-xs font-mono text-slate-400">Quick Links</span>
             </div>
 
-            <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
-              <span>Hospital Tenancy:</span>
-              <span className="font-semibold text-emerald-800">Enforced Partition</span>
+            <div className="flex flex-col gap-2">
+              <Link href="/admin/users" className="block group">
+                <div className="p-3 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-xs group-hover:bg-slate-100/80 transition-colors">
+                  <div className="flex items-center gap-2.5">
+                    <div className="size-8 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center">
+                      <Users className="size-4" />
+                    </div>
+                    <div>
+                      <div className="font-bold text-slate-900">Clinician Directory</div>
+                      <div className="text-[11px] text-slate-500">{memberships.length} verified staff members</div>
+                    </div>
+                  </div>
+                  <ChevronRight className="size-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+              </Link>
+
+              <Link href="/admin/memberships" className="block group">
+                <div className="p-3 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-xs group-hover:bg-slate-100/80 transition-colors">
+                  <div className="flex items-center gap-2.5">
+                    <div className="size-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center">
+                      <UserCheck className="size-4" />
+                    </div>
+                    <div>
+                      <div className="font-bold text-slate-900">Staff Applications</div>
+                      <div className="text-[11px] text-amber-700 font-semibold">{pendingCount} pending review</div>
+                    </div>
+                  </div>
+                  <ChevronRight className="size-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+              </Link>
+
+              <Link href="/admin/rules" className="block group">
+                <div className="p-3 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-xs group-hover:bg-slate-100/80 transition-colors">
+                  <div className="flex items-center gap-2.5">
+                    <div className="size-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center">
+                      <FileCode2 className="size-4" />
+                    </div>
+                    <div>
+                      <div className="font-bold text-slate-900">CDS Safety Rulesets</div>
+                      <div className="text-[11px] text-slate-500">Deterministic check criteria</div>
+                    </div>
+                  </div>
+                  <ChevronRight className="size-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+              </Link>
+
+              <Link href="/admin/audit" className="block group">
+                <div className="p-3 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-xs group-hover:bg-slate-100/80 transition-colors">
+                  <div className="flex items-center gap-2.5">
+                    <div className="size-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center">
+                      <ShieldCheck className="size-4" />
+                    </div>
+                    <div>
+                      <div className="font-bold text-slate-900">Compliance Audit Ledger</div>
+                      <div className="text-[11px] text-slate-500">Append-only event log</div>
+                    </div>
+                  </div>
+                  <ChevronRight className="size-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+              </Link>
             </div>
           </div>
 
-          {/* Mini Calendar & Quick Portals */}
-          <div className="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-lux flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between pb-2 text-xs">
-                <span className="font-bold text-slate-900">
-                  {monthNames[calendarMonth]}, {calendarYear}
-                </span>
-                <div className="flex items-center gap-1 text-slate-400">
-                  <button
-                    type="button"
-                    onClick={handlePrevMonth}
-                    aria-label="Previous month"
-                    className="p-1 hover:text-slate-700 hover:bg-slate-100 rounded transition-colors cursor-pointer"
-                  >
-                    <ChevronLeft className="size-3.5" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleNextMonth}
-                    aria-label="Next month"
-                    className="p-1 hover:text-slate-700 hover:bg-slate-100 rounded transition-colors cursor-pointer"
-                  >
-                    <ChevronRight className="size-3.5" />
-                  </button>
-                </div>
+          {/* Tenancy & Security Architecture */}
+          <div className="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-lux flex flex-col gap-3">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <h3 className="text-sm font-bold text-slate-900">Hospital Multi-Tenancy</h3>
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/60">
+                ACTIVE
+              </span>
+            </div>
+
+            <div className="flex flex-col gap-2.5 text-xs">
+              <div className="flex items-center justify-between py-1 border-b border-slate-100">
+                <span className="text-slate-500">Tenant Namespace</span>
+                <span className="font-mono font-bold text-slate-800">metro-general</span>
               </div>
-
-              {/* Days Grid */}
-              <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-mono py-2 border-b border-slate-100">
-                <span className="text-slate-400 font-bold">S</span>
-                <span className="text-slate-400 font-bold">M</span>
-                <span className="text-slate-400 font-bold">T</span>
-                <span className="text-slate-400 font-bold">W</span>
-                <span className="text-slate-400 font-bold">T</span>
-                <span className="text-slate-400 font-bold">F</span>
-                <span className="text-slate-400 font-bold">S</span>
-
-                {[...Array(31)].map((_, i) => {
-                  const day = i + 1;
-                  const isSelected = day === selectedCalendarDay;
-                  return (
-                    <button
-                      key={i}
-                      type="button"
-                      onClick={() => setSelectedCalendarDay(day)}
-                      className={`py-1 rounded-full text-[10px] flex items-center justify-center transition-colors cursor-pointer ${
-                        isSelected
-                          ? "bg-slate-900 text-white font-bold"
-                          : "text-slate-600 hover:bg-slate-100"
-                      }`}
-                    >
-                      {day}
-                    </button>
-                  );
-                })}
+              <div className="flex items-center justify-between py-1 border-b border-slate-100">
+                <span className="text-slate-500">Data Boundary</span>
+                <span className="font-semibold text-emerald-700">Strict Row-Level Security</span>
               </div>
-
-              {/* Admin Quick Directories */}
-              <div className="flex flex-col gap-2 mt-3">
-                <Link href="/admin/users" className="block group">
-                  <div className="p-2 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-[11px] group-hover:bg-slate-100 transition-colors">
-                    <div className="flex items-center gap-2">
-                      <Users className="size-3.5 text-emerald-700" />
-                      <span className="font-bold text-slate-900">Clinician Directory</span>
-                    </div>
-                    <ChevronRight className="size-3 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
-                  </div>
-                </Link>
-
-                <Link href="/admin/memberships" className="block group">
-                  <div className="p-2 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-[11px] group-hover:bg-slate-100 transition-colors">
-                    <div className="flex items-center gap-2">
-                      <UserCheck className="size-3.5 text-amber-600" />
-                      <span className="font-bold text-slate-900">Staff Applications</span>
-                    </div>
-                    <ChevronRight className="size-3 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
-                  </div>
-                </Link>
-
-                <Link href="/admin/audit" className="block group">
-                  <div className="p-2 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-[11px] group-hover:bg-slate-100 transition-colors">
-                    <div className="flex items-center gap-2">
-                      <ShieldCheck className="size-3.5 text-slate-700" />
-                      <span className="font-bold text-slate-900">Compliance Audit</span>
-                    </div>
-                    <ChevronRight className="size-3 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
-                  </div>
-                </Link>
+              <div className="flex items-center justify-between py-1">
+                <span className="text-slate-500">Cryptographic Hash</span>
+                <span className="font-mono text-slate-600">SHA-256 Verified</span>
               </div>
             </div>
 
-            <div className="pt-2 text-[10px] font-mono text-slate-400 text-right">
-              Hospital Tenancy: Active
+            <div className="pt-2 border-t border-slate-100">
+              <Link
+                href="/admin/demo-reset"
+                className="w-full py-2 px-3 rounded-xl bg-slate-50 hover:bg-rose-50 text-slate-600 hover:text-rose-700 font-semibold text-xs border border-slate-200/80 hover:border-rose-200 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <RotateCcw className="size-3 text-rose-500" />
+                <span>Reset Demo Sandbox State</span>
+              </Link>
             </div>
           </div>
         </div>
