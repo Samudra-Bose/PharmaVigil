@@ -116,7 +116,7 @@ export const Sidebar: React.FC = () => {
         icon: History,
       },
     ];
-  } else if (role === "DOCTOR") {
+  } else if (effectiveRole === "DOCTOR") {
     roleTitle = "Clinical Review (MD)";
     items = [
       {
@@ -139,7 +139,7 @@ export const Sidebar: React.FC = () => {
       },
       { label: "Consultations", href: "/doctor/appointments", icon: Calendar },
     ];
-  } else if (role === "PATIENT") {
+  } else if (effectiveRole === "PATIENT") {
     roleTitle = "Patient Hub";
     items = [
       { label: "Health Overview", href: "/patient", icon: LayoutDashboard },
@@ -152,7 +152,7 @@ export const Sidebar: React.FC = () => {
       },
       { label: "Medication History", href: "/patient/history", icon: Clock },
     ];
-  } else if (role === "HOSPITAL_ADMIN") {
+  } else if (effectiveRole === "HOSPITAL_ADMIN") {
     roleTitle = "Hospital Governance";
     items = [
       { label: "Governance Dashboard", href: "/admin", icon: LayoutDashboard },
