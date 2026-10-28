@@ -70,7 +70,7 @@ export default function AdminMembershipsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <UserCheck className="w-5 h-5 text-slate-700" />
+            <UserCheck className="w-5 h-5 text-indigo-600" />
             Hospital Membership Requests & Role Assignments
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -114,9 +114,20 @@ export default function AdminMembershipsPage() {
                       {m.email}
                     </TableCell>
                     <TableCell>
-                      <span className="font-semibold text-slate-800 text-xs">
+                      <Badge
+                        variant={
+                          m.role === "DOCTOR"
+                            ? "sapphire"
+                            : m.role === "PHARMACIST"
+                              ? "emerald"
+                              : m.role === "PATIENT"
+                                ? "violet"
+                                : "indigo"
+                        }
+                        className="text-[11px]"
+                      >
                         {m.role}
-                      </span>
+                      </Badge>
                     </TableCell>
                     <TableCell>
                       <Badge
