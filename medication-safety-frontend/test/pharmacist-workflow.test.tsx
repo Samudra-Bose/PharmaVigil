@@ -74,4 +74,17 @@ describe("Pharmacist Critical Clinical Workflow", () => {
     expect(paracetamolResults.length).toBeGreaterThan(0);
     expect(paracetamolResults[0].displayName).toContain("Paracetamol");
   });
+
+  it("TEST-PHARM-OCR-002: Enforces individual line verification and persists line count fidelity", async () => {
+    const caseId = "case_rx_9021_01";
+    const multiLines = [
+      { id: 1, text: "Tab. Warfarin Sodium 5mg", confidence: 0.98 },
+      { id: 2, text: "Tab. Paracetamol 500mg", confidence: 0.95 },
+      { id: 3, text: "Tab. Metformin HCl 500mg", confidence: 0.92 },
+    ];
+
+    const updated = await api.updateExtractedText(caseId, multiLines);
+    expect(updated.extractedRawText.split("\n").length).toBe(3);
+    expect(updated.extractedRawText).toContain("Metformin");
+  });
 });

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { ErrorDisplay } from "@/components/ui/ErrorDisplay";
 import { Shield, KeyRound, Sparkles } from "lucide-react";
 import type { UserRole } from "@/types";
+import { GridPattern } from "@/components/aceternity/GridPattern";
 
 export default function LoginPage() {
   const { login, isLoading, switchRole } = useAuth();
@@ -31,8 +32,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[75vh] flex items-center justify-center py-10 px-4">
-      <div className="max-w-md w-full bg-white rounded-lg border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
+    <div className="min-h-[75vh] flex items-center justify-center py-10 px-4 relative overflow-hidden">
+      <GridPattern className="opacity-40" />
+      <div className="max-w-md w-full bg-white rounded-lg border border-slate-200/90 shadow-subtle p-6 sm:p-8 space-y-6 relative z-10">
         {/* Header */}
         <div className="text-center space-y-2">
           <div className="w-10 h-10 rounded-md bg-slate-900 text-white flex items-center justify-center mx-auto shadow-sm">
