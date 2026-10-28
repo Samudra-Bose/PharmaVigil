@@ -47,6 +47,71 @@ export default function PharmacistDashboard() {
   const [filter, setFilter] = useState<string>("ALL");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
+  // Interactive UI state for Charts, Calendar, and Tasks
+  const [timeRange, setTimeRange] = useState<"weekly" | "monthly" | "daily">("weekly");
+  const [activeDayIndex, setActiveDayIndex] = useState<number>(4); // Thursday
+  const [calendarMonth, setCalendarMonth] = useState<number>(9); // 0-indexed: 9 = October
+  const [calendarYear, setCalendarYear] = useState<number>(2026);
+  const [selectedCalendarDay, setSelectedCalendarDay] = useState<number>(28);
+  const [showAddTask, setShowAddTask] = useState<boolean>(false);
+  const [newTaskTitle, setNewTaskTitle] = useState<string>("");
+  const [tasksList, setTasksList] = useState([
+    { id: "task-1", title: "Review case_rx_9021", time: "10:30 AM UTC", status: "Blocked", href: "/pharmacist/cases/case_rx_9021_01/results" },
+    { id: "task-2", title: "Stock Reorder", time: "02:00 PM UTC", status: "Done", href: "" },
+  ]);
+
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  const handlePrevMonth = () => {
+    if (calendarMonth === 0) {
+      setCalendarMonth(11);
+      setCalendarYear((y) => y - 1);
+    } else {
+      setCalendarMonth((m) => m - 1);
+    }
+  };
+
+  const handleNextMonth = () => {
+    if (calendarMonth === 11) {
+      setCalendarMonth(0);
+      setCalendarYear((y) => y + 1);
+    } else {
+      setCalendarMonth((m) => m + 1);
+    }
+  };
+
+  const handleAddTask = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTaskTitle.trim()) return;
+    const newTask = {
+      id: `task-${Date.now()}`,
+      title: newTaskTitle.trim(),
+      time: "Just now",
+      status: "In Progress",
+      href: "",
+    };
+    setTasksList([newTask, ...tasksList]);
+    setNewTaskTitle("");
+    setShowAddTask(false);
+    clinicalToast.success("Task Added", `Scheduled: ${newTask.title}`);
+  };
+
+  const toggleTaskStatus = (id: string) => {
+    setTasksList((prev) =>
+      prev.map((t) => {
+        if (t.id === id) {
+          const nextStatus = t.status === "Done" ? "Blocked" : t.status === "Blocked" ? "In Progress" : "Done";
+          clinicalToast.info("Task Updated", `${t.title} is now ${nextStatus}`);
+          return { ...t, status: nextStatus };
+        }
+        return t;
+      })
+    );
+  };
+
   useEffect(() => {
     async function loadCases() {
       try {
