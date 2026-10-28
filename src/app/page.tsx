@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
@@ -11,415 +11,299 @@ import {
   Stethoscope,
   Pill,
   ShieldAlert,
-  Activity,
   Lock,
-  Search,
   CheckCircle2,
-  Calendar,
-  FileText,
-  RotateCcw,
   Sparkles,
+  Camera,
+  Activity,
+  FileCheck,
 } from "lucide-react";
 import type { UserRole } from "@/types";
 
+interface RoleCardConfig {
+  role: UserRole;
+  title: string;
+  roleSubtitle: string;
+  userDisplayName: string;
+  icon: React.ComponentType<{ className?: string }>;
+  description: string;
+  statusText: string;
+  statusVariant: "rose" | "amber" | "emerald" | "slate";
+  workspaceHref: string;
+  themeColor: "emerald" | "blue" | "violet" | "indigo";
+}
+
+const ROLE_CARDS: RoleCardConfig[] = [
+  {
+    role: "PHARMACIST",
+    title: "Pharmacist Operations",
+    roleSubtitle: "Pharmacy CDS & Dispensing",
+    userDisplayName: "Sarah Jane Smith, RPh",
+    icon: Pill,
+    description: "Scan prescriptions via camera OCR, verify automated drug interaction checks, and authorize physical dispensing.",
+    statusText: "1 Case Awaiting Verification",
+    statusVariant: "rose",
+    workspaceHref: "/pharmacist",
+    themeColor: "emerald",
+  },
+  {
+    role: "DOCTOR",
+    title: "Doctor Triage & Revisions",
+    roleSubtitle: "Attending Prescriber Portal",
+    userDisplayName: "Dr. Clara Oswald, MD",
+    icon: Stethoscope,
+    description: "Review flagged pharmacological conflicts, document mandatory clinical rationales, and issue revised prescriptions.",
+    statusText: "1 Flagged Case Needs Triage",
+    statusVariant: "amber",
+    workspaceHref: "/doctor",
+    themeColor: "blue",
+  },
+  {
+    role: "PATIENT",
+    title: "Patient Care Portal",
+    roleSubtitle: "Outpatient Medication Hub",
+    userDisplayName: "Donna Noble (P-9021)",
+    icon: UserCheck,
+    description: "View plain-language daily dosing instructions, check pharmacy pickup readiness, and self-report home allergies.",
+    statusText: "1 Medication Ready at Pharmacy",
+    statusVariant: "emerald",
+    workspaceHref: "/patient",
+    themeColor: "violet",
+  },
+  {
+    role: "HOSPITAL_ADMIN",
+    title: "Hospital Governance",
+    roleSubtitle: "Compliance & Staff Directory",
+    userDisplayName: "Dr. Arthur Pendelton",
+    icon: ShieldAlert,
+    description: "Manage clinical staff credentials, review published CDS ruleset thresholds, and inspect immutable audit event logs.",
+    statusText: "Audit Ledger Synchronized",
+    statusVariant: "slate",
+    workspaceHref: "/admin",
+    themeColor: "indigo",
+  },
+];
+
 export default function HomePage() {
-  const { user, role, switchRole, isMockMode, isLoading } = useAuth();
+  const { user, role, switchRole, isMockMode } = useAuth();
   const router = useRouter();
 
-  const handleRoleSelect = async (targetRole: UserRole) => {
-    if (isMockMode) {
+  const handleLaunchWorkspace = async (targetRole: UserRole, targetHref: string) => {
+    if (isMockMode && role !== targetRole) {
       await switchRole(targetRole);
-    } else {
-      router.push(`/auth/login?role=${targetRole}`);
     }
-  };
-
-  const getWorkspaceHref = (r: UserRole | null) => {
-    switch (r) {
-      case "PHARMACIST":
-        return "/pharmacist";
-      case "DOCTOR":
-        return "/doctor";
-      case "PATIENT":
-        return "/patient";
-      case "HOSPITAL_ADMIN":
-        return "/admin";
-      default:
-        return "/pharmacist";
-    }
+    router.push(targetHref);
   };
 
   return (
-    <div className="flex flex-col gap-6 max-w-[1400px] mx-auto pb-12">
-      {/* 1. Header with calm typography & platform status */}
-      <section
-        aria-label="Platform Overview Header"
-        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-      >
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-emerald-800 bg-emerald-50/80 px-2.5 py-0.5 rounded-full border border-emerald-200/80">
-              Deterministic CDS Engine Active
-            </span>
-            <span className="text-slate-300">•</span>
-            <span className="text-xs text-slate-500 font-mono">
-              Tenancy: <span className="font-semibold text-slate-700">Metro General Hospital</span>
-            </span>
-          </div>
-
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2">
-            <span>Clinical Decision Support & Medication Safety</span>
-          </h1>
-
-          <p className="text-xs sm:text-sm text-slate-500 max-w-2xl">
-            Deterministic pharmacological contraindication verification, attending physician review routing, and fails-closed outpatient dispensing.
-          </p>
+    <div className="flex flex-col gap-10 max-w-6xl mx-auto pb-16 pt-2">
+      {/* 1. Calm Editorial Hero Section */}
+      <section aria-label="Overview" className="text-center max-w-3xl mx-auto space-y-4">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200/80 text-xs font-medium text-slate-700">
+          <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span>Metro General Hospital</span>
+          <span className="text-slate-300">•</span>
+          <span className="text-slate-500">Clinical Safety Engine Active</span>
         </div>
 
-        {/* 1-Click Persona Switcher */}
-        <div className="bg-white p-2.5 rounded-2xl shadow-lux border border-slate-200/80 shrink-0 flex flex-col gap-1.5">
-          <div className="text-[10px] uppercase font-mono font-bold tracking-wider text-slate-400 px-1 flex items-center justify-between">
-            <span>Clinical Persona Theme</span>
-            <span className="text-[9px] text-emerald-600 font-sans font-semibold">Live Mode</span>
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
+          Preventing medication hazards before prescriptions reach the patient.
+        </h1>
+
+        <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto">
+          PharmaVigil unites pharmacists, attending physicians, and patients around a deterministic Clinical Decision Support engine to catch adverse drug interactions and enforce fail-closed dispensing.
+        </p>
+
+        {/* 3-Step Safety Loop Visualizer */}
+        <div className="pt-2 flex items-center justify-center gap-2 sm:gap-4 text-xs font-semibold text-slate-600 flex-wrap">
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white border border-slate-200 shadow-2xs">
+            <span className="size-5 rounded-full bg-blue-100 text-blue-800 text-[11px] font-bold flex items-center justify-center">1</span>
+            <span>Doctor Prescribes</span>
           </div>
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <button
-              onClick={() => handleRoleSelect("PHARMACIST")}
-              className={`h-8 px-3 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-                role === "PHARMACIST"
-                  ? "bg-emerald-600 text-white shadow-sm shadow-emerald-600/25"
-                  : "bg-emerald-50/50 hover:bg-emerald-100/70 text-emerald-900 border border-emerald-200/60"
-              }`}
-            >
-              <Pill className={`size-3 ${role === "PHARMACIST" ? "text-emerald-100" : "text-emerald-600"}`} />
-              <span>Pharmacist</span>
-            </button>
-
-            <button
-              onClick={() => handleRoleSelect("DOCTOR")}
-              className={`h-8 px-3 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-                role === "DOCTOR"
-                  ? "bg-blue-600 text-white shadow-sm shadow-blue-600/25"
-                  : "bg-blue-50/50 hover:bg-blue-100/70 text-blue-900 border border-blue-200/60"
-              }`}
-            >
-              <Stethoscope className={`size-3 ${role === "DOCTOR" ? "text-blue-100" : "text-blue-600"}`} />
-              <span>Doctor (MD)</span>
-            </button>
-
-            <button
-              onClick={() => handleRoleSelect("PATIENT")}
-              className={`h-8 px-3 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-                role === "PATIENT"
-                  ? "bg-violet-600 text-white shadow-sm shadow-violet-600/25"
-                  : "bg-violet-50/50 hover:bg-violet-100/70 text-violet-900 border border-violet-200/60"
-              }`}
-            >
-              <UserCheck className={`size-3 ${role === "PATIENT" ? "text-violet-100" : "text-violet-600"}`} />
-              <span>Patient</span>
-            </button>
-
-            <button
-              onClick={() => handleRoleSelect("HOSPITAL_ADMIN")}
-              className={`h-8 px-3 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-                role === "HOSPITAL_ADMIN"
-                  ? "bg-indigo-600 text-white shadow-sm shadow-indigo-600/25"
-                  : "bg-indigo-50/50 hover:bg-indigo-100/70 text-indigo-900 border border-indigo-200/60"
-              }`}
-            >
-              <ShieldAlert className={`size-3 ${role === "HOSPITAL_ADMIN" ? "text-indigo-100" : "text-indigo-600"}`} />
-              <span>Admin</span>
-            </button>
+          <ArrowRight className="size-3.5 text-slate-400 shrink-0" />
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white border border-slate-200 shadow-2xs">
+            <span className="size-5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold flex items-center justify-center">2</span>
+            <span>Deterministic CDS Verification</span>
+          </div>
+          <ArrowRight className="size-3.5 text-slate-400 shrink-0" />
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white border border-slate-200 shadow-2xs">
+            <span className="size-5 rounded-full bg-teal-100 text-teal-800 text-[11px] font-bold flex items-center justify-center">3</span>
+            <span>Safe Pharmacist Dispense</span>
           </div>
         </div>
       </section>
 
-      {/* 2. Active Session Workspace Quick-Access Banner */}
-      {user && (
-        <div
-          className={`rounded-2xl border p-5 shadow-lux flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all ${
-            role === "PHARMACIST"
-              ? "bg-gradient-to-r from-emerald-50/80 via-teal-50/30 to-white border-emerald-200/90"
-              : role === "DOCTOR"
-                ? "bg-gradient-to-r from-blue-50/80 via-sky-50/30 to-white border-blue-200/90"
-                : role === "PATIENT"
-                  ? "bg-gradient-to-r from-violet-50/80 via-purple-50/30 to-white border-violet-200/90"
-                  : "bg-gradient-to-r from-indigo-50/80 via-slate-50/30 to-white border-indigo-200/90"
-          }`}
-        >
-          <div className="flex items-center gap-3.5">
-            <div
-              className={`size-11 rounded-xl flex items-center justify-center shrink-0 border ${
-                role === "PHARMACIST"
-                  ? "bg-emerald-100 text-emerald-800 border-emerald-200"
-                  : role === "DOCTOR"
-                    ? "bg-blue-100 text-blue-800 border-blue-200"
-                    : role === "PATIENT"
-                      ? "bg-violet-100 text-violet-800 border-violet-200"
-                      : "bg-indigo-100 text-indigo-800 border-indigo-200"
-              }`}
-            >
-              {role === "PHARMACIST" && <Pill className="size-5 text-emerald-800" />}
-              {role === "DOCTOR" && <Stethoscope className="size-5 text-blue-800" />}
-              {role === "PATIENT" && <UserCheck className="size-5 text-violet-800" />}
-              {role === "HOSPITAL_ADMIN" && <ShieldAlert className="size-5 text-indigo-800" />}
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-mono font-bold text-slate-400 uppercase">Active Session</span>
-                <span className="text-slate-300">•</span>
-                <span
-                  className={`text-xs font-semibold ${
-                    role === "PHARMACIST"
-                      ? "text-emerald-800"
-                      : role === "DOCTOR"
-                        ? "text-blue-800"
-                        : role === "PATIENT"
-                          ? "text-violet-800"
-                          : "text-indigo-800"
-                  }`}
-                >
-                  {role === "PHARMACIST"
-                    ? "Pharmacy CDS Lead"
-                    : role === "DOCTOR"
-                      ? "Attending Physician"
-                      : role === "PATIENT"
-                        ? "Patient Care Hub"
-                        : "Hospital Administrator"}
-                </span>
-              </div>
-              <h2 className="text-base font-bold text-slate-900 mt-0.5">
-                {user.displayName}
-              </h2>
-            </div>
+      {/* 2. Unified Workspace Launcher Cards (Hick's Law - Clear, Distinct Choices) */}
+      <section aria-label="Clinical Workspaces" className="space-y-4">
+        <div className="flex items-center justify-between px-1">
+          <div>
+            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500">
+              Select Clinical Portal to Enter
+            </h2>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Click any workspace to switch persona and open the corresponding portal.
+            </p>
           </div>
 
-          <div className="flex items-center gap-2.5 shrink-0">
-            <Link
-              href={getWorkspaceHref(role)}
-              className={`h-9 px-4 rounded-xl text-white font-semibold text-xs shadow-sm inline-flex items-center gap-2 transition-all cursor-pointer ${
-                role === "PHARMACIST"
-                  ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20"
-                  : role === "DOCTOR"
-                    ? "bg-blue-600 hover:bg-blue-700 shadow-blue-600/20"
-                    : role === "PATIENT"
-                      ? "bg-violet-600 hover:bg-violet-700 shadow-violet-600/20"
-                      : "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-600/20"
-              }`}
-            >
-              <span>Open {role === "PHARMACIST" ? "Pharmacist Workspace" : role === "DOCTOR" ? "Doctor Triage" : role === "PATIENT" ? "Patient Hub" : "Admin Deck"}</span>
-              <ArrowRight data-icon="inline-end" className="size-3.5 text-white/90" />
-            </Link>
-          </div>
-        </div>
-      )}
-
-      {/* 3. Four Clinical Portals Gateway (Themed Presentable Cards) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Portal 1: Pharmacist CDS Workspace */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-lux flex flex-col justify-between hover:border-emerald-300 hover:shadow-emerald-500/10 transition-all group overflow-hidden relative">
-          <div className="h-1 absolute top-0 left-0 right-0 bg-gradient-to-r from-emerald-500 to-teal-400" />
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <div className="size-10 rounded-xl bg-emerald-50 border border-emerald-200/80 text-emerald-800 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <Pill className="size-5 text-emerald-700" />
-              </div>
-              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-800 border border-rose-200">
-                1 Flagged Hazard
-              </span>
+          {user && (
+            <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-slate-500 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs">
+              <span className="text-slate-400">Current Session:</span>
+              <span className="font-bold text-slate-800">{user.displayName}</span>
+              <span className="size-1.5 rounded-full bg-emerald-500" />
             </div>
-
-            <div>
-              <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-700">
-                <span>Pharmacy Operations</span>
-              </div>
-              <h3 className="text-sm font-bold text-slate-900 mt-0.5">
-                Pharmacist Workspace
-              </h3>
-              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                Real-time DDI contraindication verification, camera prescription capture, and gated dispensing.
-              </p>
-            </div>
-          </div>
-
-          <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
-            <Link href="/pharmacist/patients/search" className="text-xs font-medium text-emerald-700 hover:text-emerald-900">
-              Search Patient
-            </Link>
-            <Link
-              href="/pharmacist"
-              className="h-8 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs inline-flex items-center gap-1 transition-all shadow-sm shadow-emerald-600/20 cursor-pointer"
-            >
-              <span>Open</span>
-              <ArrowRight className="size-3 text-white/90" />
-            </Link>
-          </div>
+          )}
         </div>
 
-        {/* Portal 2: Doctor Triage Deck */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-lux flex flex-col justify-between hover:border-blue-300 hover:shadow-blue-500/10 transition-all group overflow-hidden relative">
-          <div className="h-1 absolute top-0 left-0 right-0 bg-gradient-to-r from-blue-600 to-sky-400" />
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <div className="size-10 rounded-xl bg-blue-50 border border-blue-200/80 text-blue-700 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <Stethoscope className="size-5 text-blue-600" />
-              </div>
-              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
-                Decision Required
-              </span>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {ROLE_CARDS.map((card) => {
+            const Icon = card.icon;
+            const isCurrentActive = role === card.role;
 
-            <div>
-              <div className="flex items-center gap-1.5 text-xs font-semibold text-blue-700">
-                <span>Clinical Triage</span>
-              </div>
-              <h3 className="text-sm font-bold text-slate-900 mt-0.5">
-                Doctor Triage Deck
-              </h3>
-              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                Clinical conflict queue with mandatory ≥15-character rationale validation and immutable therapy revisions.
-              </p>
-            </div>
-          </div>
+            const themeStyles = {
+              emerald: {
+                activeBorder: "border-emerald-500 ring-2 ring-emerald-500/20 shadow-emerald-500/10",
+                button: "bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20",
+                iconBg: "bg-emerald-50 text-emerald-700 border-emerald-200",
+                hairline: "from-emerald-500 to-teal-400",
+                badge: "bg-emerald-50 text-emerald-800 border-emerald-200",
+              },
+              blue: {
+                activeBorder: "border-blue-500 ring-2 ring-blue-500/20 shadow-blue-500/10",
+                button: "bg-blue-600 hover:bg-blue-700 text-white shadow-blue-600/20",
+                iconBg: "bg-blue-50 text-blue-700 border-blue-200",
+                hairline: "from-blue-600 to-sky-400",
+                badge: "bg-blue-50 text-blue-800 border-blue-200",
+              },
+              violet: {
+                activeBorder: "border-violet-500 ring-2 ring-violet-500/20 shadow-violet-500/10",
+                button: "bg-violet-600 hover:bg-violet-700 text-white shadow-violet-600/20",
+                iconBg: "bg-violet-50 text-violet-700 border-violet-200",
+                hairline: "from-violet-600 to-purple-400",
+                badge: "bg-violet-50 text-violet-800 border-violet-200",
+              },
+              indigo: {
+                activeBorder: "border-indigo-500 ring-2 ring-indigo-500/20 shadow-indigo-500/10",
+                button: "bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-600/20",
+                iconBg: "bg-indigo-50 text-indigo-700 border-indigo-200",
+                hairline: "from-indigo-600 to-slate-500",
+                badge: "bg-indigo-50 text-indigo-800 border-indigo-200",
+              },
+            }[card.themeColor];
 
-          <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
-            <Link href="/doctor/prescriptions/new" className="text-xs font-medium text-blue-700 hover:text-blue-900">
-              + New Revision
-            </Link>
-            <Link
-              href="/doctor"
-              className="h-8 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs inline-flex items-center gap-1 transition-all shadow-sm shadow-blue-600/20 cursor-pointer"
-            >
-              <span>Open</span>
-              <ArrowRight className="size-3 text-white/90" />
-            </Link>
-          </div>
+            const statusColors = {
+              rose: "bg-rose-50 text-rose-800 border-rose-200",
+              amber: "bg-amber-50 text-amber-800 border-amber-200",
+              emerald: "bg-emerald-50 text-emerald-800 border-emerald-200",
+              slate: "bg-slate-100 text-slate-700 border-slate-200",
+            }[card.statusVariant];
+
+            return (
+              <div
+                key={card.role}
+                onClick={() => handleLaunchWorkspace(card.role, card.workspaceHref)}
+                className={`group relative bg-white rounded-2xl border p-6 flex flex-col justify-between transition-all duration-200 cursor-pointer shadow-subtle hover:shadow-md ${
+                  isCurrentActive ? `${themeStyles.activeBorder} bg-gradient-to-b from-white to-slate-50/50` : "border-slate-200/90 hover:border-slate-300"
+                }`}
+              >
+                {/* Hairline Accent Top Bar */}
+                <div className={`h-1 absolute top-0 left-0 right-0 rounded-t-2xl bg-gradient-to-r ${themeStyles.hairline}`} />
+
+                <div className="space-y-4">
+                  {/* Card Top: Icon, Persona Label & Status */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className={`size-11 rounded-xl flex items-center justify-center shrink-0 border transition-transform group-hover:scale-105 ${themeStyles.iconBg}`}>
+                        <Icon className="size-5" />
+                      </div>
+                      <div>
+                        <div className="text-[11px] font-mono uppercase font-bold tracking-wider text-slate-400">
+                          {card.roleSubtitle}
+                        </div>
+                        <h3 className="text-base font-bold text-slate-900 group-hover:text-slate-950">
+                          {card.title}
+                        </h3>
+                      </div>
+                    </div>
+
+                    {isCurrentActive && (
+                      <span className={`text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full border ${themeStyles.badge}`}>
+                        Active
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Body: Clear Value Description */}
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    {card.description}
+                  </p>
+                </div>
+
+                {/* Footer: Live Queue Indicator & Primary Launch Button */}
+                <div className="pt-4 mt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-md border ${statusColors}`}>
+                      {card.statusText}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleLaunchWorkspace(card.role, card.workspaceHref);
+                    }}
+                    className={`h-9 px-4 rounded-xl font-semibold text-xs inline-flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer ${themeStyles.button}`}
+                  >
+                    <span>Launch Workspace</span>
+                    <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+                  </button>
+                </div>
+              </div>
+            );
+          })}
         </div>
+      </section>
 
-        {/* Portal 3: Patient Care Hub */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-lux flex flex-col justify-between hover:border-violet-300 hover:shadow-violet-500/10 transition-all group overflow-hidden relative">
-          <div className="h-1 absolute top-0 left-0 right-0 bg-gradient-to-r from-violet-600 to-purple-400" />
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <div className="size-10 rounded-xl bg-violet-50 border border-violet-200/80 text-violet-700 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <UserCheck className="size-5 text-violet-600" />
-              </div>
-              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-violet-50 text-violet-800 border border-violet-200">
-                MRN: P-9021
-              </span>
-            </div>
-
-            <div>
-              <div className="flex items-center gap-1.5 text-xs font-semibold text-violet-700">
-                <span>Personal Care Hub</span>
-              </div>
-              <h3 className="text-sm font-bold text-slate-900 mt-0.5">
-                Patient Care Hub
-              </h3>
-              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                Plain-language dosing regimen instructions, cardiology visit booking, and Ground Floor Counter 3 pickup info.
-              </p>
-            </div>
-          </div>
-
-          <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
-            <Link href="/patient/appointments/new" className="text-xs font-medium text-violet-700 hover:text-violet-900">
-              Book Visit
-            </Link>
-            <Link
-              href="/patient"
-              className="h-8 px-3 rounded-lg bg-violet-600 hover:bg-violet-700 text-white font-semibold text-xs inline-flex items-center gap-1 transition-all shadow-sm shadow-violet-600/20 cursor-pointer"
-            >
-              <span>Open</span>
-              <ArrowRight className="size-3 text-white/90" />
-            </Link>
-          </div>
-        </div>
-
-        {/* Portal 4: Hospital Governance */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-lux flex flex-col justify-between hover:border-indigo-300 hover:shadow-indigo-500/10 transition-all group overflow-hidden relative">
-          <div className="h-1 absolute top-0 left-0 right-0 bg-gradient-to-r from-indigo-600 to-slate-500" />
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <div className="size-10 rounded-xl bg-indigo-50 border border-indigo-200/80 text-indigo-700 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <ShieldAlert className="size-5 text-indigo-600" />
-              </div>
-              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
-                Strict RBAC
-              </span>
-            </div>
-
-            <div>
-              <div className="flex items-center gap-1.5 text-xs font-semibold text-indigo-700">
-                <span>Compliance & Access</span>
-              </div>
-              <h3 className="text-sm font-bold text-slate-900 mt-0.5">
-                Hospital Administration
-              </h3>
-              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                Staff credential governance, published deterministic clinical ruleset explorer, and tamper-evident audit trails.
-              </p>
-            </div>
-          </div>
-
-          <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
-            <Link href="/admin/audit" className="text-xs font-medium text-indigo-700 hover:text-indigo-900">
-              Audit Trail
-            </Link>
-            <Link
-              href="/admin"
-              className="h-8 px-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs inline-flex items-center gap-1 transition-all shadow-sm shadow-indigo-600/20 cursor-pointer"
-            >
-              <span>Open</span>
-              <ArrowRight className="size-3 text-white/90" />
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* 4. Safety Guarantees Bar (Themed Hairline Strip) */}
-      <section
-        aria-label="Clinical Safety Guarantees"
-        className="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-lux"
-      >
-        <div className="grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 lg:divide-x divide-slate-100 text-xs text-slate-600">
-          <div className="flex items-center gap-2.5 px-3 py-2 first:pl-0">
-            <div className="size-7 rounded-lg bg-emerald-50 border border-emerald-200/70 text-emerald-700 flex items-center justify-center shrink-0">
-              <CheckCircle2 className="size-4 text-emerald-600" />
+      {/* 3. Safety Guarantees & Architecture Bar (Minimal & High Trust) */}
+      <section aria-label="Clinical Guarantees" className="bg-slate-50/70 rounded-2xl p-5 border border-slate-200/80">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+          <div className="flex items-center gap-3">
+            <div className="size-8 rounded-lg bg-emerald-100/70 text-emerald-800 flex items-center justify-center shrink-0">
+              <CheckCircle2 className="size-4" />
             </div>
             <div>
-              <div className="font-bold text-slate-900 leading-tight">Zero Hallucination</div>
-              <div className="text-[11px] text-slate-500">Deterministic CDS</div>
+              <div className="font-bold text-slate-900">Zero Hallucination</div>
+              <div className="text-[11px] text-slate-500">Deterministic Engine</div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5 px-3 py-2">
-            <div className="size-7 rounded-lg bg-blue-50 border border-blue-200/70 text-blue-700 flex items-center justify-center shrink-0">
-              <Lock className="size-4 text-blue-600" />
+          <div className="flex items-center gap-3">
+            <div className="size-8 rounded-lg bg-blue-100/70 text-blue-800 flex items-center justify-center shrink-0">
+              <Lock className="size-4" />
             </div>
             <div>
-              <div className="font-bold text-slate-900 leading-tight">Fails-Closed Gate</div>
-              <div className="text-[11px] text-slate-500">Dispensing Safeguard</div>
+              <div className="font-bold text-slate-900">Fails-Closed Gate</div>
+              <div className="text-[11px] text-slate-500">Gated Dispensation</div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5 px-3 py-2">
-            <div className="size-7 rounded-lg bg-violet-50 border border-violet-200/70 text-violet-700 flex items-center justify-center shrink-0">
-              <Pill className="size-4 text-violet-600" />
+          <div className="flex items-center gap-3">
+            <div className="size-8 rounded-lg bg-violet-100/70 text-violet-800 flex items-center justify-center shrink-0">
+              <Camera className="size-4" />
             </div>
             <div>
-              <div className="font-bold text-slate-900 leading-tight">Line-by-Line OCR</div>
+              <div className="font-bold text-slate-900">Line-by-Line OCR</div>
               <div className="text-[11px] text-slate-500">Dual Verification</div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5 px-3 py-2 last:pr-0">
-            <div className="size-7 rounded-lg bg-indigo-50 border border-indigo-200/70 text-indigo-700 flex items-center justify-center shrink-0">
-              <Shield className="size-4 text-indigo-600" />
+          <div className="flex items-center gap-3">
+            <div className="size-8 rounded-lg bg-indigo-100/70 text-indigo-800 flex items-center justify-center shrink-0">
+              <Shield className="size-4" />
             </div>
             <div>
-              <div className="font-bold text-slate-900 leading-tight">Tenant Isolation</div>
-              <div className="text-[11px] text-slate-500">Hospital Row Security</div>
+              <div className="font-bold text-slate-900">Hospital RBAC</div>
+              <div className="text-[11px] text-slate-500">Audit-Logged Access</div>
             </div>
           </div>
         </div>
