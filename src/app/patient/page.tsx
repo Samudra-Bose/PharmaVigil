@@ -155,7 +155,7 @@ export default function PatientHomePage() {
         <div className="flex items-center gap-2.5 shrink-0">
           <Link
             href="/patient/appointments/new"
-            className="h-9 px-4 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/90 shadow-2xs inline-flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer"
+            className="h-9 px-4 rounded-xl bg-white hover:bg-violet-50/70 text-slate-700 hover:text-violet-900 font-semibold text-xs border border-slate-200/90 shadow-2xs inline-flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer"
           >
             <CalendarIcon data-icon="inline-start" className="size-3.5 text-slate-500" />
             <span>Book Visit</span>
@@ -163,16 +163,16 @@ export default function PatientHomePage() {
 
           <Link
             href="/patient/prescriptions"
-            className="h-9 px-4 rounded-xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-md shadow-slate-900/10 inline-flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer"
+            className="h-9 px-4 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-semibold text-xs shadow-sm shadow-violet-600/20 inline-flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer"
           >
-            <Pill data-icon="inline-start" className="size-3.5 text-emerald-400" />
+            <Pill data-icon="inline-start" className="size-3.5 text-violet-100" />
             <span>My Prescriptions</span>
           </Link>
         </div>
       </section>
 
-      {/* 2. Prominent Active Regimen Focal Card (Calm Editorial Design) */}
-      <div className="bg-white rounded-2xl border border-slate-200/70 p-5 sm:p-6 shadow-lux">
+      {/* 2. Prominent Active Regimen Focal Card (Warm Editorial Theme) */}
+      <div className="bg-gradient-to-r from-violet-50/50 via-white to-purple-50/20 rounded-2xl border border-violet-200/80 p-5 sm:p-6 shadow-lux">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-slate-100">
           <div className="flex items-start gap-3.5">
             <div className={`size-12 rounded-2xl flex items-center justify-center shrink-0 border ${
@@ -208,10 +208,10 @@ export default function PatientHomePage() {
           <div className="flex items-center gap-2.5 shrink-0">
             <Link
               href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`}
-              className="h-9 px-4 rounded-xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-sm inline-flex items-center gap-2 transition-all cursor-pointer"
+              className="h-9 px-4 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-semibold text-xs shadow-sm shadow-violet-600/20 inline-flex items-center gap-2 transition-all cursor-pointer"
             >
               <span>View Dosing Schedule</span>
-              <ArrowRight data-icon="inline-end" className="size-3.5 text-emerald-400" />
+              <ArrowRight data-icon="inline-end" className="size-3.5 text-white/90" />
             </Link>
           </div>
         </div>
@@ -283,8 +283,8 @@ export default function PatientHomePage() {
                   className="py-3.5 first:pt-1 last:pb-1 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/50 transition-colors rounded-xl px-2"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="size-10 rounded-xl bg-emerald-50 border border-emerald-200/70 text-emerald-800 flex items-center justify-center shrink-0">
-                      <Pill className="size-4.5 text-emerald-800" />
+                    <div className="size-10 rounded-xl bg-violet-50 border border-violet-200/80 text-violet-700 flex items-center justify-center shrink-0">
+                      <Pill className="size-4.5 text-violet-600" />
                     </div>
                     <div className="min-w-0 flex flex-col">
                       <div className="text-sm font-bold text-slate-900 truncate">
@@ -303,16 +303,16 @@ export default function PatientHomePage() {
                   </div>
 
                   <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
-                    <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded-lg bg-slate-100 text-slate-800 border border-slate-200/60">
+                    <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded-lg bg-violet-50 text-violet-800 border border-violet-200/60">
                       {item.frequency}
                     </span>
 
                     <Link
                       href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`}
-                      className="h-7 px-3 rounded-lg bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs inline-flex items-center gap-1 transition-all cursor-pointer"
+                      className="h-7 px-3 rounded-lg bg-violet-600 hover:bg-violet-700 text-white font-semibold text-xs inline-flex items-center gap-1 transition-all shadow-sm shadow-violet-600/15 cursor-pointer"
                     >
                       <span>Details</span>
-                      <ArrowRight data-icon="inline-end" className="size-3 text-emerald-400" />
+                      <ArrowRight data-icon="inline-end" className="size-3 text-white/90" />
                     </Link>
                   </div>
                 </div>
