@@ -201,7 +201,7 @@ function CreateRevisionContent() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <FileEdit className="w-5 h-5 text-slate-700" />
+            <FileEdit className="w-5 h-5 text-blue-600" />
             Issue Prescription Revision {nextRevisionNumber}
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -381,7 +381,7 @@ function CreateRevisionContent() {
             required
             value={changeReason}
             onChange={(e) => setChangeReason(e.target.value)}
-            className="w-full p-3 text-xs rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900 leading-relaxed"
+            className="w-full p-3 text-xs rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600 leading-relaxed"
           />
         </div>
 
@@ -389,11 +389,11 @@ function CreateRevisionContent() {
         <div className="flex justify-end gap-2 pt-2">
           <Button
             type="submit"
-            variant="primary"
+            variant="blue"
             loading={submitting}
             className="gap-2 text-xs"
           >
-            <GitCommit className="w-4 h-4 text-emerald-400" /> Create Revision{" "}
+            <GitCommit className="w-4 h-4 text-blue-200" /> Create Revision{" "}
             {nextRevisionNumber} & Send to Pharmacy
           </Button>
         </div>
