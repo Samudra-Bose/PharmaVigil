@@ -13,10 +13,24 @@ const config: Config = {
         mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "monospace"],
       },
       colors: {
+        canvas: "#eff2f6",
+        forest: {
+          50: "#ecfdf5",
+          100: "#d1fae5",
+          200: "#a7f3d0",
+          300: "#6ee7b7",
+          400: "#34d399",
+          500: "#10b981",
+          600: "#059669",
+          700: "#047857",
+          800: "#065f46",
+          900: "#064e3b", // Deep luxury forest green
+          950: "#022c22",
+        },
         clinical: {
-          canvas: "#f8fafc",
+          canvas: "#eff2f6",
           surface: "#ffffff",
-          "surface-raised": "#f1f5f9",
+          "surface-raised": "#f8fafc",
           navy: "#0f172a",
           "navy-light": "#1e293b",
           teal: {
@@ -52,6 +66,9 @@ const config: Config = {
       boxShadow: {
         subtle: "0 1px 2px 0 rgba(15, 23, 42, 0.05)",
         card: "0 1px 3px 0 rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.08)",
+        lux: "0 10px 30px -5px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(15, 23, 42, 0.04)",
+        "lux-hover": "0 14px 35px -5px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.06)",
+        "lux-black": "0 16px 36px -8px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.08)",
         dropdown: "0 4px 6px -1px rgba(15, 23, 42, 0.1), 0 2px 4px -2px rgba(15, 23, 42, 0.1)",
         modal: "0 20px 25px -5px rgba(15, 23, 42, 0.15), 0 8px 10px -6px rgba(15, 23, 42, 0.1)",
       },
