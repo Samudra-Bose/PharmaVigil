@@ -93,7 +93,7 @@ export default function CheckResultsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <ShieldCheck className="w-5 h-5 text-slate-700" />
+            <ShieldCheck className="w-5 h-5 text-emerald-600" />
             Evaluation Outcome & Evidence Findings
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -180,7 +180,7 @@ export default function CheckResultsPage() {
             {isClear ? (
               <Button
                 size="md"
-                variant="primary"
+                variant="emerald"
                 onClick={() =>
                   router.push(`/pharmacist/cases/${caseId}/authorize`)
                 }
@@ -192,14 +192,14 @@ export default function CheckResultsPage() {
             ) : (
               <Button
                 size="md"
-                variant="primary"
+                variant="blue"
                 onClick={() => {
                   api.switchDemoRole("DOCTOR");
                   router.push("/doctor");
                 }}
-                className="gap-2 text-xs w-full sm:w-auto bg-slate-900"
+                className="gap-2 text-xs w-full sm:w-auto"
               >
-                <Stethoscope className="w-4 h-4 text-emerald-400" /> Switch to
+                <Stethoscope className="w-4 h-4 text-white" /> Switch to
                 Doctor Portal to Review Triage{" "}
                 <ArrowRight className="w-4 h-4" />
               </Button>

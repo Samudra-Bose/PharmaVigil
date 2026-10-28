@@ -75,7 +75,7 @@ function RecordDispositionContent() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <Stethoscope className="w-5 h-5 text-slate-700" />
+            <Stethoscope className="w-5 h-5 text-blue-600" />
             Record Physician Clinical Disposition
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -119,7 +119,7 @@ function RecordDispositionContent() {
               }}
               className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
                 dispositionType === "CHANGE_REQUIRED"
-                  ? "border-slate-900 bg-slate-50/80 shadow-xs"
+                  ? "border-blue-600 bg-blue-50/60 shadow-xs ring-1 ring-blue-500"
                   : "border-slate-200 bg-white hover:border-slate-300"
               }`}
             >
@@ -129,10 +129,10 @@ function RecordDispositionContent() {
                   name="disposition"
                   checked={dispositionType === "CHANGE_REQUIRED"}
                   onChange={() => setDispositionType("CHANGE_REQUIRED")}
-                  className="w-4 h-4 text-slate-900 focus:ring-slate-900"
+                  className="w-4 h-4 text-blue-600 focus:ring-blue-600"
                 />
                 <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                  <FileEdit className="w-3.5 h-3.5 text-slate-700" />
+                  <FileEdit className="w-3.5 h-3.5 text-blue-600" />
                   Prescription Change Required
                 </span>
               </div>
@@ -154,7 +154,7 @@ function RecordDispositionContent() {
               }}
               className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
                 dispositionType === "CLINICALLY_REVIEWED"
-                  ? "border-slate-900 bg-slate-50/80 shadow-xs"
+                  ? "border-blue-600 bg-blue-50/60 shadow-xs ring-1 ring-blue-500"
                   : "border-slate-200 bg-white hover:border-slate-300"
               }`}
             >
@@ -164,10 +164,10 @@ function RecordDispositionContent() {
                   name="disposition"
                   checked={dispositionType === "CLINICALLY_REVIEWED"}
                   onChange={() => setDispositionType("CLINICALLY_REVIEWED")}
-                  className="w-4 h-4 text-slate-900 focus:ring-slate-900"
+                  className="w-4 h-4 text-blue-600 focus:ring-blue-600"
                 />
                 <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                  <CheckCircle className="w-3.5 h-3.5 text-slate-700" />
+                  <CheckCircle className="w-3.5 h-3.5 text-blue-600" />
                   Benefit Outweighs Risk
                 </span>
               </div>
@@ -222,19 +222,19 @@ function RecordDispositionContent() {
         <div className="flex justify-end gap-2 pt-2">
           <Button
             type="submit"
-            variant="primary"
+            variant="blue"
             disabled={!isRationaleValid}
             loading={submitting}
             className="gap-2 text-xs"
           >
             {dispositionType === "CHANGE_REQUIRED" ? (
               <>
-                <FileEdit className="w-4 h-4 text-emerald-400" /> Submit &
+                <FileEdit className="w-4 h-4 text-blue-200" /> Submit &
                 Create Revised Prescription <ArrowRight className="w-4 h-4" />
               </>
             ) : (
               <>
-                <CheckCircle className="w-4 h-4 text-emerald-400" /> Record
+                <CheckCircle className="w-4 h-4 text-blue-200" /> Record
                 Disposition & Clear Triage
               </>
             )}

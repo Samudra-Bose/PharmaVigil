@@ -85,7 +85,7 @@ export default function DispensingAuthorizePage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <CheckCircle2 className="w-5 h-5 text-slate-700" />
+            <CheckCircle2 className="w-5 h-5 text-emerald-600" />
             Pharmacist Dispensing Workflow Authorization
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -225,7 +225,7 @@ export default function DispensingAuthorizePage() {
                   checked={acknowledged}
                   disabled={hasUnresolvedAlerts || !isOutcomeClear}
                   onChange={(e) => setAcknowledged(e.target.checked)}
-                  className="w-4 h-4 mt-0.5 rounded border-slate-300 text-slate-900 focus:ring-slate-900"
+                  className="w-4 h-4 mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-600"
                 />
                 <div className="text-xs">
                   <span className="font-bold text-slate-900">
@@ -254,13 +254,13 @@ export default function DispensingAuthorizePage() {
 
             <Button
               size="md"
-              variant="primary"
+              variant="emerald"
               disabled={!canAuthorize}
               loading={submitting}
               onClick={handleAuthorize}
               className="gap-2 text-xs w-full sm:w-auto"
             >
-              <Lock className="w-4 h-4 text-emerald-400" /> Record Workflow
+              <Lock className="w-4 h-4 text-emerald-200" /> Record Workflow
               Authorization
             </Button>
           </div>

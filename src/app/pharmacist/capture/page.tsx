@@ -300,7 +300,7 @@ function CapturePrescriptionContent() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <Camera className="w-5 h-5 text-teal-700" />
+            <Camera className="w-5 h-5 text-emerald-600" />
             Live Prescription Capture & OCR Ingestion
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -339,16 +339,16 @@ function CapturePrescriptionContent() {
             <button
               type="button"
               onClick={() => setCameraModalOpen(true)}
-              className="p-4 rounded-lg border-2 border-dashed border-teal-300 hover:border-teal-500 bg-teal-50/50 hover:bg-teal-50 transition-all flex items-center gap-3 text-left group"
+              className="p-4 rounded-lg border-2 border-dashed border-emerald-300 hover:border-emerald-500 bg-emerald-50/50 hover:bg-emerald-50/80 transition-all flex items-center gap-3 text-left group"
             >
-              <div className="w-10 h-10 rounded-lg bg-teal-600 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+              <div className="w-10 h-10 rounded-lg bg-emerald-600 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
                 <Camera className="w-5 h-5" />
               </div>
               <div>
-                <div className="text-xs font-bold text-teal-950">
+                <div className="text-xs font-bold text-emerald-950">
                   Open Camera Scanner
                 </div>
-                <div className="text-[11px] text-teal-700 mt-0.5">
+                <div className="text-[11px] text-emerald-700 mt-0.5">
                   Live WebRTC stream with prescription alignment guide
                 </div>
               </div>
@@ -583,13 +583,13 @@ function CapturePrescriptionContent() {
 
         <Button
           size="md"
-          variant="primary"
+          variant="emerald"
           onClick={handleSaveAndProceed}
           loading={submitting}
           disabled={
             submitting || (mode === "IMAGE" && !imageUri && !recognizedText)
           }
-          className="gap-2 text-xs bg-slate-900 hover:bg-slate-800 text-white"
+          className="gap-2 text-xs"
         >
           Proceed to Extraction Review <ArrowRight className="w-4 h-4" />
         </Button>

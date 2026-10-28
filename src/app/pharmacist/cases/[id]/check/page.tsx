@@ -73,7 +73,7 @@ export default function RunCheckPage() {
 
       <div>
         <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-          <ShieldCheck className="w-5 h-5 text-slate-700" />
+          <ShieldCheck className="w-5 h-5 text-emerald-600" />
           Deterministic Illustrative Safety Check
         </h1>
         <p className="text-xs text-slate-500 mt-0.5">
@@ -135,7 +135,7 @@ export default function RunCheckPage() {
         <div className="pt-4 flex justify-end">
           <Button
             size="md"
-            variant="primary"
+            variant="emerald"
             onClick={handleStartCheck}
             loading={evaluating}
             className="gap-2 text-xs"
