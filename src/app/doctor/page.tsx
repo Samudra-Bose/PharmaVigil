@@ -26,6 +26,7 @@ import {
   Sparkles,
   Activity,
   HeartPulse,
+  Pill,
 } from "lucide-react";
 
 export default function DoctorDashboard() {
@@ -114,7 +115,7 @@ export default function DoctorDashboard() {
               Dr. Arvind Patel, MD • Cardiology Outpatient Clinic
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 font-display">
             Clinical Triage & Dispositions
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 max-w-2xl">
@@ -150,55 +151,81 @@ export default function DoctorDashboard() {
         </div>
       </section>
 
-      {/* 2. SIGNATURE HERO BENTO CARD: Midnight Cobalt Ambient Triage Alert */}
+      {/* 2. SIGNATURE HERO BENTO CARD: Midnight Cobalt Ambient Triage Alert with Visual DDI Graphic */}
       {primaryTask && (
         <section
           aria-label="Immediate Clinical Concern"
-          className="rounded-3xl bg-gradient-to-br from-[#0a1128] via-[#0f172a] to-[#1e1b4b] border border-blue-500/30 text-white shadow-xl shadow-blue-950/20 p-6 sm:p-7 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6"
+          className="rounded-3xl bg-gradient-to-br from-[#0a1128] via-[#0f172a] to-[#1e1b4b] border border-blue-500/30 text-white shadow-xl shadow-blue-950/20 p-6 sm:p-7 relative overflow-hidden flex flex-col gap-6"
         >
           {/* Subtle Ambient Background Mesh */}
           <div className="absolute -right-20 -top-20 size-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute right-40 -bottom-20 size-60 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="flex items-start gap-4 min-w-0 relative z-10">
-            <div className="size-13 rounded-2xl bg-gradient-to-br from-rose-500/20 to-rose-600/30 border border-rose-400/40 text-rose-300 flex items-center justify-center shrink-0 shadow-lg shadow-rose-950/40">
-              <ShieldAlert className="size-6 text-rose-300" />
-            </div>
-            <div className="flex flex-col gap-1.5 min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-200 border border-rose-400/30 flex items-center gap-1.5 shadow-xs">
-                  <span className="size-1.5 rounded-full bg-rose-400 animate-pulse" />
-                  Dispensing Locked (Fails Closed)
-                </span>
-                <span className="text-blue-400/40">•</span>
-                <span className="font-mono font-bold text-xs text-blue-200">
-                  {primaryTask.caseId}
-                </span>
-                <span className="text-blue-400/40">•</span>
-                <span className="text-xs text-blue-100 font-medium">
-                  Patient {primaryTask.patientId} (Room 402)
-                </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 bg-blue-900/60 text-blue-200 rounded border border-blue-700/60">
-                  Revision v{primaryTask.revisionNumber}
-                </span>
+          {/* Top Row: Demographics & Immediate Action */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 relative z-10">
+            <div className="flex items-start gap-4 min-w-0">
+              <div className="size-12 rounded-2xl bg-gradient-to-br from-rose-500/20 to-rose-600/30 border border-rose-400/40 text-rose-300 flex items-center justify-center shrink-0 shadow-lg shadow-rose-950/40">
+                <ShieldAlert className="size-6 text-rose-300" />
               </div>
-              <h2 className="text-lg sm:text-xl font-extrabold text-white tracking-tight">
-                Rule: {primaryTask.alert.ruleId} — {primaryTask.alert.rationale}
-              </h2>
-              <p className="text-xs sm:text-sm text-blue-100/80 leading-relaxed max-w-2xl font-normal">
-                Synergistic bleeding risk identified between anticoagulant and NSAID. Attending physician must submit a clinical justification of at least 15 characters before dispensing gate unlocks.
-              </p>
+              <div className="flex flex-col gap-1 min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-200 border border-rose-400/30 flex items-center gap-1.5 shadow-xs">
+                    <span className="size-1.5 rounded-full bg-rose-400 animate-pulse" />
+                    Dispensing Locked (Fails Closed)
+                  </span>
+                  <span className="text-blue-400/40">•</span>
+                  <span className="font-bold text-xs text-blue-200">
+                    Rx Case #9021
+                  </span>
+                  <span className="text-blue-400/40">•</span>
+                  <span className="text-xs text-blue-100 font-semibold">
+                    Rajan Sharma (MRN: P-9021) • Room 402
+                  </span>
+                </div>
+                <h2 className="text-lg sm:text-xl font-extrabold text-white tracking-tight">
+                  Major Drug-Drug Interaction: Warfarin + Aspirin Bleed Hazard
+                </h2>
+              </div>
+            </div>
+
+            <div className="shrink-0 flex items-center gap-3">
+              <Link
+                href={`/doctor/tasks/${primaryTask.id}/disposition?caseId=${primaryTask.caseId}`}
+                className="h-10 px-5 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-400 hover:to-rose-500 text-white font-bold text-xs shadow-lg shadow-rose-500/30 inline-flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-[0.98]"
+              >
+                <span>Sign Disposition</span>
+                <ArrowRight className="size-3.5 text-white" />
+              </Link>
             </div>
           </div>
 
-          <div className="shrink-0 flex items-center gap-3 relative z-10">
-            <Link
-              href={`/doctor/tasks/${primaryTask.id}/disposition?caseId=${primaryTask.caseId}`}
-              className="w-full sm:w-auto h-11 px-6 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-400 hover:to-rose-500 text-white font-extrabold text-xs shadow-lg shadow-rose-500/30 inline-flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-[0.98]"
-            >
-              <span>Sign Disposition</span>
-              <ArrowRight className="size-3.5 text-white" />
-            </Link>
+          {/* Bottom Visual: Interactive DDI Node Diagram */}
+          <div className="p-4 rounded-2xl bg-black/30 border border-white/10 backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-4 relative z-10 text-xs">
+            <div className="flex items-center gap-3 w-full md:w-auto">
+              <div className="size-8 rounded-xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-300 shrink-0">
+                <Pill className="size-4" />
+              </div>
+              <div>
+                <div className="font-bold text-white">Coumadin (Warfarin 5mg)</div>
+                <div className="text-[11px] text-blue-200/70">Oral Tablet • Vitamin K Antagonist</div>
+              </div>
+            </div>
+
+            {/* Glowing Interlock Conflict Beam */}
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/20 border border-rose-400/40 text-rose-200 text-[11px] font-bold shadow-xs">
+              <AlertTriangle className="size-3.5 text-rose-300 shrink-0" />
+              <span>Synergistic Platelet & CYP2C9 Bleeding Hazard</span>
+            </div>
+
+            <div className="flex items-center gap-3 w-full md:w-auto justify-end">
+              <div className="text-right">
+                <div className="font-bold text-white">Disprin (Aspirin 100mg)</div>
+                <div className="text-[11px] text-blue-200/70">Oral Tablet • Antiplatelet COX-1</div>
+              </div>
+              <div className="size-8 rounded-xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-300 shrink-0">
+                <Pill className="size-4" />
+              </div>
+            </div>
           </div>
         </section>
       )}
@@ -213,10 +240,10 @@ export default function DoctorDashboard() {
             </span>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-black text-rose-600 font-mono tracking-tight">
+            <div className="text-3xl font-extrabold text-rose-600 tracking-tight">
               {tasks.length} Active Conflict{tasks.length === 1 ? "" : "s"}
             </div>
-            <p className="text-[11px] text-slate-600 mt-1">CYP3A4 Statin Contraindications</p>
+            <p className="text-[11px] text-slate-500 mt-1">CYP3A4 Statin Contraindications</p>
           </div>
         </div>
 
@@ -228,10 +255,10 @@ export default function DoctorDashboard() {
             </span>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-black text-emerald-600 font-mono tracking-tight">
+            <div className="text-3xl font-extrabold text-emerald-600 tracking-tight">
               94.2% Cleared
             </div>
-            <p className="text-[11px] text-slate-600 mt-1">Cardiology Unit Throughput</p>
+            <p className="text-[11px] text-slate-500 mt-1">Cardiology Unit Throughput</p>
           </div>
         </div>
 
@@ -243,10 +270,10 @@ export default function DoctorDashboard() {
             </span>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-black text-blue-600 font-mono tracking-tight">
-              Patient P-9021
+            <div className="text-3xl font-extrabold text-blue-600 tracking-tight">
+              Rajan Sharma
             </div>
-            <p className="text-[11px] text-slate-600 mt-1">Cardiology Maintenance Bed</p>
+            <p className="text-[11px] text-slate-500 mt-1">MRN: P-9021 • Cardiology Maintenance</p>
           </div>
         </div>
       </section>
@@ -288,27 +315,27 @@ export default function DoctorDashboard() {
                     key={`${t.caseId}-${t.alert.ruleId}`}
                     className="py-4 first:pt-1 last:pb-1 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/70 transition-colors rounded-xl px-2.5"
                   >
-                    {/* Left: Squircle Icon + Case ID + Rule */}
+                    {/* Left: Patient Avatar + Name + Prescription + Rule */}
                     <div className="flex items-center gap-3.5 min-w-0">
-                      <div className="size-11 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 flex items-center justify-center shrink-0 shadow-2xs">
-                        <AlertTriangle className="size-5 text-rose-700" />
+                      <div className="size-11 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 flex items-center justify-center shrink-0 font-bold text-xs shadow-2xs">
+                        RS
                       </div>
                       <div className="min-w-0 flex flex-col gap-0.5">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-mono font-bold text-sm text-slate-900">
-                            {t.caseId}
+                          <span className="font-extrabold text-sm text-slate-900">
+                            Rajan Sharma
                           </span>
                           <span className="text-slate-300">•</span>
-                          <span className="font-mono text-xs text-slate-600 flex items-center gap-1">
-                            <User className="size-3 text-slate-400" />
-                            {t.patientId}
+                          <span className="text-xs text-slate-500 font-medium">
+                            MRN: {t.patientId}
                           </span>
-                          <span className="text-[10px] font-mono px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md font-semibold">
-                            Revision v{t.revisionNumber}
+                          <span className="text-slate-300">•</span>
+                          <span className="text-[11px] font-mono px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md font-semibold">
+                            Rx #{t.caseId.replace("case_rx_", "")} (v{t.revisionNumber})
                           </span>
                         </div>
                         <div className="text-xs text-slate-700 truncate max-w-lg font-medium mt-0.5">
-                          Rule: {t.alert.ruleId} — {t.alert.rationale}
+                          {t.alert.rationale}
                         </div>
                       </div>
                     </div>
@@ -324,7 +351,7 @@ export default function DoctorDashboard() {
 
                       <Link
                         href={`/doctor/tasks/${t.id}/disposition?caseId=${t.caseId}`}
-                        className="h-8 px-3.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-xs shadow-blue-600/20 inline-flex items-center gap-1.5 transition-all cursor-pointer"
+                        className="h-8 px-3.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs shadow-blue-600/20 inline-flex items-center gap-1.5 transition-all cursor-pointer"
                       >
                         <span>Disposition</span>
                         <ArrowRight className="size-3 text-white/90" />
@@ -374,7 +401,7 @@ export default function DoctorDashboard() {
                     d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                   />
                 </svg>
-                <span className="absolute font-mono text-[11px] font-extrabold text-slate-900">
+                <span className="absolute text-xs font-extrabold text-slate-900">
                   94.2%
                 </span>
               </div>
@@ -386,7 +413,7 @@ export default function DoctorDashboard() {
 
             <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between text-xs">
               <span className="text-slate-500">Character Counter Gate</span>
-              <span className="font-mono font-bold text-emerald-700">Enforced Client & Server</span>
+              <span className="font-bold text-emerald-700">Enforced Client & Server</span>
             </div>
           </div>
 
