@@ -2,16 +2,18 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { Shield, Building2, User, LogOut, Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { cn } from "@/lib/utils";
+import type { UserRole } from "@/types";
 
 export const AppHeader: React.FC = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, membership, role, hospitalName, logout, switchRole, isMockMode } = useAuth();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
