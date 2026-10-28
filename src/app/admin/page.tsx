@@ -3,8 +3,6 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { api } from "@/lib/api-client";
-import { Badge } from "@/components/ui/Badge";
-import { Skeleton } from "@/components/ui/Skeleton";
 import {
   ShieldCheck,
   UserCheck,
@@ -21,6 +19,7 @@ import {
   User,
   ShieldAlert,
   Check,
+  AlertCircle,
 } from "lucide-react";
 
 const INITIAL_MEMBERSHIPS = [
@@ -108,13 +107,13 @@ export default function AdminDashboardPage() {
 
   const chartData = {
     weekly: [
-      { day: "Su", count: 0, height: "h-12", time: "0 verified" },
+      { day: "Su", count: 0, height: "h-8", time: "0 verified" },
       { day: "Mo", count: 2, height: "h-20", time: "2 verified" },
       { day: "Tu", count: 3, height: "h-28", time: "3 verified" },
       { day: "We", count: 4, height: "h-36", time: "4 verified" },
       { day: "Th", count: 3, height: "h-36", time: "3 verified" },
       { day: "Fr", count: 1, height: "h-16", time: "1 verified" },
-      { day: "Sa", count: 0, height: "h-10", time: "0 verified" },
+      { day: "Sa", count: 0, height: "h-8", time: "0 verified" },
     ],
     monthly: [
       { day: "W1", count: 8, height: "h-24", time: "8 verified" },
@@ -136,7 +135,7 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="flex flex-col gap-6 max-w-[1400px] mx-auto pb-12">
-      {/* 1. Header with clean typography & distinct button hierarchy */}
+      {/* 1. Header with calm typography & distinct button hierarchy */}
       <section
         aria-label="Admin Greeting"
         className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
@@ -148,11 +147,11 @@ export default function AdminDashboardPage() {
             </span>
             <span className="text-slate-300">•</span>
             <span className="text-xs text-slate-500 font-mono">
-              Tenancy: metro-general
+              Tenancy: <span className="font-semibold text-slate-700">metro-general</span>
             </span>
           </div>
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2">
-            <span>Welcome back, Administrator</span>
+            <span>Hospital Administration Hub</span>
             <span>👋</span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500">
@@ -163,7 +162,7 @@ export default function AdminDashboardPage() {
         {/* Action Controls */}
         <div className="flex items-center gap-2.5 shrink-0">
           <Link href="/admin/demo-reset">
-            <button className="h-9 px-4 rounded-2xl bg-white hover:bg-rose-50 text-rose-800 font-semibold text-xs border border-rose-200/90 shadow-2xs flex items-center gap-2 transition-all whitespace-nowrap">
+            <button className="h-9 px-4 rounded-xl bg-white hover:bg-rose-50 text-rose-700 font-semibold text-xs border border-rose-200/90 shadow-2xs flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer">
               <RotateCcw data-icon="inline-start" className="size-3.5 text-rose-600" />
               <span>Scoped Demo Reset</span>
             </button>
@@ -171,237 +170,190 @@ export default function AdminDashboardPage() {
         </div>
       </section>
 
-      {/* 2. TOP TIER: 4-Card Bento Grid (Refined Clinical Palette + 1 Dark Action Card) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1: Pending Approvals */}
-        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200 hover:shadow-lux-hover">
-          <div>
-            <div className="flex items-center justify-between">
-              <div className="size-11 rounded-2xl bg-amber-50 border border-amber-200/60 text-amber-700 flex items-center justify-center shrink-0">
-                <UserCheck className="size-5 text-amber-700" />
+      {/* 2. Pending Credentialing Hero Alert Card (when action required) */}
+      {pendingMember && (
+        <div className="bg-white rounded-2xl border border-amber-200/80 p-5 shadow-lux bg-gradient-to-r from-amber-50/40 via-white to-white">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-start gap-3.5">
+              <div className="size-11 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center shrink-0">
+                <UserCheck className="size-5" />
               </div>
-              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200/80">
-                Decision Required
-              </span>
-            </div>
-            <div className="mt-3">
-              <h3 className="text-sm font-bold text-slate-900">Pending Approvals</h3>
-              <p className="text-xs text-slate-500 mt-0.5">Clinician Staff Applications</p>
-            </div>
-          </div>
-          <div className="pt-4 mt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-            <div>
-              <span className="text-[11px] font-medium text-slate-400 block">Requested Role</span>
-              <span className="font-bold text-amber-800 font-mono">DOCTOR (MD)</span>
-            </div>
-            <div className="text-right">
-              <span className="text-[11px] font-medium text-slate-400 block">Queue</span>
-              <span className="font-bold text-slate-900 font-mono font-tabular">{pendingCount} Applicant</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 2: Active Clinicians */}
-        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200 hover:shadow-lux-hover">
-          <div>
-            <div className="flex items-center justify-between">
-              <div className="size-11 rounded-2xl bg-emerald-50 border border-emerald-200/60 text-emerald-800 flex items-center justify-center shrink-0">
-                <Users className="size-5 text-emerald-800" />
+              <div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900">
+                    Decision Required
+                  </span>
+                  <span className="text-slate-300">•</span>
+                  <span className="text-xs font-mono font-medium text-slate-500">
+                    Staff Applicant: {pendingMember.displayName}
+                  </span>
+                </div>
+                <h2 className="text-base font-bold text-slate-900 mt-1">
+                  Physician Access Request Awaiting Sign-off
+                </h2>
+                <p className="text-xs text-slate-600 mt-0.5">
+                  Requested Role: <span className="font-mono font-bold text-slate-800">{pendingMember.role}</span> ({pendingMember.email}). Unapproved clinician accounts remain locked out from patient records.
+                </p>
               </div>
-              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80">
-                Verified
-              </span>
-            </div>
-            <div className="mt-3">
-              <h3 className="text-sm font-bold text-slate-900">Active Clinicians</h3>
-              <p className="text-xs text-slate-500 mt-0.5">Credentialed Staff Members</p>
-            </div>
-          </div>
-          <div className="pt-4 mt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-            <div>
-              <span className="text-[11px] font-medium text-slate-400 block">Isolation</span>
-              <span className="font-bold text-emerald-800 font-mono">Strict RBAC</span>
-            </div>
-            <div className="text-right">
-              <span className="text-[11px] font-medium text-slate-400 block">Active</span>
-              <span className="font-bold text-slate-900 font-mono font-tabular">{activeCount} Clinicians</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 3: Hospital Partition (Soft Slate) */}
-        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200 hover:shadow-lux-hover">
-          <div>
-            <div className="flex items-center justify-between">
-              <div className="size-11 rounded-2xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
-                <ShieldCheck className="size-5 text-slate-700" />
-              </div>
-              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200/80">
-                Tenancy
-              </span>
-            </div>
-            <div className="mt-3">
-              <h3 className="text-sm font-bold text-slate-900">Hospital Partition</h3>
-              <p className="text-xs text-slate-500 mt-0.5">Multi-Tenant Boundaries</p>
-            </div>
-          </div>
-          <div className="pt-4 mt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-            <div>
-              <span className="text-[11px] font-medium text-slate-400 block">Standard</span>
-              <span className="font-bold text-slate-700 font-mono">OpenAPI 3.1</span>
-            </div>
-            <div className="text-right">
-              <span className="text-[11px] font-medium text-slate-400 block">Total Staff</span>
-              <span className="font-bold text-slate-900 font-mono font-tabular">{memberships.length} Users</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 4: DARK ACTION CARD */}
-        <div className="bg-[#111317] rounded-3xl p-5 shadow-lux-black border border-slate-800 text-white relative overflow-hidden flex flex-col justify-between">
-          <div className="flex flex-col gap-2 relative z-10">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-emerald-400 font-mono font-bold text-[10px] uppercase tracking-wider">
-                <Building2 className="size-3.5" />
-                <span>Staff Credentialing</span>
-              </div>
-              <span className="size-2 rounded-full bg-amber-400 animate-pulse" />
             </div>
 
-            <h3 className="text-base font-extrabold text-white leading-tight">
-              Governance Gate
-            </h3>
-            <p className="text-[11px] text-slate-400 leading-snug">
-              Unapproved clinician accounts are locked out from patient records until hospital administrator authorization.
-            </p>
-          </div>
-
-          <div className="mt-4 pt-3 border-t border-white/10 relative z-10">
-            {pendingMember ? (
-              <Link
-                href={`/admin/memberships/${pendingMember.id}`}
-                className="block"
-              >
-                <button className="w-full h-8 px-3 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
+            <div className="flex items-center gap-2.5 shrink-0">
+              <Link href={`/admin/memberships/${pendingMember.id}`}>
+                <button className="h-9 px-4 rounded-xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-sm flex items-center gap-2 transition-all cursor-pointer">
                   <span>Review Credentials</span>
-                  <ArrowRight data-icon="inline-end" className="size-3 text-slate-950" />
+                  <ArrowRight data-icon="inline-end" className="size-3.5 text-emerald-400" />
                 </button>
               </Link>
-            ) : (
-              <span className="text-xs font-mono text-emerald-400">All credentials verified</span>
-            )}
+            </div>
           </div>
+        </div>
+      )}
 
-          {/* Decorative background glow */}
-          <div className="absolute -bottom-6 -right-6 size-24 rounded-full bg-emerald-500/10 blur-xl pointer-events-none" />
+      {/* 3. Governance Pulse Bar (4-Stat Hairline Strip) */}
+      <div className="bg-white rounded-2xl border border-slate-200/70 p-4 shadow-lux">
+        <div className="grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 lg:divide-x divide-slate-100">
+          <div className="px-3 py-2 first:pl-0">
+            <div className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Clinicians Registered</div>
+            <div className="text-lg font-bold text-slate-900 mt-0.5 font-mono">
+              {memberships.length} Users
+            </div>
+          </div>
+          <div className="px-3 py-2">
+            <div className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Pending Decisions</div>
+            <div className="text-lg font-bold text-amber-700 mt-0.5 font-mono">
+              {pendingCount} Applicant{pendingCount === 1 ? "" : "s"}
+            </div>
+          </div>
+          <div className="px-3 py-2">
+            <div className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Security Boundary</div>
+            <div className="text-lg font-bold text-emerald-700 mt-0.5 font-mono">
+              Strict RBAC
+            </div>
+          </div>
+          <div className="px-3 py-2 last:pr-0">
+            <div className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Compliance Benchmark</div>
+            <div className="text-lg font-bold text-slate-900 mt-0.5 font-mono">
+              SOC 2 / HIPAA
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* 3. MIDDLE TIER: Asymmetric 3-Column Bento (Hours Activity + Daily Schedule + Mini Calendar) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
-        {/* Col 1: Governance Onboarding Hours Activity Chart (~45% width: 5 cols) */}
-        <div className="lg:col-span-5 bg-white rounded-3xl p-6 shadow-lux border border-slate-100 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+      {/* 4. Asymmetric 2-Column Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Left Column (8 cols): Staff Affiliations Ledger + Governance Pipeline */}
+        <div className="lg:col-span-8 flex flex-col gap-6">
+          {/* Section A: Staff Affiliations Ledger */}
+          <div className="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-lux flex flex-col gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
               <div>
-                <h3 className="text-base font-bold text-slate-900">Credentialing Throughput</h3>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                    <TrendingUp className="size-3" />
-                    +12% faster verification
-                  </span>
-                </div>
+                <h3 className="text-base font-bold text-slate-900">
+                  Staff Affiliations & Credentialing Ledger
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Manage clinical licenses, hospital role authorization, and tenant access boundaries.
+                </p>
               </div>
-              <select
-                aria-label="Filter credentialing throughput by time range"
-                value={timeRange}
-                onChange={(e) => {
-                  setTimeRange(e.target.value as "weekly" | "monthly" | "daily");
-                  setActiveDayIndex(0);
-                }}
-                className="text-xs font-semibold px-2.5 py-1 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 cursor-pointer hover:bg-slate-100 transition-colors focus:outline-none focus:ring-1 focus:ring-slate-300"
-              >
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-                <option value="daily">Daily</option>
-              </select>
+
+              <div className="flex items-center gap-2">
+                <Link href="/admin/users">
+                  <button className="h-8 px-3 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200/80 flex items-center gap-1.5 transition-all cursor-pointer">
+                    <Users data-icon="inline-start" className="size-3.5 text-slate-500" />
+                    <span>Directory</span>
+                  </button>
+                </Link>
+                <Link href="/admin/memberships">
+                  <button className="h-8 px-3 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200/80 flex items-center gap-1.5 transition-all cursor-pointer">
+                    <UserCheck data-icon="inline-start" className="size-3.5 text-slate-500" />
+                    <span>Applications</span>
+                  </button>
+                </Link>
+              </div>
             </div>
 
-            {/* Stylized Modern Bar Chart */}
-            <div className="pt-6 pb-2">
-              <div className="h-44 flex items-end justify-between gap-3 px-2 relative">
-                {/* Floating Tooltip */}
+            {/* Membership Rows */}
+            <div className="divide-y divide-slate-100">
+              {memberships.map((m) => (
                 <div
-                  className="absolute top-1 bg-[#111317] text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-lg flex items-center gap-1.5 z-20 pointer-events-none transition-all duration-200"
-                  style={{
-                    left: `${Math.max(15, Math.min(85, ((safeActiveDayIndex + 0.5) / currentChartBars.length) * 100))}%`,
-                    transform: "translateX(-50%)",
-                  }}
+                  key={m.id}
+                  className="py-3.5 first:pt-1 last:pb-1 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/50 transition-colors rounded-xl px-2"
                 >
-                  <span className="size-1.5 rounded-full bg-emerald-400" />
-                  <span>
-                    {activeChartItem.count} {activeChartItem.count === 1 ? "Application" : "Applications"} Handled
-                  </span>
-                </div>
-
-                {/* Day Bars */}
-                {currentChartBars.map((item, i) => {
-                  const isActive = i === safeActiveDayIndex;
-                  return (
-                    <button
-                      key={item.day}
-                      type="button"
-                      onClick={() => setActiveDayIndex(i)}
-                      aria-label={`${item.day}: ${item.count} applications handled`}
-                      className="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none"
-                    >
-                      <div className="w-full max-w-[14px] bg-slate-100 rounded-full h-36 flex items-end">
-                        <div
-                          className={`w-full rounded-full transition-all duration-300 ${
-                            isActive
-                              ? "bg-emerald-500 shadow-sm shadow-emerald-500/30 ring-2 ring-emerald-300/50"
-                              : "bg-[#111317] group-hover:bg-slate-700"
-                          } ${item.height}`}
-                        />
-                      </div>
-                      <span className={`text-[11px] font-mono transition-colors ${isActive ? "font-bold text-slate-900" : "text-slate-400 group-hover:text-slate-600"}`}>
-                        {item.day}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-          <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
-            <span>Hospital Tenancy:</span>
-            <span className="font-semibold text-emerald-800">Enforced Partition</span>
-          </div>
-        </div>
-
-        {/* Col 2: Governance Schedule / Verification Pipeline ("Daily Schedule" in ref, ~35% width: 4 cols) */}
-        <div className="lg:col-span-4 bg-white rounded-3xl p-6 shadow-lux border border-slate-100 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="text-base font-bold text-slate-900">Governance Pipeline</h3>
-              <span className="text-xs text-slate-400 font-medium">Security Ops</span>
-            </div>
-
-            {/* List with intentional clinical squircles & right chevrons */}
-            <div className="divide-y divide-slate-100 mt-2">
-              <Link href="/admin/memberships" className="block">
-                <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/80 rounded-xl px-2 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="size-9 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
-                      <UserCheck className="size-4 text-slate-700" />
+                  <div className="flex items-center gap-3.5 min-w-0">
+                    <div className="size-10 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
+                      <User className="size-4.5 text-slate-700" />
                     </div>
-                    <div>
-                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">NPI & Identity Check</div>
-                      <div className="text-[11px] text-slate-500">Registry Verification Passed</div>
+                    <div className="min-w-0 flex flex-col">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-bold text-sm text-slate-900">
+                          {m.displayName}
+                        </span>
+                        <span className="text-slate-300">•</span>
+                        <span className="font-mono text-xs text-slate-500 truncate">
+                          {m.email}
+                        </span>
+                      </div>
+                      <div className="text-xs text-slate-500 font-mono mt-0.5">
+                        ID: {m.userId} • Applied: {new Date(m.createdAt).toLocaleDateString()}
+                      </div>
                     </div>
                   </div>
-                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 group-hover:translate-x-0.5 transition-all" />
+
+                  <div className="flex items-center justify-between sm:justify-end gap-2.5 shrink-0">
+                    <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-lg bg-slate-100 text-slate-800 border border-slate-200/60">
+                      {m.role}
+                    </span>
+
+                    <span
+                      className={`text-xs font-mono font-semibold px-2 py-0.5 rounded-full ${
+                        m.status === "ACTIVE"
+                          ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
+                          : "bg-amber-50 text-amber-800 border border-amber-200"
+                      }`}
+                    >
+                      {m.status}
+                    </span>
+
+                    <Link href={`/admin/memberships/${m.id}`}>
+                      <button className="h-7 px-3 rounded-lg bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs flex items-center gap-1 transition-all cursor-pointer">
+                        <span>Manage</span>
+                        <ArrowRight data-icon="inline-end" className="size-3 text-emerald-400" />
+                      </button>
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <span>All credentialing events are cryptographically recorded in the audit trail.</span>
+              <Link href="/admin/audit" className="text-emerald-700 font-semibold hover:underline">
+                View Audit Trail
+              </Link>
+            </div>
+          </div>
+
+          {/* Section B: Governance Pipeline Checklist */}
+          <div className="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-lux flex flex-col gap-3">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <h3 className="text-base font-bold text-slate-900">Governance & Verification Controls</h3>
+              <span className="text-xs font-mono text-slate-400">Security Architecture</span>
+            </div>
+
+            <div className="divide-y divide-slate-100">
+              <Link href="/admin/memberships" className="block group">
+                <div className="py-2.5 flex items-center justify-between hover:bg-slate-50/70 rounded-xl px-2 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="size-8 rounded-lg bg-emerald-50 text-emerald-800 flex items-center justify-center shrink-0 border border-emerald-200/60">
+                      <UserCheck className="size-4" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">
+                        NPI & Identity Registry Check
+                      </div>
+                      <div className="text-[11px] text-slate-500">National provider identifier registry lookup validated</div>
+                    </div>
+                  </div>
+                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-600 transition-colors" />
                 </div>
               </Link>
 
@@ -411,218 +363,241 @@ export default function AdminDashboardPage() {
                     ? `/admin/memberships/${pendingMember.id}`
                     : "/admin/memberships"
                 }
-                className="block"
+                className="block group"
               >
-                <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/80 rounded-xl px-2 transition-colors">
+                <div className="py-2.5 flex items-center justify-between hover:bg-slate-50/70 rounded-xl px-2 transition-colors">
                   <div className="flex items-center gap-3">
-                    <div className="size-9 rounded-xl bg-amber-50 border border-amber-200/70 text-amber-700 flex items-center justify-center shrink-0">
-                      <Lock className="size-4 text-amber-700" />
+                    <div className="size-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center shrink-0 border border-amber-200/60">
+                      <Lock className="size-4" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-slate-900 group-hover:text-amber-800 transition-colors">Privilege Assignment</div>
-                      <div className="text-[11px] text-amber-700 font-semibold">{pendingCount > 0 ? "Pending Admin Sign-off" : "All Verified"}</div>
+                      <div className="text-xs font-bold text-slate-900 group-hover:text-amber-800 transition-colors">
+                        Privilege & Scoped Role Assignment
+                      </div>
+                      <div className="text-[11px] text-amber-700 font-semibold">
+                        {pendingCount > 0 ? "Pending Admin Sign-off for Dr. Neha Rao" : "All Privileges Assigned"}
+                      </div>
                     </div>
                   </div>
-                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 group-hover:translate-x-0.5 transition-all" />
+                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-600 transition-colors" />
                 </div>
               </Link>
 
-              <Link href="/admin/users" className="block">
-                <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/80 rounded-xl px-2 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="size-9 rounded-xl bg-emerald-50 border border-emerald-200/70 text-emerald-800 flex items-center justify-center shrink-0">
-                      <Building2 className="size-4 text-emerald-800" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">Department Affiliation</div>
-                      <div className="text-[11px] text-slate-500">Cardiology Outpatient Clinic</div>
-                    </div>
-                  </div>
-                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 group-hover:translate-x-0.5 transition-all" />
-                </div>
-              </Link>
-
-              <Link href="/admin/audit" className="block">
-                <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/80 rounded-xl px-2 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="size-9 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
-                      <ShieldCheck className="size-4 text-slate-700" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">Audit Logging Gate</div>
-                      <div className="text-[11px] text-slate-500">Immutable Ledger Active</div>
-                    </div>
-                  </div>
-                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 group-hover:translate-x-0.5 transition-all" />
-                </div>
-              </Link>
-            </div>
-          </div>
-
-          <div className="pt-3 border-t border-slate-100 text-xs text-slate-400 font-medium flex items-center justify-between">
-            <span>Governance Standard:</span>
-            <span className="text-slate-700 font-medium">SOC 2 / HIPAA Ready</span>
-          </div>
-        </div>
-
-        {/* Col 3: Mini Calendar & Quick Portals (~20% width: 3 cols) */}
-        <div className="lg:col-span-3 bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between">
-          <div>
-            {/* Calendar Widget */}
-            <div className="flex items-center justify-between pb-2 text-xs">
-              <span className="font-bold text-slate-900">
-                {monthNames[calendarMonth]}, {calendarYear}
-              </span>
-              <div className="flex items-center gap-1 text-slate-400">
-                <button
-                  type="button"
-                  onClick={handlePrevMonth}
-                  aria-label="Previous month"
-                  className="p-1 hover:text-slate-700 hover:bg-slate-100 rounded transition-colors"
-                >
-                  <ChevronLeft className="size-3.5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={handleNextMonth}
-                  aria-label="Next month"
-                  className="p-1 hover:text-slate-700 hover:bg-slate-100 rounded transition-colors"
-                >
-                  <ChevronRight className="size-3.5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Days Grid */}
-            <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-mono py-2 border-b border-slate-100">
-              <span className="text-slate-400 font-bold">S</span>
-              <span className="text-slate-400 font-bold">M</span>
-              <span className="text-slate-400 font-bold">T</span>
-              <span className="text-slate-400 font-bold">W</span>
-              <span className="text-slate-400 font-bold">T</span>
-              <span className="text-slate-400 font-bold">F</span>
-              <span className="text-slate-400 font-bold">S</span>
-
-              {[...Array(31)].map((_, i) => {
-                const day = i + 1;
-                const isSelected = day === selectedCalendarDay;
-                return (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => setSelectedCalendarDay(day)}
-                    className={`py-1 rounded-full text-[10px] flex items-center justify-center transition-colors ${
-                      isSelected
-                        ? "bg-slate-900 text-white font-extrabold shadow-xs"
-                        : "text-slate-600 hover:bg-slate-100"
-                    }`}
-                  >
-                    {day}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Admin Directories */}
-            <div className="flex flex-col gap-2 mt-3">
               <Link href="/admin/users" className="block group">
-                <div className="p-2 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-[11px] group-hover:bg-slate-100 transition-colors">
-                  <div className="flex items-center gap-2">
-                    <Users className="size-3.5 text-emerald-700" />
-                    <span className="font-bold text-slate-900">Clinician Directory</span>
+                <div className="py-2.5 flex items-center justify-between hover:bg-slate-50/70 rounded-xl px-2 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="size-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+                      <Building2 className="size-4" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">
+                        Department & Unit Affiliation
+                      </div>
+                      <div className="text-[11px] text-slate-500">Assigned to Cardiology Outpatient Clinic</div>
+                    </div>
                   </div>
-                  <ChevronRight className="size-3 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-600 transition-colors" />
                 </div>
               </Link>
 
-              <Link href="/admin/memberships" className="block group">
-                <div className="p-2 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-[11px] group-hover:bg-slate-100 transition-colors">
-                  <div className="flex items-center gap-2">
-                    <UserCheck className="size-3.5 text-amber-600" />
-                    <span className="font-bold text-slate-900">Applications</span>
+              <Link href="/admin/audit" className="block group">
+                <div className="py-2.5 flex items-center justify-between hover:bg-slate-50/70 rounded-xl px-2 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="size-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+                      <ShieldCheck className="size-4" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">
+                        Immutable Security Audit Gate
+                      </div>
+                      <div className="text-[11px] text-slate-500">Append-only compliance ledger verified</div>
+                    </div>
                   </div>
-                  <ChevronRight className="size-3 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-600 transition-colors" />
                 </div>
               </Link>
             </div>
           </div>
-
-          <div className="pt-2 text-[10px] font-mono text-slate-400 text-right">
-            Hospital Tenancy: Active
-          </div>
-        </div>
-      </div>
-
-      {/* 4. BOTTOM TIER: Staff Affiliations Ledger */}
-      <div className="bg-white rounded-3xl p-6 shadow-lux border border-slate-100 flex flex-col gap-4">
-        {/* Ledger Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
-          <div>
-            <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <span>Staff Affiliations & Credentialing Ledger</span>
-              <span className="text-xs font-mono font-semibold text-slate-400">
-                ({memberships.length} staff records)
-              </span>
-            </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Manage clinical licenses, hospital role authorization, and tenant access boundaries.
-            </p>
-          </div>
         </div>
 
-        {/* Membership List */}
-        <div className="divide-y divide-slate-100">
-          {memberships.map((m) => (
-            <div
-              key={m.id}
-              className="py-4 first:pt-1 last:pb-1 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/60 transition-colors rounded-2xl px-2"
-            >
-              {/* Left: Squircle Icon + Clinician Name + Email */}
-              <div className="flex items-center gap-3.5 min-w-0">
-                <div className="size-11 rounded-2xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
-                  <User className="size-5 text-slate-700" />
+        {/* Right Column (4 cols): Credentialing Activity + Calendar + Directory */}
+        <div className="lg:col-span-4 flex flex-col gap-6">
+          {/* Credentialing Throughput Activity Chart */}
+          <div className="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-lux flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900">Credentialing Throughput</h3>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700">
+                      <TrendingUp className="size-3" />
+                      +12% faster verification
+                    </span>
+                  </div>
                 </div>
-                <div className="min-w-0 flex flex-col gap-0.5">
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-sm text-slate-900">
-                      {m.displayName}
-                    </span>
-                    <span className="text-slate-300">•</span>
-                    <span className="font-mono text-xs text-slate-500">
-                      {m.email}
+                <select
+                  aria-label="Filter credentialing throughput by time range"
+                  value={timeRange}
+                  onChange={(e) => {
+                    setTimeRange(e.target.value as "weekly" | "monthly" | "daily");
+                    setActiveDayIndex(0);
+                  }}
+                  className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200/80 text-slate-700 cursor-pointer hover:bg-slate-100 transition-colors focus:outline-none"
+                >
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="daily">Daily</option>
+                </select>
+              </div>
+
+              {/* Minimal Bar Chart */}
+              <div className="pt-5 pb-2">
+                <div className="h-36 flex items-end justify-between gap-3 px-2 relative">
+                  {/* Floating Tooltip */}
+                  <div
+                    className="absolute top-0 bg-[#111317] text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-md flex items-center gap-1.5 z-20 pointer-events-none transition-all duration-200"
+                    style={{
+                      left: `${Math.max(15, Math.min(85, ((safeActiveDayIndex + 0.5) / currentChartBars.length) * 100))}%`,
+                      transform: "translateX(-50%)",
+                    }}
+                  >
+                    <span className="size-1.5 rounded-full bg-emerald-400" />
+                    <span>
+                      {activeChartItem.count} {activeChartItem.count === 1 ? "Staff" : "Staff"} Handled
                     </span>
                   </div>
-                  <div className="text-xs text-slate-500 font-mono">
-                    ID: {m.userId} • Applied: {new Date(m.createdAt).toLocaleDateString()}
-                  </div>
+
+                  {/* Day Bars */}
+                  {currentChartBars.map((item, i) => {
+                    const isActive = i === safeActiveDayIndex;
+                    return (
+                      <button
+                        key={item.day}
+                        type="button"
+                        onClick={() => setActiveDayIndex(i)}
+                        aria-label={`${item.day}: ${item.count} applications handled`}
+                        className="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none"
+                      >
+                        <div className="w-full max-w-[12px] bg-slate-100 rounded-full h-28 flex items-end">
+                          <div
+                            className={`w-full rounded-full transition-all duration-300 ${
+                              isActive
+                                ? "bg-emerald-600 ring-2 ring-emerald-300/50"
+                                : "bg-slate-800 group-hover:bg-slate-700"
+                            } ${item.height}`}
+                          />
+                        </div>
+                        <span className={`text-[10px] font-mono transition-colors ${isActive ? "font-bold text-slate-900" : "text-slate-400"}`}>
+                          {item.day}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+              <span>Hospital Tenancy:</span>
+              <span className="font-semibold text-emerald-800">Enforced Partition</span>
+            </div>
+          </div>
+
+          {/* Mini Calendar & Quick Portals */}
+          <div className="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-lux flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between pb-2 text-xs">
+                <span className="font-bold text-slate-900">
+                  {monthNames[calendarMonth]}, {calendarYear}
+                </span>
+                <div className="flex items-center gap-1 text-slate-400">
+                  <button
+                    type="button"
+                    onClick={handlePrevMonth}
+                    aria-label="Previous month"
+                    className="p-1 hover:text-slate-700 hover:bg-slate-100 rounded transition-colors cursor-pointer"
+                  >
+                    <ChevronLeft className="size-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleNextMonth}
+                    aria-label="Next month"
+                    className="p-1 hover:text-slate-700 hover:bg-slate-100 rounded transition-colors cursor-pointer"
+                  >
+                    <ChevronRight className="size-3.5" />
+                  </button>
                 </div>
               </div>
 
-              {/* Right: Role Badge + Status + Action */}
-              <div className="flex items-center justify-between md:justify-end gap-3 shrink-0">
-                <span className="font-mono text-xs font-bold px-2.5 py-1 rounded-xl bg-slate-100 text-slate-800 border border-slate-200/60">
-                  {m.role}
-                </span>
+              {/* Days Grid */}
+              <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-mono py-2 border-b border-slate-100">
+                <span className="text-slate-400 font-bold">S</span>
+                <span className="text-slate-400 font-bold">M</span>
+                <span className="text-slate-400 font-bold">T</span>
+                <span className="text-slate-400 font-bold">W</span>
+                <span className="text-slate-400 font-bold">T</span>
+                <span className="text-slate-400 font-bold">F</span>
+                <span className="text-slate-400 font-bold">S</span>
 
-                <span
-                  className={`text-xs font-mono font-semibold px-2.5 py-1 rounded-full ${
-                    m.status === "ACTIVE"
-                      ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
-                      : "bg-amber-50 text-amber-800 border border-amber-200"
-                  }`}
-                >
-                  {m.status}
-                </span>
+                {[...Array(31)].map((_, i) => {
+                  const day = i + 1;
+                  const isSelected = day === selectedCalendarDay;
+                  return (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => setSelectedCalendarDay(day)}
+                      className={`py-1 rounded-full text-[10px] flex items-center justify-center transition-colors cursor-pointer ${
+                        isSelected
+                          ? "bg-slate-900 text-white font-bold"
+                          : "text-slate-600 hover:bg-slate-100"
+                      }`}
+                    >
+                      {day}
+                    </button>
+                  );
+                })}
+              </div>
 
-                <Link href={`/admin/memberships/${m.id}`}>
-                  <button className="h-8 px-4 rounded-xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-2xs flex items-center gap-1.5 transition-all">
-                    <span>Manage</span>
-                    <ArrowRight data-icon="inline-end" className="size-3 text-emerald-300" />
-                  </button>
+              {/* Admin Quick Directories */}
+              <div className="flex flex-col gap-2 mt-3">
+                <Link href="/admin/users" className="block group">
+                  <div className="p-2 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-[11px] group-hover:bg-slate-100 transition-colors">
+                    <div className="flex items-center gap-2">
+                      <Users className="size-3.5 text-emerald-700" />
+                      <span className="font-bold text-slate-900">Clinician Directory</span>
+                    </div>
+                    <ChevronRight className="size-3 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+                  </div>
+                </Link>
+
+                <Link href="/admin/memberships" className="block group">
+                  <div className="p-2 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-[11px] group-hover:bg-slate-100 transition-colors">
+                    <div className="flex items-center gap-2">
+                      <UserCheck className="size-3.5 text-amber-600" />
+                      <span className="font-bold text-slate-900">Staff Applications</span>
+                    </div>
+                    <ChevronRight className="size-3 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+                  </div>
+                </Link>
+
+                <Link href="/admin/audit" className="block group">
+                  <div className="p-2 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-[11px] group-hover:bg-slate-100 transition-colors">
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck className="size-3.5 text-slate-700" />
+                      <span className="font-bold text-slate-900">Compliance Audit</span>
+                    </div>
+                    <ChevronRight className="size-3 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+                  </div>
                 </Link>
               </div>
             </div>
-          ))}
+
+            <div className="pt-2 text-[10px] font-mono text-slate-400 text-right">
+              Hospital Tenancy: Active
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -22,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full">
-      <body className="h-full flex font-sans text-slate-900 bg-[#f4f5f8] antialiased selection:bg-slate-200">
+      <body className="h-full flex font-sans text-slate-900 bg-[#f8f9fa] antialiased selection:bg-emerald-100 selection:text-emerald-900">
         <AuthProvider>
           <Toaster richColors position="top-right" closeButton />
           <HotkeysHandler />

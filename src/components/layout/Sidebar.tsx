@@ -250,17 +250,17 @@ export const Sidebar: React.FC = () => {
               aria-current={isActive ? "page" : undefined}
               title={collapsed ? item.label : undefined}
               className={cn(
-                "flex items-center rounded-2xl text-xs transition-all group relative",
+                "flex items-center rounded-xl text-xs transition-all group relative",
                 collapsed ? "justify-center p-3" : "gap-3 px-3.5 py-2.5",
                 isActive
-                  ? "bg-[#bbf7d0] text-slate-950 font-bold shadow-md shadow-emerald-500/10"
-                  : "text-slate-400 hover:text-white hover:bg-white/5 font-medium"
+                  ? "bg-emerald-500/15 text-emerald-300 font-semibold border border-emerald-500/25 shadow-2xs"
+                  : "text-slate-400 hover:text-slate-200 hover:bg-white/5 font-medium"
               )}
             >
               <Icon
                 className={cn(
                   "size-4 shrink-0 transition-colors",
-                  isActive ? "text-slate-950 stroke-[2.2]" : "text-slate-400 group-hover:text-white"
+                  isActive ? "text-emerald-400 stroke-[2.2]" : "text-slate-400 group-hover:text-slate-200"
                 )}
               />
 
@@ -277,7 +277,7 @@ export const Sidebar: React.FC = () => {
                     item.badgeVariant === "urgent"
                       ? "bg-rose-500 text-white"
                       : isActive
-                        ? "bg-slate-950 text-white"
+                        ? "bg-emerald-500/30 text-emerald-200 border border-emerald-400/30"
                         : "bg-white/10 text-slate-300"
                   )}
                 >

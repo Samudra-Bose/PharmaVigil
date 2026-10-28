@@ -11,8 +11,6 @@ import {
   type FixtureCase,
   type AppointmentRecord,
 } from "@/lib/mock-data/fixtures";
-import { Badge } from "@/components/ui/Badge";
-import { formatDateTime } from "@/lib/utils";
 import {
   Pill,
   Clock,
@@ -128,14 +126,14 @@ export default function PatientHomePage() {
 
   return (
     <div className="flex flex-col gap-6 max-w-[1400px] mx-auto pb-12">
-      {/* 1. Header with clean typography & distinct button hierarchy */}
+      {/* 1. Header with calm typography & distinct button hierarchy */}
       <section
         aria-label="Patient Greeting"
         className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
       >
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+            <span className="text-xs font-semibold text-emerald-800 bg-emerald-50/80 px-2.5 py-0.5 rounded-full border border-emerald-200/80">
               Patient Care Hub
             </span>
             <span className="text-slate-300">•</span>
@@ -154,17 +152,17 @@ export default function PatientHomePage() {
           </p>
         </div>
 
-        {/* Existing primary actions without awkward wrapping */}
+        {/* Primary Navigation Actions */}
         <div className="flex items-center gap-2.5 shrink-0">
           <Link href="/patient/appointments/new">
-            <button className="h-9 px-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/90 shadow-2xs flex items-center gap-2 transition-all whitespace-nowrap">
+            <button className="h-9 px-4 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/90 shadow-2xs flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer">
               <CalendarIcon data-icon="inline-start" className="size-3.5 text-slate-500" />
               <span>Book Visit</span>
             </button>
           </Link>
 
           <Link href="/patient/prescriptions">
-            <button className="h-9 px-4 rounded-2xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-md shadow-slate-900/10 flex items-center gap-2 transition-all whitespace-nowrap">
+            <button className="h-9 px-4 rounded-xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-md shadow-slate-900/10 flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer">
               <Pill data-icon="inline-start" className="size-3.5 text-emerald-400" />
               <span>My Prescriptions</span>
             </button>
@@ -172,511 +170,495 @@ export default function PatientHomePage() {
         </div>
       </section>
 
-      {/* 2. TOP TIER: 4-Card Bento Grid (3 Pastel + 1 Dark Action Card) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1: Pastel Coral / Peach Squircle */}
-        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200 hover:shadow-lux-hover">
-          <div>
-            <div className="flex items-center justify-between">
-              <div className="size-11 rounded-2xl bg-amber-50 border border-amber-100/80 text-amber-600 flex items-center justify-center shrink-0">
-                <Pill className="size-5 text-amber-600" />
-              </div>
-              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
-                Revision v{activeRx?.currentRevisionNumber || 1}
-              </span>
+      {/* 2. Prominent Active Regimen Focal Card (Calm Editorial Design) */}
+      <div className="bg-white rounded-2xl border border-slate-200/70 p-5 sm:p-6 shadow-lux">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-slate-100">
+          <div className="flex items-start gap-3.5">
+            <div className={`size-12 rounded-2xl flex items-center justify-center shrink-0 border ${
+              isReady 
+                ? "bg-emerald-50 border-emerald-200 text-emerald-700" 
+                : "bg-amber-50 border-amber-200 text-amber-700"
+            }`}>
+              <Building2 className="size-6" />
             </div>
-            <div className="mt-3">
-              <h3 className="text-sm font-bold text-slate-900">Active Regimen</h3>
-              <p className="text-xs text-slate-500 mt-0.5">Cardiology Maintenance Therapy</p>
-            </div>
-          </div>
-          <div className="pt-4 mt-3 border-t border-slate-100 flex items-center justify-between text-xs">
             <div>
-              <span className="text-[11px] font-medium text-slate-400 block">Prescribed</span>
-              <span className="font-bold text-slate-900 font-mono font-tabular">{activeRx?.items.length || 2} Medicines</span>
-            </div>
-            <div className="text-right">
-              <span className="text-[11px] font-medium text-slate-400 block">Frequency</span>
-              <span className="font-bold text-emerald-700 font-mono">Once Daily</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 2: Clinical Safety Status */}
-        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200 hover:shadow-lux-hover">
-          <div>
-            <div className="flex items-center justify-between">
-              <div className="size-11 rounded-2xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
-                <ShieldCheck className="size-5 text-slate-700" />
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${
+                  isReady 
+                    ? "bg-emerald-50 text-emerald-800 border-emerald-200" 
+                    : "bg-amber-50 text-amber-800 border-amber-200"
+                }`}>
+                  {isReady ? "Ready for Pick-up" : "Awaiting Pharmacist Clinical Review (Fails Closed)"}
+                </span>
+                <span className="text-slate-300">•</span>
+                <span className="text-xs font-mono font-medium text-slate-500">
+                  Ground Floor Counter 3
+                </span>
               </div>
-              <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${isReady ? "bg-emerald-50 text-emerald-800 border border-emerald-200/80" : "bg-amber-50 text-amber-800 border border-amber-200/80"}`}>
-                {isReady ? "Clear" : "In Review"}
-              </span>
+              <h2 className="text-lg font-bold text-slate-900 mt-1">
+                Active Cardiology Maintenance Regimen
+              </h2>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Present Patient MRN: <span className="font-mono font-bold text-slate-800">{patient?.syntheticHospitalPatientId || "P-9021"}</span> at pickup counter.
+              </p>
             </div>
-            <div className="mt-3">
-              <h3 className="text-sm font-bold text-slate-900">Safety Status</h3>
-              <p className="text-xs text-slate-500 mt-0.5">Pharmacist Drug Screening</p>
-            </div>
-          </div>
-          <div className="pt-4 mt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-            <div>
-              <span className="text-[11px] font-medium text-slate-400 block">Review</span>
-              <span className="font-bold text-slate-900">{isReady ? "Authorized" : "Pharmacist Review"}</span>
-            </div>
-            <div className="text-right">
-              <span className="text-[11px] font-medium text-slate-400 block">Gate</span>
-              <span className="font-bold text-slate-700 font-mono">Fails Closed</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 3: Consultation Schedule (Soft Slate) */}
-        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200 hover:shadow-lux-hover">
-          <div>
-            <div className="flex items-center justify-between">
-              <div className="size-11 rounded-2xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
-                <Stethoscope className="size-5 text-slate-700" />
-              </div>
-              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200/80">
-                Scheduled
-              </span>
-            </div>
-            <div className="mt-3">
-              <h3 className="text-sm font-bold text-slate-900">Next Consultation</h3>
-              <p className="text-xs text-slate-500 mt-0.5">Dr. Arvind Patel, MD</p>
-            </div>
-          </div>
-          <div className="pt-4 mt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-            <div>
-              <span className="text-[11px] font-medium text-slate-400 block">Date</span>
-              <span className="font-bold text-slate-900 font-mono">Oct 30, 2026</span>
-            </div>
-            <div className="text-right">
-              <span className="text-[11px] font-medium text-slate-400 block">Time</span>
-              <span className="font-bold text-slate-700 font-mono">10:00 AM UTC</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 4: DARK ACTION CARD */}
-        <div className="bg-[#111317] rounded-3xl p-5 shadow-lux-black border border-slate-800 text-white relative overflow-hidden flex flex-col justify-between">
-          <div className="flex flex-col gap-2 relative z-10">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-emerald-400 font-mono font-bold text-[10px] uppercase tracking-wider">
-                <Building2 className="size-3.5" />
-                <span>Pharmacy Counter</span>
-              </div>
-              <span className="size-2 rounded-full bg-emerald-400" />
-            </div>
-
-            <h3 className="text-base font-extrabold text-white leading-tight">
-              {isReady ? "Ready for Pick-up" : "Counter Pick-up"}
-            </h3>
-            <p className="text-[11px] text-slate-400 leading-snug">
-              Ground Floor Counter 3 • Present Patient MRN: <span className="font-mono text-white font-bold">{patient?.syntheticHospitalPatientId || "P-9021"}</span>
-            </p>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-white/10 relative z-10">
-            <Link
-              href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`}
-              className="block"
-            >
-              <button className="w-full h-8 px-3 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
+          <div className="flex items-center gap-2.5 shrink-0">
+            <Link href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`}>
+              <button className="h-9 px-4 rounded-xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-sm flex items-center gap-2 transition-all cursor-pointer">
                 <span>View Dosing Schedule</span>
-                <ArrowRight data-icon="inline-end" className="size-3 text-slate-950" />
+                <ArrowRight data-icon="inline-end" className="size-3.5 text-emerald-400" />
               </button>
             </Link>
           </div>
+        </div>
 
-          {/* Decorative background glow */}
-          <div className="absolute -bottom-6 -right-6 size-24 rounded-full bg-emerald-500/10 blur-xl pointer-events-none" />
+        {/* 3-Stat Pulse Bar */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-100 pt-4">
+          <div className="px-3 py-2 first:pl-0">
+            <div className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Prescribed Regimen</div>
+            <div className="text-sm font-bold text-slate-900 mt-0.5 font-mono">
+              Revision v{activeRx?.currentRevisionNumber || 1} • {activeRx?.items.length || 2} Medicines
+            </div>
+          </div>
+          <div className="px-3 py-2">
+            <div className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Attending Physician</div>
+            <div className="text-sm font-bold text-slate-900 mt-0.5">
+              Dr. Arvind Patel, MD (Cardiology)
+            </div>
+          </div>
+          <div className="px-3 py-2 last:pr-0">
+            <div className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Safety Status</div>
+            <div className="text-sm font-bold text-slate-900 mt-0.5 flex items-center gap-1.5">
+              <span className={`size-2 rounded-full ${isReady ? "bg-emerald-500" : "bg-amber-500"}`} />
+              <span>{isReady ? "Dispensing Authorized" : "Interaction Verification Pending"}</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* 3. MIDDLE TIER: Asymmetric 3-Column Bento (Adherence Activity + Daily Schedule + Mini Calendar) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
-        {/* Col 1: Medication Adherence Hours Activity Chart (~45% width: 5 cols) */}
-        <div className="lg:col-span-5 bg-white rounded-3xl p-6 shadow-lux border border-slate-100 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+      {/* 3. Balanced Asymmetric 2-Column Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Left Column (7 cols): Regimen Ledger, Daily Dosing Schedule, Baseline History */}
+        <div className="lg:col-span-7 flex flex-col gap-6">
+          {/* Section A: Verified Prescription Regimen */}
+          <div className="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-lux flex flex-col gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
               <div>
-                <h3 className="text-base font-bold text-slate-900">Dose Adherence</h3>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                    <TrendingUp className="size-3" />
-                    100% adherence this week
-                  </span>
-                </div>
+                <h3 className="text-base font-bold text-slate-900">
+                  Prescription Regimen Details
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Verified clinical dosages, manufacturer brands, and administration frequency.
+                </p>
               </div>
-              <select
-                aria-label="Filter dose adherence by time range"
-                value={timeRange}
-                onChange={(e) => {
-                  setTimeRange(e.target.value as "weekly" | "monthly" | "daily");
-                  setActiveDayIndex(0);
-                }}
-                className="text-xs font-semibold px-2.5 py-1 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 cursor-pointer hover:bg-slate-100 transition-colors focus:outline-none focus:ring-1 focus:ring-slate-300"
-              >
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-                <option value="daily">Daily</option>
-              </select>
+
+              <div className="flex items-center gap-2">
+                <Link href="/patient/medication-history">
+                  <button className="h-8 px-3 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200/80 flex items-center gap-1.5 transition-all cursor-pointer">
+                    <PlusCircle data-icon="inline-start" className="size-3.5 text-slate-500" />
+                    <span>Report Meds</span>
+                  </button>
+                </Link>
+
+                <Link href="/patient/history">
+                  <button className="h-8 px-3 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200/80 flex items-center gap-1.5 transition-all cursor-pointer">
+                    <History data-icon="inline-start" className="size-3.5 text-slate-500" />
+                    <span>History</span>
+                  </button>
+                </Link>
+              </div>
             </div>
 
-            {/* Stylized Modern Bar Chart */}
-            <div className="pt-6 pb-2">
-              <div className="h-44 flex items-end justify-between gap-3 px-2 relative">
-                {/* Floating Tooltip */}
+            {/* Prescribed Items Rows */}
+            <div className="divide-y divide-slate-100">
+              {activeRx?.items.map((item, idx) => (
                 <div
-                  className="absolute top-1 bg-[#111317] text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-lg flex items-center gap-1.5 z-20 pointer-events-none transition-all duration-200"
-                  style={{
-                    left: `${Math.max(15, Math.min(85, ((safeActiveDayIndex + 0.5) / currentChartBars.length) * 100))}%`,
-                    transform: "translateX(-50%)",
-                  }}
+                  key={idx}
+                  className="py-3.5 first:pt-1 last:pb-1 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/50 transition-colors rounded-xl px-2"
                 >
-                  <span className="size-1.5 rounded-full bg-emerald-400" />
-                  <span>
-                    {activeChartItem.taken} of {activeChartItem.total} Doses Taken
-                  </span>
-                </div>
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="size-10 rounded-xl bg-emerald-50 border border-emerald-200/70 text-emerald-800 flex items-center justify-center shrink-0">
+                      <Pill className="size-4.5 text-emerald-800" />
+                    </div>
+                    <div className="min-w-0 flex flex-col">
+                      <div className="text-sm font-bold text-slate-900 truncate">
+                        {item.canonicalIngredientIds.join(", ")} {item.strengthValue}{item.strengthUnit}
+                      </div>
+                      <div className="text-xs text-slate-500 flex items-center gap-1.5 flex-wrap">
+                        {item.brandText ? (
+                          <span className="font-semibold text-slate-700">{item.brandText}</span>
+                        ) : null}
+                        {item.brandText ? <span>•</span> : null}
+                        <span>{item.dosageForm}</span>
+                        <span>•</span>
+                        <span className="text-slate-600">Oral with water</span>
+                      </div>
+                    </div>
+                  </div>
 
-                {/* Day Bars */}
-                {currentChartBars.map((item, i) => {
-                  const isActive = i === safeActiveDayIndex;
+                  <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
+                    <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded-lg bg-slate-100 text-slate-800 border border-slate-200/60">
+                      {item.frequency}
+                    </span>
+
+                    <Link href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`}>
+                      <button className="h-7 px-3 rounded-lg bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs flex items-center gap-1 transition-all cursor-pointer">
+                        <span>Details</span>
+                        <ArrowRight data-icon="inline-end" className="size-3 text-emerald-400" />
+                      </button>
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Safety Gating Status Footer */}
+            <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-500">
+              <div className="flex items-center gap-2">
+                <AlertCircle className="size-4 text-amber-500 shrink-0" />
+                <span>
+                  {isReady
+                    ? "Prescription cleared by pharmacy. Ready for pickup."
+                    : "Dispensing unlocks after pharmacist clinical interaction check."}
+                </span>
+              </div>
+              <div className="font-mono text-[11px] text-slate-400">
+                Helpline: +91 11 2345 6789
+              </div>
+            </div>
+          </div>
+
+          {/* Section B: Daily Dosing Schedule (Refined Editorial Timeline) */}
+          <div className="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-lux flex flex-col gap-3">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div>
+                <h3 className="text-base font-bold text-slate-900">Daily Administration Schedule</h3>
+                <p className="text-xs text-slate-500 mt-0.5">Recommended daily dosing intervals</p>
+              </div>
+              <span className="text-xs font-mono font-medium text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                96.4% Course Adherence
+              </span>
+            </div>
+
+            <div className="divide-y divide-slate-100">
+              <Link href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`} className="block group">
+                <div className="py-2.5 flex items-center justify-between hover:bg-slate-50/70 rounded-xl px-2 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-mono font-bold text-slate-400 w-16">08:00 AM</span>
+                    <div className="size-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+                      <Pill className="size-4" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">
+                        Morning Dose — Coumadin 5mg
+                      </div>
+                      <div className="text-[11px] text-slate-500">Oral tablet with water before breakfast</div>
+                    </div>
+                  </div>
+                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-600 transition-colors" />
+                </div>
+              </Link>
+
+              <Link href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`} className="block group">
+                <div className="py-2.5 flex items-center justify-between hover:bg-slate-50/70 rounded-xl px-2 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-mono font-bold text-slate-400 w-16">01:00 PM</span>
+                    <div className="size-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+                      <Pill className="size-4" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">
+                        Midday Maintenance — Metformin 500mg
+                      </div>
+                      <div className="text-[11px] text-slate-500">Oral tablet with lunch</div>
+                    </div>
+                  </div>
+                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-600 transition-colors" />
+                </div>
+              </Link>
+
+              <Link href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`} className="block group">
+                <div className="py-2.5 flex items-center justify-between hover:bg-slate-50/70 rounded-xl px-2 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-mono font-bold text-slate-400 w-16">08:00 PM</span>
+                    <div className="size-8 rounded-lg bg-emerald-50 text-emerald-800 flex items-center justify-center shrink-0 border border-emerald-200/60">
+                      <Pill className="size-4" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">
+                        Evening Dose — Disprin 100mg
+                      </div>
+                      <div className="text-[11px] text-slate-500">Oral tablet with water after dinner</div>
+                    </div>
+                  </div>
+                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-600 transition-colors" />
+                </div>
+              </Link>
+
+              <Link href="/patient/history" className="block group">
+                <div className="py-2.5 flex items-center justify-between hover:bg-slate-50/70 rounded-xl px-2 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-mono font-bold text-amber-600 w-16">INR LOG</span>
+                    <div className="size-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center shrink-0 border border-amber-200/60">
+                      <HeartPulse className="size-4" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover:text-amber-800 transition-colors">
+                        Coagulation Monitoring (Target INR: 2.0 - 3.0)
+                      </div>
+                      <div className="text-[11px] text-slate-500">Last reported: 2.3 (Therapeutic window)</div>
+                    </div>
+                  </div>
+                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-600 transition-colors" />
+                </div>
+              </Link>
+            </div>
+          </div>
+
+          {/* Section C: Long-term Baseline Medications */}
+          {patient?.activeMedications && patient.activeMedications.length > 0 && (
+            <div className="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-lux flex flex-col gap-3">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h3 className="text-sm font-bold text-slate-900">Long-Term Baseline Maintenance History</h3>
+                <span className="text-xs font-mono text-slate-400">Baseline Records</span>
+              </div>
+              <div className="divide-y divide-slate-100">
+                {patient.activeMedications.map((med) => (
+                  <div key={med.id} className="py-2.5 flex items-center justify-between text-xs">
+                    <div>
+                      <span className="font-bold text-slate-800">{med.ingredientName} {med.dosage}</span>
+                      <span className="text-slate-400 ml-1.5">({med.brandName})</span>
+                      <span className="text-slate-500 ml-2">— {med.frequency}</span>
+                    </div>
+                    <span className="text-[11px] font-mono text-slate-400">
+                      Since {new Date(med.startedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Right Column (5 cols): Upcoming Visit, Adherence Chart, Mini Calendar */}
+        <div className="lg:col-span-5 flex flex-col gap-6">
+          {/* Upcoming Consultation Card */}
+          <div className="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-lux flex flex-col gap-3">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <span className="size-2 rounded-full bg-emerald-500" />
+                <h3 className="text-sm font-bold text-slate-900">Next Consultation</h3>
+              </div>
+              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                Scheduled
+              </span>
+            </div>
+
+            <div className="flex items-center gap-3 py-1">
+              <div className="size-11 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
+                <Stethoscope className="size-5" />
+              </div>
+              <div>
+                <div className="text-sm font-bold text-slate-900">Dr. Arvind Patel, MD</div>
+                <div className="text-xs text-slate-500">Cardiology Outpatient Clinic • Room 402</div>
+              </div>
+            </div>
+
+            <div className="pt-2 flex items-center justify-between text-xs bg-slate-50/70 p-3 rounded-xl border border-slate-100">
+              <div>
+                <div className="text-[10px] text-slate-400 uppercase font-semibold">Date & Time</div>
+                <div className="font-bold text-slate-900 font-mono">Oct 30, 2026 • 10:00 AM</div>
+              </div>
+              <Link href="/patient/appointments">
+                <button className="h-7 px-2.5 rounded-lg bg-white border border-slate-200/80 text-slate-700 font-semibold text-xs hover:bg-slate-50 transition-colors cursor-pointer">
+                  View Visit
+                </button>
+              </Link>
+            </div>
+          </div>
+
+          {/* Dose Adherence Activity Chart */}
+          <div className="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-lux flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900">Dose Adherence</h3>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700">
+                      <TrendingUp className="size-3" />
+                      100% adherence this week
+                    </span>
+                  </div>
+                </div>
+                <select
+                  aria-label="Filter dose adherence by time range"
+                  value={timeRange}
+                  onChange={(e) => {
+                    setTimeRange(e.target.value as "weekly" | "monthly" | "daily");
+                    setActiveDayIndex(0);
+                  }}
+                  className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200/80 text-slate-700 cursor-pointer hover:bg-slate-100 transition-colors focus:outline-none"
+                >
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="daily">Daily</option>
+                </select>
+              </div>
+
+              {/* Modern Minimal Bar Chart */}
+              <div className="pt-5 pb-2">
+                <div className="h-36 flex items-end justify-between gap-3 px-2 relative">
+                  {/* Floating Tooltip */}
+                  <div
+                    className="absolute top-0 bg-[#111317] text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-md flex items-center gap-1.5 z-20 pointer-events-none transition-all duration-200"
+                    style={{
+                      left: `${Math.max(15, Math.min(85, ((safeActiveDayIndex + 0.5) / currentChartBars.length) * 100))}%`,
+                      transform: "translateX(-50%)",
+                    }}
+                  >
+                    <span className="size-1.5 rounded-full bg-emerald-400" />
+                    <span>
+                      {activeChartItem.taken} of {activeChartItem.total} Taken
+                    </span>
+                  </div>
+
+                  {/* Day Bars */}
+                  {currentChartBars.map((item, i) => {
+                    const isActive = i === safeActiveDayIndex;
+                    return (
+                      <button
+                        key={item.day}
+                        type="button"
+                        onClick={() => setActiveDayIndex(i)}
+                        aria-label={`${item.day}: ${item.taken} of ${item.total} doses taken`}
+                        className="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none"
+                      >
+                        <div className="w-full max-w-[12px] bg-slate-100 rounded-full h-28 flex items-end">
+                          <div
+                            className={`w-full rounded-full transition-all duration-300 ${
+                              isActive
+                                ? "bg-emerald-600 ring-2 ring-emerald-300/50"
+                                : "bg-slate-800 group-hover:bg-slate-700"
+                            } ${item.height}`}
+                          />
+                        </div>
+                        <span className={`text-[10px] font-mono transition-colors ${isActive ? "font-bold text-slate-900" : "text-slate-400"}`}>
+                          {item.day}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+              <span>Course Adherence:</span>
+              <span className="font-semibold text-emerald-800 font-mono">96.4% Good</span>
+            </div>
+          </div>
+
+          {/* Mini Calendar & Visits */}
+          <div className="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-lux flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between pb-2 text-xs">
+                <span className="font-bold text-slate-900">
+                  {monthNames[calendarMonth]}, {calendarYear}
+                </span>
+                <div className="flex items-center gap-1 text-slate-400">
+                  <button
+                    type="button"
+                    onClick={handlePrevMonth}
+                    aria-label="Previous month"
+                    className="p-1 hover:text-slate-700 hover:bg-slate-100 rounded transition-colors cursor-pointer"
+                  >
+                    <ChevronLeft className="size-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleNextMonth}
+                    aria-label="Next month"
+                    className="p-1 hover:text-slate-700 hover:bg-slate-100 rounded transition-colors cursor-pointer"
+                  >
+                    <ChevronRight className="size-3.5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Days Grid */}
+              <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-mono py-2 border-b border-slate-100">
+                <span className="text-slate-400 font-bold">S</span>
+                <span className="text-slate-400 font-bold">M</span>
+                <span className="text-slate-400 font-bold">T</span>
+                <span className="text-slate-400 font-bold">W</span>
+                <span className="text-slate-400 font-bold">T</span>
+                <span className="text-slate-400 font-bold">F</span>
+                <span className="text-slate-400 font-bold">S</span>
+
+                {[...Array(31)].map((_, i) => {
+                  const day = i + 1;
+                  const isSelected = day === selectedCalendarDay;
                   return (
                     <button
-                      key={item.day}
+                      key={i}
                       type="button"
-                      onClick={() => setActiveDayIndex(i)}
-                      aria-label={`${item.day}: ${item.taken} of ${item.total} doses taken`}
-                      className="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none"
+                      onClick={() => setSelectedCalendarDay(day)}
+                      className={`py-1 rounded-full text-[10px] flex items-center justify-center transition-colors cursor-pointer ${
+                        isSelected
+                          ? "bg-slate-900 text-white font-bold"
+                          : "text-slate-600 hover:bg-slate-100"
+                      }`}
                     >
-                      <div className="w-full max-w-[14px] bg-slate-100 rounded-full h-36 flex items-end">
-                        <div
-                          className={`w-full rounded-full transition-all duration-300 ${
-                            isActive
-                              ? "bg-emerald-500 shadow-sm shadow-emerald-500/30 ring-2 ring-emerald-300/50"
-                              : "bg-[#111317] group-hover:bg-slate-700"
-                          } ${item.height}`}
-                        />
-                      </div>
-                      <span className={`text-[11px] font-mono transition-colors ${isActive ? "font-bold text-slate-900" : "text-slate-400 group-hover:text-slate-600"}`}>
-                        {item.day}
-                      </span>
+                      {day}
                     </button>
                   );
                 })}
               </div>
-            </div>
-          </div>
 
-          <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
-            <span>Overall Course Adherence:</span>
-            <span className="font-semibold text-emerald-800 font-mono">96.4% Good</span>
-          </div>
-        </div>
-
-        {/* Col 2: Daily Dosing Schedule ("Daily Schedule" in ref, ~35% width: 4 cols) */}
-        <div className="lg:col-span-4 bg-white rounded-3xl p-6 shadow-lux border border-slate-100 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="text-base font-bold text-slate-900">Daily Schedule</h3>
-              <span className="text-xs text-slate-400 font-medium">Cardiology Regimen</span>
-            </div>
-
-            {/* List with intentional clinical squircles & right chevrons */}
-            <div className="divide-y divide-slate-100 mt-2">
-              <Link href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`} className="block">
-                <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/80 rounded-xl px-2 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="size-9 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
-                      <Pill className="size-4 text-slate-700" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">Morning Dose (08:00 AM)</div>
-                      <div className="text-[11px] text-slate-500">Coumadin 5mg with water</div>
-                    </div>
-                  </div>
-                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 group-hover:translate-x-0.5 transition-all" />
-                </div>
-              </Link>
-
-              <Link href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`} className="block">
-                <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/80 rounded-xl px-2 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="size-9 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
-                      <Pill className="size-4 text-slate-700" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">Midday Maintenance (01:00 PM)</div>
-                      <div className="text-[11px] text-slate-500">Metformin 500mg with meal</div>
-                    </div>
-                  </div>
-                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 group-hover:translate-x-0.5 transition-all" />
-                </div>
-              </Link>
-
-              <Link href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`} className="block">
-                <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/80 rounded-xl px-2 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="size-9 rounded-xl bg-emerald-50 border border-emerald-200/70 text-emerald-800 flex items-center justify-center shrink-0">
-                      <Pill className="size-4 text-emerald-800" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">Evening Dose (08:00 PM)</div>
-                      <div className="text-[11px] text-slate-500">Disprin 100mg with water</div>
-                    </div>
-                  </div>
-                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 group-hover:translate-x-0.5 transition-all" />
-                </div>
-              </Link>
-
-              <Link href="/patient/history" className="block">
-                <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/80 rounded-xl px-2 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="size-9 rounded-xl bg-amber-50 border border-amber-200/70 text-amber-700 flex items-center justify-center shrink-0">
-                      <HeartPulse className="size-4 text-amber-700" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold text-slate-900 group-hover:text-amber-800 transition-colors">Health Check & INR Log</div>
-                      <div className="text-[11px] text-slate-500">Target INR: 2.0 - 3.0</div>
-                    </div>
-                  </div>
-                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 group-hover:translate-x-0.5 transition-all" />
-                </div>
-              </Link>
-            </div>
-          </div>
-
-          <div className="pt-3 border-t border-slate-100 text-xs text-slate-400 font-medium flex items-center justify-between">
-            <span>Prescribed by:</span>
-            <span className="text-slate-700 font-medium">Dr. Arvind Patel</span>
-          </div>
-        </div>
-
-        {/* Col 3: Mini Calendar & Clinical Consultations (~20% width: 3 cols) */}
-        <div className="lg:col-span-3 bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between">
-          <div>
-            {/* Calendar Widget */}
-            <div className="flex items-center justify-between pb-2 text-xs">
-              <span className="font-bold text-slate-900">
-                {monthNames[calendarMonth]}, {calendarYear}
-              </span>
-              <div className="flex items-center gap-1 text-slate-400">
-                <button
-                  type="button"
-                  onClick={handlePrevMonth}
-                  aria-label="Previous month"
-                  className="p-1 hover:text-slate-700 hover:bg-slate-100 rounded transition-colors"
-                >
-                  <ChevronLeft className="size-3.5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={handleNextMonth}
-                  aria-label="Next month"
-                  className="p-1 hover:text-slate-700 hover:bg-slate-100 rounded transition-colors"
-                >
-                  <ChevronRight className="size-3.5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Days Grid */}
-            <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-mono py-2 border-b border-slate-100">
-              <span className="text-slate-400 font-bold">S</span>
-              <span className="text-slate-400 font-bold">M</span>
-              <span className="text-slate-400 font-bold">T</span>
-              <span className="text-slate-400 font-bold">W</span>
-              <span className="text-slate-400 font-bold">T</span>
-              <span className="text-slate-400 font-bold">F</span>
-              <span className="text-slate-400 font-bold">S</span>
-
-              {[...Array(31)].map((_, i) => {
-                const day = i + 1;
-                const isSelected = day === selectedCalendarDay;
-                return (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => setSelectedCalendarDay(day)}
-                    className={`py-1 rounded-full text-[10px] flex items-center justify-center transition-colors ${
-                      isSelected
-                        ? "bg-slate-900 text-white font-extrabold shadow-xs"
-                        : "text-slate-600 hover:bg-slate-100"
-                    }`}
-                  >
-                    {day}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Appointments Widget */}
-            <div className="mt-3">
-              <div className="flex items-center justify-between pb-1.5">
-                <span className="text-xs font-bold text-slate-900">Visits</span>
-                <Link href="/patient/appointments/new">
-                  <span className="size-4 rounded-full bg-slate-900 hover:bg-slate-700 text-white flex items-center justify-center text-[10px] font-bold cursor-pointer transition-transform active:scale-95">
-                    +
-                  </span>
-                </Link>
-              </div>
-
-              <div className="flex flex-col gap-2 mt-1">
-                <Link href="/patient/appointments" className="block group">
-                  <div className="p-2 rounded-xl bg-slate-50/80 group-hover:bg-slate-100 border border-slate-100 flex items-center justify-between text-[11px] transition-colors">
-                    <div>
-                      <div className="font-bold text-slate-900 truncate max-w-[110px] group-hover:text-emerald-800 transition-colors">Warfarin Follow-up</div>
-                      <div className="text-[10px] text-slate-400 font-mono">Oct 30, 10:00 AM</div>
-                    </div>
-                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                      Scheduled
+              {/* Upcoming Clinic Visits */}
+              <div className="mt-3">
+                <div className="flex items-center justify-between pb-1.5">
+                  <span className="text-xs font-bold text-slate-900">Upcoming Visits</span>
+                  <Link href="/patient/appointments/new">
+                    <span className="size-4 rounded-full bg-slate-900 hover:bg-slate-700 text-white flex items-center justify-center text-[10px] font-bold cursor-pointer transition-transform active:scale-95">
+                      +
                     </span>
-                  </div>
-                </Link>
+                  </Link>
+                </div>
 
-                <Link href="/patient/appointments" className="block group">
-                  <div className="p-2 rounded-xl bg-slate-50/80 group-hover:bg-slate-100 border border-slate-100 flex items-center justify-between text-[11px] transition-colors">
-                    <div>
-                      <div className="font-bold text-slate-900 truncate max-w-[110px] group-hover:text-sky-800 transition-colors">INR Blood Test</div>
-                      <div className="text-[10px] text-slate-400 font-mono">Nov 14, 08:30 AM</div>
+                <div className="flex flex-col gap-2 mt-1">
+                  <Link href="/patient/appointments" className="block group">
+                    <div className="p-2 rounded-xl bg-slate-50/80 group-hover:bg-slate-100 border border-slate-100 flex items-center justify-between text-[11px] transition-colors">
+                      <div>
+                        <div className="font-bold text-slate-900 truncate max-w-[130px] group-hover:text-emerald-800 transition-colors">Warfarin Follow-up</div>
+                        <div className="text-[10px] text-slate-400 font-mono">Oct 30, 10:00 AM</div>
+                      </div>
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                        Scheduled
+                      </span>
                     </div>
-                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-sky-100 text-sky-800">
-                      Lab
-                    </span>
-                  </div>
-                </Link>
-              </div>
-            </div>
-          </div>
+                  </Link>
 
-          <div className="pt-2 text-[10px] font-mono text-slate-400 text-right">
-            Clinic: Room 402
-          </div>
-        </div>
-      </div>
-
-      {/* 4. BOTTOM TIER: Prescriptions & Meds Ledger */}
-      <div className="bg-white rounded-3xl p-6 shadow-lux border border-slate-100 flex flex-col gap-4">
-        {/* Ledger Header & Navigation Actions */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
-          <div>
-            <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <span>Prescription Regimen Details</span>
-              <span className="text-xs font-mono font-semibold text-slate-400">
-                (Revision v{activeRx?.currentRevisionNumber || 1})
-              </span>
-            </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Verified clinical dosages, manufacturer brands, and oral administration instructions.
-            </p>
-          </div>
-
-          {/* Quick Action Links */}
-          <div className="flex items-center gap-2">
-            <Link href="/patient/medication-history">
-              <button className="h-8 px-3.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200/80 flex items-center gap-1.5 transition-all">
-                <PlusCircle data-icon="inline-start" className="size-3.5 text-slate-500" />
-                <span>Report Meds & Allergies</span>
-              </button>
-            </Link>
-
-            <Link href="/patient/history">
-              <button className="h-8 px-3.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200/80 flex items-center gap-1.5 transition-all">
-                <History data-icon="inline-start" className="size-3.5 text-slate-500" />
-                <span>History</span>
-              </button>
-            </Link>
-          </div>
-        </div>
-
-        {/* Prescribed Medications Rows */}
-        <div className="divide-y divide-slate-100">
-          {activeRx?.items.map((item, idx) => (
-            <div
-              key={idx}
-              className="py-4 first:pt-1 last:pb-1 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/60 transition-colors rounded-2xl px-2"
-            >
-              {/* Left: Squircle Icon + Drug + Brand */}
-              <div className="flex items-center gap-3.5 min-w-0">
-                <div className="size-11 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
-                  <Pill className="size-5 text-emerald-800" />
-                </div>
-                <div className="min-w-0 flex flex-col gap-0.5">
-                  <div className="text-sm font-bold text-slate-900 truncate">
-                    {item.canonicalIngredientIds.join(", ")} {item.strengthValue}{item.strengthUnit}
-                  </div>
-                  <div className="text-xs text-slate-500 flex items-center gap-2">
-                    {item.brandText ? (
-                      <span className="font-semibold text-slate-700">{item.brandText}</span>
-                    ) : null}
-                    {item.brandText ? <span>•</span> : null}
-                    <span>{item.dosageForm}</span>
-                    <span>•</span>
-                    <span className="text-slate-600">Oral administration with water</span>
-                  </div>
+                  <Link href="/patient/appointments" className="block group">
+                    <div className="p-2 rounded-xl bg-slate-50/80 group-hover:bg-slate-100 border border-slate-100 flex items-center justify-between text-[11px] transition-colors">
+                      <div>
+                        <div className="font-bold text-slate-900 truncate max-w-[130px] group-hover:text-sky-800 transition-colors">INR Blood Test</div>
+                        <div className="text-[10px] text-slate-400 font-mono">Nov 14, 08:30 AM</div>
+                      </div>
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-sky-100 text-sky-800">
+                        Lab
+                      </span>
+                    </div>
+                  </Link>
                 </div>
               </div>
-
-              {/* Right: Frequency + Action */}
-              <div className="flex items-center justify-between md:justify-end gap-3 shrink-0">
-                <span className="font-mono text-xs font-semibold px-2.5 py-1 rounded-xl bg-slate-100 text-slate-800 border border-slate-200/60">
-                  {item.frequency}
-                </span>
-
-                <div className="flex items-center gap-1 text-xs font-semibold text-emerald-700 font-mono">
-                  <span>98% Adherent</span>
-                </div>
-
-                <Link href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`}>
-                  <button className="h-8 px-3.5 rounded-xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-2xs flex items-center gap-1 transition-all">
-                    <span>Details</span>
-                    <ArrowRight data-icon="inline-end" className="size-3 text-emerald-300" />
-                  </button>
-                </Link>
-              </div>
             </div>
-          ))}
-        </div>
 
-        {/* Long-term Baseline Medications */}
-        {patient?.activeMedications && patient.activeMedications.length > 0 && (
-          <div className="pt-4 border-t border-slate-100">
-            <div className="text-xs font-bold text-slate-500 mb-2">
-              Long-Term Baseline Maintenance
+            <div className="pt-2 text-[10px] font-mono text-slate-400 text-right">
+              Clinic: Room 402
             </div>
-            <div className="divide-y divide-slate-100">
-              {patient.activeMedications.map((med) => (
-                <div key={med.id} className="py-2.5 flex items-center justify-between text-xs">
-                  <div>
-                    <span className="font-bold text-slate-800">{med.ingredientName} {med.dosage}</span>
-                    <span className="text-slate-400 ml-1.5">({med.brandName})</span>
-                    <span className="text-slate-500 ml-2">— {med.frequency}</span>
-                  </div>
-                  <span className="text-[11px] font-mono text-slate-400">
-                    Since {new Date(med.startedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Safety Gating Status Footer */}
-        <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500">
-          <div className="flex items-center gap-2">
-            <AlertCircle className="size-4 text-amber-500 shrink-0" />
-            <span>
-              {isReady
-                ? "Prescription cleared by pharmacy. Ready for pickup."
-                : "Dispensing unlocks after pharmacist clinical interaction check."}
-            </span>
-          </div>
-
-          <div className="font-mono text-[11px] text-slate-400">
-            Pharmacy Helpline: +91 11 2345 6789 (Mon-Sat 8:00 AM - 8:00 PM)
           </div>
         </div>
       </div>
