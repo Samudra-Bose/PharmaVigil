@@ -153,16 +153,16 @@ export default function DoctorDashboard() {
         </div>
       </section>
 
-      {/* 2. TOP TIER: 4-Card Bento Grid (3 Pastel + 1 Dark Action Card) */}
+      {/* 2. TOP TIER: 4-Card Bento Grid (Refined Clinical Palette + 1 Dark Action Card) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1: Pastel Coral / Peach Squircle */}
+        {/* Card 1: Critical Conflicts */}
         <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200 hover:shadow-lux-hover">
           <div>
             <div className="flex items-center justify-between">
-              <div className="size-11 rounded-2xl bg-amber-50 border border-amber-100/80 text-amber-600 flex items-center justify-center shrink-0">
-                <AlertTriangle className="size-5 text-amber-600" />
+              <div className="size-11 rounded-2xl bg-amber-50 border border-amber-200/60 text-amber-700 flex items-center justify-center shrink-0">
+                <AlertTriangle className="size-5 text-amber-700" />
               </div>
-              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-100">
+              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200/60">
                 Critical Alert
               </span>
             </div>
@@ -183,14 +183,14 @@ export default function DoctorDashboard() {
           </div>
         </div>
 
-        {/* Card 2: Pastel Lime Squircle */}
+        {/* Card 2: Clinical Triage */}
         <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200 hover:shadow-lux-hover">
           <div>
             <div className="flex items-center justify-between">
-              <div className="size-11 rounded-2xl bg-emerald-50 border border-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0">
-                <Stethoscope className="size-5 text-emerald-700" />
+              <div className="size-11 rounded-2xl bg-emerald-50 border border-emerald-200/60 text-emerald-800 flex items-center justify-center shrink-0">
+                <Stethoscope className="size-5 text-emerald-800" />
               </div>
-              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
+              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80">
                 Active Deck
               </span>
             </div>
@@ -202,7 +202,7 @@ export default function DoctorDashboard() {
           <div className="pt-4 mt-3 border-t border-slate-100 flex items-center justify-between text-xs">
             <div>
               <span className="text-[11px] font-medium text-slate-400 block">Resolution Rate</span>
-              <span className="font-bold text-emerald-700 font-mono">94.2% Cleared</span>
+              <span className="font-bold text-emerald-800 font-mono">94.2% Cleared</span>
             </div>
             <div className="text-right">
               <span className="text-[11px] font-medium text-slate-400 block">Assigned</span>
@@ -211,14 +211,14 @@ export default function DoctorDashboard() {
           </div>
         </div>
 
-        {/* Card 3: Pastel Sky Squircle */}
+        {/* Card 3: Inpatient Roster (Soft Slate) */}
         <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200 hover:shadow-lux-hover">
           <div>
             <div className="flex items-center justify-between">
-              <div className="size-11 rounded-2xl bg-sky-50 border border-sky-100/80 text-sky-700 flex items-center justify-center shrink-0">
-                <User className="size-5 text-sky-700" />
+              <div className="size-11 rounded-2xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
+                <User className="size-5 text-slate-700" />
               </div>
-              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-100">
+              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200/80">
                 Inpatient
               </span>
             </div>
@@ -234,12 +234,12 @@ export default function DoctorDashboard() {
             </div>
             <div className="text-right">
               <span className="text-[11px] font-medium text-slate-400 block">Patient</span>
-              <span className="font-bold text-sky-700 font-mono">P-9021</span>
+              <span className="font-bold text-slate-700 font-mono">P-9021</span>
             </div>
           </div>
         </div>
 
-        {/* Card 4: DARK ACTION CARD (Direct match to Eduplex reference) */}
+        {/* Card 4: DARK ACTION CARD */}
         <div className="bg-[#111317] rounded-3xl p-5 shadow-lux-black border border-slate-800 text-white relative overflow-hidden flex flex-col justify-between">
           <div className="flex flex-col gap-2 relative z-10">
             <div className="flex items-center justify-between">
@@ -264,7 +264,7 @@ export default function DoctorDashboard() {
                 href={`/doctor/cases/${primaryTask.caseId}/disposition`}
                 className="block"
               >
-                <button className="w-full h-8 px-3 rounded-xl bg-[#bbf7d0] hover:bg-[#86efac] text-slate-950 font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
+                <button className="w-full h-8 px-3 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
                   <span>Sign Disposition</span>
                   <ArrowRight data-icon="inline-end" className="size-3 text-slate-950" />
                 </button>
@@ -304,7 +304,7 @@ export default function DoctorDashboard() {
               <div className="h-44 flex items-end justify-between gap-3 px-2 relative">
                 {/* Floating Tooltip above Thursday Bar */}
                 <div className="absolute top-1 left-[54%] -translate-x-1/2 bg-[#111317] text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-lg flex items-center gap-1 z-20 pointer-events-none">
-                  <span className="size-1.5 rounded-full bg-[#bbf7d0]" />
+                  <span className="size-1.5 rounded-full bg-emerald-400" />
                   <span>4 Cases Resolved • 2h 15m</span>
                 </div>
 
@@ -323,7 +323,7 @@ export default function DoctorDashboard() {
                       <div
                         className={`w-full rounded-full transition-all ${
                           item.active
-                            ? "bg-[#bbf7d0] shadow-sm shadow-emerald-400/30"
+                            ? "bg-emerald-500 shadow-sm shadow-emerald-500/30"
                             : "bg-[#111317] group-hover:bg-slate-700"
                         } ${item.height}`}
                       />
@@ -339,7 +339,7 @@ export default function DoctorDashboard() {
 
           <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
             <span>Clinical Audit Standard:</span>
-            <span className="font-semibold text-emerald-700 font-mono">100% Deterministic</span>
+            <span className="font-semibold text-emerald-800 font-mono">100% Deterministic</span>
           </div>
         </div>
 
@@ -351,12 +351,12 @@ export default function DoctorDashboard() {
               <span className="text-xs text-slate-400 font-medium">Cardiology Ward</span>
             </div>
 
-            {/* List with squircle pastel icons & right chevrons */}
+            {/* List with intentional clinical squircles & right chevrons */}
             <div className="divide-y divide-slate-100 mt-2">
-              <div className="py-2.5 flex items-center justify-between group cursor-pointer">
+              <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/60 rounded-xl px-2 transition-colors">
                 <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-orange-50 border border-orange-100 text-orange-600 flex items-center justify-center shrink-0">
-                    <Stethoscope className="size-4" />
+                  <div className="size-9 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
+                    <Stethoscope className="size-4 text-slate-700" />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-slate-900">Morning Ward Rounds</div>
@@ -366,23 +366,23 @@ export default function DoctorDashboard() {
                 <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
               </div>
 
-              <div className="py-2.5 flex items-center justify-between group cursor-pointer">
+              <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/60 rounded-xl px-2 transition-colors">
                 <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-purple-50 border border-purple-100 text-purple-600 flex items-center justify-center shrink-0">
-                    <ShieldAlert className="size-4" />
+                  <div className="size-9 rounded-xl bg-rose-50 border border-rose-200/70 text-rose-700 flex items-center justify-center shrink-0">
+                    <ShieldAlert className="size-4 text-rose-700" />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-slate-900">DDI Triage & Disposition</div>
-                    <div className="text-[11px] text-rose-600 font-medium">case_rx_9021_01 Conflict</div>
+                    <div className="text-[11px] text-rose-700 font-semibold">case_rx_9021_01 Conflict</div>
                   </div>
                 </div>
                 <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
               </div>
 
-              <div className="py-2.5 flex items-center justify-between group cursor-pointer">
+              <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/60 rounded-xl px-2 transition-colors">
                 <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-                    <Pill className="size-4" />
+                  <div className="size-9 rounded-xl bg-emerald-50 border border-emerald-200/70 text-emerald-800 flex items-center justify-center shrink-0">
+                    <Pill className="size-4 text-emerald-800" />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-slate-900">Therapy Re-authorization</div>
@@ -392,10 +392,10 @@ export default function DoctorDashboard() {
                 <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
               </div>
 
-              <div className="py-2.5 flex items-center justify-between group cursor-pointer">
+              <div className="py-2.5 flex items-center justify-between group cursor-pointer hover:bg-slate-50/60 rounded-xl px-2 transition-colors">
                 <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-amber-50 border border-amber-100 text-amber-700 flex items-center justify-center shrink-0">
-                    <CalendarIcon className="size-4" />
+                  <div className="size-9 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
+                    <CalendarIcon className="size-4 text-slate-700" />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-slate-900">Outpatient Consultation</div>
@@ -443,7 +443,7 @@ export default function DoctorDashboard() {
                     key={i}
                     className={`py-1 rounded-full text-[10px] flex items-center justify-center ${
                       isSelected
-                        ? "bg-[#bbf7d0] text-slate-950 font-extrabold shadow-xs"
+                        ? "bg-slate-900 text-white font-extrabold shadow-xs"
                         : "text-slate-600 hover:bg-slate-50"
                     }`}
                   >
@@ -457,7 +457,7 @@ export default function DoctorDashboard() {
             <div className="mt-3">
               <div className="flex items-center justify-between pb-1.5">
                 <span className="text-xs font-bold text-slate-900">Triage Tasks</span>
-                <span className="size-4 rounded-full bg-[#bbf7d0] text-slate-950 flex items-center justify-center text-[10px] font-bold">
+                <span className="size-4 rounded-full bg-slate-900 text-white flex items-center justify-center text-[10px] font-bold">
                   +
                 </span>
               </div>
@@ -468,7 +468,7 @@ export default function DoctorDashboard() {
                     <div className="font-bold text-slate-900 truncate max-w-[110px]">Sign CYP3A4 Override</div>
                     <div className="text-[10px] text-slate-400 font-mono">case_rx_9021</div>
                   </div>
-                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-rose-100 text-rose-800">
+                  <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200/60">
                     High
                   </span>
                 </div>
@@ -478,8 +478,8 @@ export default function DoctorDashboard() {
                     <div className="font-bold text-slate-900 truncate max-w-[110px]">Sign Discharge Rx</div>
                     <div className="text-[10px] text-slate-400 font-mono">P-9022</div>
                   </div>
-                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                    Done
+                  <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/60">
+                    Review
                   </span>
                 </div>
               </div>

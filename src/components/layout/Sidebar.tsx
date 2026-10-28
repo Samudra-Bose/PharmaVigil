@@ -294,19 +294,19 @@ export const Sidebar: React.FC = () => {
         })}
       </nav>
 
-      {/* Eduplex Style Bottom Feature Card */}
+      {/* Refined Clinical Bottom Feature Card */}
       {!collapsed && (
-        <div className="mx-3 mb-3 p-4 rounded-2xl bg-[#bbf7d0] text-slate-950 flex flex-col gap-2 relative overflow-hidden shadow-sm">
+        <div className="mx-3 mb-3 p-3.5 rounded-2xl bg-white/5 border border-white/10 text-white flex flex-col gap-2 relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5 font-bold text-xs tracking-tight">
-              <ShieldCheck className="size-4 text-slate-950" />
+            <div className="flex items-center gap-1.5 font-bold text-xs tracking-tight text-white">
+              <ShieldCheck className="size-4 text-emerald-400" />
               <span>Safety Engine Active</span>
             </div>
-            <div className="size-6 rounded-full bg-slate-950 text-white flex items-center justify-center shrink-0">
+            <div className="size-6 rounded-full bg-white/10 text-emerald-400 flex items-center justify-center shrink-0">
               <ArrowUpRight className="size-3.5" />
             </div>
           </div>
-          <p className="text-[11px] text-slate-800 font-medium leading-snug">
+          <p className="text-[11px] text-slate-300 font-normal leading-snug">
             Deterministic rule checks enforced. Dispensing fails closed until clinician sign-off.
           </p>
         </div>

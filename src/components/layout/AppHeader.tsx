@@ -91,23 +91,15 @@ export const AppHeader: React.FC = () => {
                     data-testid="user-role-badge"
                     className={cn(
                       "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold tracking-wide border select-none",
-                      role === "DOCTOR" &&
-                        "bg-teal-50 text-teal-800 border-teal-200/80",
-                      role === "PHARMACIST" &&
-                        "bg-emerald-50 text-emerald-800 border-emerald-200/80",
-                      role === "PATIENT" &&
-                        "bg-sky-50 text-sky-800 border-sky-200/80",
-                      role === "HOSPITAL_ADMIN" &&
-                        "bg-purple-50 text-purple-800 border-purple-200/80",
+                      role === "PHARMACIST"
+                        ? "bg-emerald-50 text-emerald-800 border-emerald-200/80"
+                        : "bg-slate-100 text-slate-800 border-slate-200/80",
                     )}
                   >
                     <span
                       className={cn(
                         "size-1.5 rounded-full shrink-0",
-                        role === "DOCTOR" && "bg-teal-600",
-                        role === "PHARMACIST" && "bg-emerald-600",
-                        role === "PATIENT" && "bg-sky-600",
-                        role === "HOSPITAL_ADMIN" && "bg-purple-600",
+                        role === "PHARMACIST" ? "bg-emerald-600" : "bg-slate-600",
                       )}
                     />
                     <span>
