@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { api } from "@/lib/api-client";
-import type { FixtureCase } from "@/lib/mock-data/fixtures";
+import { INITIAL_FIXTURE_CASE, type FixtureCase } from "@/lib/mock-data/fixtures";
 import { PipelineStepper } from "@/components/clinical/PipelineStepper";
 import { RuleNoticeBanner } from "@/components/clinical/RuleNoticeBanner";
 import { CoverageMatrix } from "@/components/clinical/CoverageMatrix";
@@ -26,8 +26,8 @@ export default function CheckResultsPage() {
   const router = useRouter();
   const caseId = params.id as string;
 
-  const [caseData, setCaseData] = useState<FixtureCase | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [caseData, setCaseData] = useState<FixtureCase | null>(INITIAL_FIXTURE_CASE);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function loadCase() {

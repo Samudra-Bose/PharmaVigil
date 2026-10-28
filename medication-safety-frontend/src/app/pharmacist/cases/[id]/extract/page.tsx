@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { api } from "@/lib/api-client";
-import type { FixtureCase } from "@/lib/mock-data/fixtures";
+import { INITIAL_FIXTURE_CASE, type FixtureCase } from "@/lib/mock-data/fixtures";
 import { PipelineStepper } from "@/components/clinical/PipelineStepper";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -38,8 +38,8 @@ export default function OcrExtractPage() {
   const router = useRouter();
   const caseId = params.id as string;
 
-  const [caseData, setCaseData] = useState<FixtureCase | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [caseData, setCaseData] = useState<FixtureCase | null>(INITIAL_FIXTURE_CASE);
+  const [loading, setLoading] = useState(false);
   const [lines, setLines] = useState<OcrLineItem[]>([
     { id: 1, text: "Tab. Warfarin 5mg - 1 Tab OD x 30 days", confidence: 0.96, status: "UNREVIEWED" },
     { id: 2, text: "Tab. Aspirin 100mg - 1 Tab OD x 15 days", confidence: 0.94, status: "UNREVIEWED" },
