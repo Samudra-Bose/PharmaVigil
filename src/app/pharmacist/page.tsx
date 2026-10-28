@@ -29,6 +29,30 @@ import {
   Check,
 } from "lucide-react";
 
+function formatIngredientLabel(raw: string) {
+  const map: Record<string, string> = {
+    ing_warfarin: "Warfarin Sodium",
+    ing_aspirin: "Aspirin Cardio",
+    ing_atorvastatin: "Atorvastatin Calcium",
+    ing_metformin: "Metformin HCl",
+    ing_amoxicillin: "Amoxicillin",
+    ing_lisinopril: "Lisinopril",
+  };
+  return map[raw] || raw.replace(/^ing_/, "").replace(/_/g, " ");
+}
+
+function formatPatientMRN(raw: string) {
+  if (!raw) return "P-9021";
+  if (raw.startsWith("pat_rajan_")) return "P-9021";
+  if (raw.startsWith("pat_")) return raw.replace(/^pat_/, "P-");
+  return raw;
+}
+
+function formatCaseId(caseId: string) {
+  if (!caseId) return "9021-01";
+  return caseId.replace(/^case_rx_/, "").replace(/_/g, "-");
+}
+
 export default function PharmacistDashboard() {
   const [cases, setCases] = useState<FixtureCase[]>([INITIAL_FIXTURE_CASE]);
   const [loading, setLoading] = useState(false);
@@ -427,25 +451,29 @@ export default function PharmacistDashboard() {
                             </span>
                             <span className="text-slate-300">•</span>
                             <span className="text-xs text-slate-500 font-medium">
-                              MRN: {c.patientId}
+                              MRN: {formatPatientMRN(c.patientId)}
                             </span>
                             <span className="text-slate-300">•</span>
-                            <span className="text-[11px] font-mono px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md font-semibold">
-                              Rx #{c.id.replace("case_rx_", "")} (v{c.currentRevisionNumber})
+                            <span className="text-[11px] font-mono px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md font-semibold border border-slate-200/60">
+                              Rx #{formatCaseId(c.id)} (v{c.currentRevisionNumber})
                             </span>
                           </div>
 
                           {/* Human Readable Medication Pills */}
                           <div className="flex items-center gap-1.5 flex-wrap">
-                            {c.items.map((item, idx) => (
-                              <span
-                                key={idx}
-                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-[11px] font-medium text-slate-700"
-                              >
-                                <Pill className="size-3 text-slate-400" />
-                                <span>{item.brandText || item.canonicalIngredientIds.join(", ")} {item.strengthValue}{item.strengthUnit}</span>
-                              </span>
-                            ))}
+                            {c.items.map((item, idx) => {
+                              const ingredient = formatIngredientLabel(item.canonicalIngredientIds[0] || "");
+                              const label = item.brandText ? `${item.brandText} (${ingredient})` : ingredient;
+                              return (
+                                <span
+                                  key={idx}
+                                  className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-slate-50 border border-slate-200 text-[11px] font-medium text-slate-700"
+                                >
+                                  <Pill className="size-3 text-emerald-600" />
+                                  <span>{label} {item.strengthValue}{item.strengthUnit}</span>
+                                </span>
+                              );
+                            })}
                           </div>
                         </div>
                       </div>

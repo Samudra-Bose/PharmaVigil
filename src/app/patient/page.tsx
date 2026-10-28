@@ -31,6 +31,18 @@ import {
   Sparkles,
 } from "lucide-react";
 
+function formatIngredientLabel(raw: string) {
+  const map: Record<string, string> = {
+    ing_warfarin: "Warfarin Sodium",
+    ing_aspirin: "Aspirin Cardio",
+    ing_atorvastatin: "Atorvastatin Calcium",
+    ing_metformin: "Metformin HCl",
+    ing_amoxicillin: "Amoxicillin",
+    ing_lisinopril: "Lisinopril",
+  };
+  return map[raw] || raw.replace(/^ing_/, "").replace(/_/g, " ");
+}
+
 export default function PatientHomePage() {
   const [patient, setPatient] = useState<PatientRecord>(FIXTURE_PATIENT);
   const [cases, setCases] = useState<FixtureCase[]>([INITIAL_FIXTURE_CASE]);
@@ -84,8 +96,8 @@ export default function PatientHomePage() {
             </span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900">
-            Welcome, {patient?.displayName || "Rajan Sharma"}
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 font-display">
+            Welcome back, {patient?.displayName || "Rajan Sharma"}
           </h1>
 
           <p className="text-xs sm:text-sm text-slate-500">
@@ -231,46 +243,49 @@ export default function PatientHomePage() {
 
             {/* Prescribed Items Rows */}
             <div className="divide-y divide-slate-100">
-              {activeRx?.items.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="py-4 first:pt-1 last:pb-1 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/70 transition-colors rounded-xl px-2.5"
-                >
-                  <div className="flex items-center gap-3.5 min-w-0">
-                    <div className="size-11 rounded-xl bg-violet-50 border border-violet-200 text-violet-700 flex items-center justify-center shrink-0 shadow-2xs">
-                      <Pill className="size-5 text-violet-600" />
+              {activeRx?.items.map((item, idx) => {
+                const ingredient = formatIngredientLabel(item.canonicalIngredientIds[0] || "");
+                const primaryName = item.brandText ? `${item.brandText} (${ingredient})` : ingredient;
+                return (
+                  <div
+                    key={idx}
+                    className="py-4 first:pt-1 last:pb-1 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/70 transition-colors rounded-xl px-2.5"
+                  >
+                    <div className="flex items-center gap-3.5 min-w-0">
+                      <div className="size-11 rounded-xl bg-violet-50 border border-violet-200 text-violet-700 flex items-center justify-center shrink-0 shadow-2xs">
+                        <Pill className="size-5 text-violet-600" />
+                      </div>
+                      <div className="min-w-0 flex flex-col gap-0.5">
+                        <div className="text-sm font-bold text-slate-900 truncate flex items-center gap-2">
+                          <span>{primaryName}</span>
+                          <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-violet-100 text-violet-800 border border-violet-200">
+                            {item.strengthValue}{item.strengthUnit}
+                          </span>
+                        </div>
+                        <div className="text-xs text-slate-500 flex items-center gap-1.5 flex-wrap">
+                          <span>{item.dosageForm || "Oral Tablet"}</span>
+                          <span>•</span>
+                          <span className="text-slate-600">Take with water as prescribed</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="min-w-0 flex flex-col">
-                      <div className="text-sm font-bold text-slate-900 truncate">
-                        {item.canonicalIngredientIds.join(", ")} {item.strengthValue}{item.strengthUnit}
-                      </div>
-                      <div className="text-xs text-slate-500 flex items-center gap-1.5 flex-wrap mt-0.5">
-                        {item.brandText ? (
-                          <span className="font-semibold text-slate-700">{item.brandText}</span>
-                        ) : null}
-                        {item.brandText ? <span>•</span> : null}
-                        <span>{item.dosageForm}</span>
-                        <span>•</span>
-                        <span className="text-slate-600">Oral with water</span>
-                      </div>
+
+                    <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
+                      <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-violet-50 text-violet-800 border border-violet-200/80">
+                        {item.frequency}
+                      </span>
+
+                      <Link
+                        href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`}
+                        className="h-8 px-3.5 rounded-lg bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs inline-flex items-center gap-1 transition-all shadow-xs shadow-violet-600/15 cursor-pointer"
+                      >
+                        <span>Details</span>
+                        <ArrowRight className="size-3 text-white/90" />
+                      </Link>
                     </div>
                   </div>
-
-                  <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
-                    <span className="font-mono text-xs font-semibold px-2.5 py-1 rounded-lg bg-violet-50 text-violet-800 border border-violet-200/80">
-                      {item.frequency}
-                    </span>
-
-                    <Link
-                      href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`}
-                      className="h-8 px-3.5 rounded-lg bg-violet-600 hover:bg-violet-700 text-white font-semibold text-xs inline-flex items-center gap-1 transition-all shadow-xs shadow-violet-600/15 cursor-pointer"
-                    >
-                      <span>Details</span>
-                      <ArrowRight className="size-3 text-white/90" />
-                    </Link>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Safety Gating Status Footer */}

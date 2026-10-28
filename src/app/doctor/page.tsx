@@ -29,6 +29,18 @@ import {
   Pill,
 } from "lucide-react";
 
+function formatPatientMRN(raw: string) {
+  if (!raw) return "P-9021";
+  if (raw.startsWith("pat_rajan_")) return "P-9021";
+  if (raw.startsWith("pat_")) return raw.replace(/^pat_/, "P-");
+  return raw;
+}
+
+function formatCaseId(caseId: string) {
+  if (!caseId) return "9021-01";
+  return caseId.replace(/^case_rx_/, "").replace(/_/g, "-");
+}
+
 export default function DoctorDashboard() {
   const [cases, setCases] = useState<FixtureCase[]>([INITIAL_FIXTURE_CASE]);
   const [loading, setLoading] = useState(false);
@@ -327,11 +339,11 @@ export default function DoctorDashboard() {
                           </span>
                           <span className="text-slate-300">•</span>
                           <span className="text-xs text-slate-500 font-medium">
-                            MRN: {t.patientId}
+                            MRN: {formatPatientMRN(t.patientId)}
                           </span>
                           <span className="text-slate-300">•</span>
-                          <span className="text-[11px] font-mono px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md font-semibold">
-                            Rx #{t.caseId.replace("case_rx_", "")} (v{t.revisionNumber})
+                          <span className="text-[11px] font-mono px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md font-semibold border border-slate-200/60">
+                            Rx #{formatCaseId(t.caseId)} (v{t.revisionNumber})
                           </span>
                         </div>
                         <div className="text-xs text-slate-700 truncate max-w-lg font-medium mt-0.5">

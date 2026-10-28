@@ -97,7 +97,7 @@ export default function AdminDashboardPage() {
               Tenancy: <span className="font-semibold text-slate-700">metro-general</span>
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 font-display">
             Hospital Governance Workspace
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 max-w-2xl">
@@ -173,7 +173,7 @@ export default function AdminDashboardPage() {
             </span>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-black text-indigo-600 font-mono tracking-tight">
+            <div className="text-3xl font-extrabold text-indigo-600 tracking-tight">
               {memberships.length} Users
             </div>
             <p className="text-[11px] text-slate-600 mt-1">Medical Staff Ledger</p>
@@ -188,7 +188,7 @@ export default function AdminDashboardPage() {
             </span>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-black text-amber-600 font-mono tracking-tight">
+            <div className="text-3xl font-extrabold text-amber-600 tracking-tight">
               {pendingCount} Applicant{pendingCount === 1 ? "" : "s"}
             </div>
             <p className="text-[11px] text-slate-600 mt-1">Awaiting Sign-off</p>
@@ -203,7 +203,7 @@ export default function AdminDashboardPage() {
             </span>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-black text-emerald-600 font-mono tracking-tight">
+            <div className="text-3xl font-extrabold text-emerald-600 tracking-tight">
               Strict RBAC
             </div>
             <p className="text-[11px] text-slate-600 mt-1">Zero Cross-Tenant Leak</p>
@@ -213,12 +213,12 @@ export default function AdminDashboardPage() {
         <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-slate-500/10 via-slate-50/40 to-white border border-slate-200/90 shadow-[0_2px_8px_rgba(15,23,42,0.04)] flex flex-col justify-between hover:border-slate-300 hover:shadow-md transition-all">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">Compliance</span>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold border border-slate-200">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
               SOC 2 / HIPAA
             </span>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-black text-slate-900 font-mono tracking-tight">
+            <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
               Append-Only
             </div>
             <p className="text-[11px] text-slate-600 mt-1">Cryptographic Ledger</p>
@@ -277,19 +277,19 @@ export default function AdminDashboardPage() {
                           {m.displayName}
                         </span>
                         <span className="text-slate-300">•</span>
-                        <span className="font-mono text-xs text-slate-500 truncate">
+                        <span className="text-xs text-slate-500 font-medium truncate">
                           {m.email}
                         </span>
                       </div>
-                      <div className="text-xs text-slate-500 font-mono mt-0.5">
-                        ID: {m.userId} • Applied: {new Date(m.createdAt).toLocaleDateString()}
+                      <div className="text-xs text-slate-500 mt-0.5">
+                        <span className="font-mono text-slate-600">ID: {m.userId}</span> • Applied: {new Date(m.createdAt).toLocaleDateString()}
                       </div>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between sm:justify-end gap-2.5 shrink-0">
                     <span
-                      className={`font-mono text-xs font-bold px-2.5 py-1 rounded-lg border ${
+                      className={`text-xs font-bold px-2.5 py-1 rounded-lg border ${
                         m.role === "DOCTOR"
                           ? "bg-blue-50 text-blue-800 border-blue-200"
                           : m.role === "PHARMACIST"
@@ -303,7 +303,7 @@ export default function AdminDashboardPage() {
                     </span>
 
                     <span
-                      className={`text-xs font-mono font-semibold px-2.5 py-1 rounded-full ${
+                      className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
                         m.status === "ACTIVE"
                           ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
                           : "bg-amber-50 text-amber-800 border border-amber-200"

@@ -109,7 +109,7 @@ export default function HomePage() {
           <span className="text-emerald-800 font-semibold">Clinical Safety Engine Active</span>
         </div>
 
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-tight">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-tight font-display">
           Preventing medication hazards before prescriptions reach the patient.
         </h1>
 
@@ -149,10 +149,10 @@ export default function HomePage() {
           </div>
 
           {user && (
-            <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-slate-500 bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-xs">
-              <span className="text-slate-400">Current Session:</span>
+            <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500 bg-white px-3.5 py-1.5 rounded-xl border border-slate-200 shadow-xs">
+              <span className="text-slate-400 font-medium">Current Session:</span>
               <span className="font-bold text-slate-800">{user.displayName}</span>
-              <span className="size-1.5 rounded-full bg-emerald-500" />
+              <span className="size-2 rounded-full bg-emerald-500" />
             </div>
           )}
         </div>
