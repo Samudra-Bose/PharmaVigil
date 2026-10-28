@@ -306,7 +306,17 @@ export default function AdminDashboardPage() {
                   </div>
 
                   <div className="flex items-center justify-between sm:justify-end gap-2.5 shrink-0">
-                    <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-lg bg-slate-100 text-slate-800 border border-slate-200/60">
+                    <span
+                      className={`font-mono text-xs font-bold px-2 py-0.5 rounded-lg border ${
+                        m.role === "DOCTOR"
+                          ? "bg-blue-50 text-blue-800 border-blue-200/80"
+                          : m.role === "PHARMACIST"
+                            ? "bg-emerald-50 text-emerald-800 border-emerald-200/80"
+                            : m.role === "PATIENT"
+                              ? "bg-violet-50 text-violet-800 border-violet-200/80"
+                              : "bg-indigo-50 text-indigo-800 border-indigo-200/80"
+                      }`}
+                    >
                       {m.role}
                     </span>
 
@@ -322,10 +332,10 @@ export default function AdminDashboardPage() {
 
                     <Link
                       href={`/admin/memberships/${m.id}`}
-                      className="h-7 px-3 rounded-lg bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs inline-flex items-center gap-1 transition-all cursor-pointer"
+                      className="h-7 px-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs inline-flex items-center gap-1 transition-all shadow-sm shadow-indigo-600/20 cursor-pointer"
                     >
                       <span>Manage</span>
-                      <ArrowRight data-icon="inline-end" className="size-3 text-emerald-400" />
+                      <ArrowRight data-icon="inline-end" className="size-3 text-indigo-100" />
                     </Link>
                   </div>
                 </div>
