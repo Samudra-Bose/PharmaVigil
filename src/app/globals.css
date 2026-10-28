@@ -9,10 +9,31 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background-color: rgb(var(--background-rgb));
+  background-color: #f8fafc;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.04) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.04) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(139, 92, 246, 0.02) 0px, transparent 50%);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Vibrant Glows for Next-Level Pinterest Bento UI */
+.shadow-glow-emerald {
+  box-shadow: 0 8px 25px -4px rgba(16, 185, 129, 0.35);
+}
+
+.shadow-glow-blue {
+  box-shadow: 0 8px 25px -4px rgba(37, 99, 235, 0.35);
+}
+
+.shadow-glow-violet {
+  box-shadow: 0 8px 25px -4px rgba(139, 92, 246, 0.35);
+}
+
+.shadow-glow-rose {
+  box-shadow: 0 8px 25px -4px rgba(225, 29, 72, 0.35);
 }
 
 /* Tabular figures for medical IDs, dosages, and codes */

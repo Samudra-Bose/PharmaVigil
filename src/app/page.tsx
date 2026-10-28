@@ -96,38 +96,41 @@ export default function HomePage() {
   };
 
   return (
-    <div className="flex flex-col gap-10 max-w-6xl mx-auto pb-16 pt-2">
-      {/* 1. Calm Editorial Hero Section */}
-      <section aria-label="Overview" className="text-center max-w-3xl mx-auto space-y-4">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200/80 text-xs font-medium text-slate-700">
-          <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+    <div className="flex flex-col gap-10 max-w-6xl mx-auto pb-16 pt-2 font-sans">
+      {/* 1. Pinterest/Dribbble High-Energy Atmospheric Hero Section */}
+      <section aria-label="Overview" className="text-center max-w-3xl mx-auto space-y-4 relative">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-emerald-100 via-teal-50 to-blue-100 border border-emerald-300 text-xs font-bold text-slate-800 shadow-xs">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600" />
+          </span>
           <span>Metro General Hospital</span>
-          <span className="text-slate-300">•</span>
-          <span className="text-slate-500">Clinical Safety Engine Active</span>
+          <span className="text-slate-400">•</span>
+          <span className="text-emerald-800 font-semibold">Clinical Safety Engine Active</span>
         </div>
 
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-tight">
           Preventing medication hazards before prescriptions reach the patient.
         </h1>
 
-        <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto">
+        <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto font-normal">
           PharmaVigil unites pharmacists, attending physicians, and patients around a deterministic Clinical Decision Support engine to catch adverse drug interactions and enforce fail-closed dispensing.
         </p>
 
         {/* 3-Step Safety Loop Visualizer */}
-        <div className="pt-2 flex items-center justify-center gap-2 sm:gap-4 text-xs font-semibold text-slate-600 flex-wrap">
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white border border-slate-200 shadow-2xs">
-            <span className="size-5 rounded-full bg-blue-100 text-blue-800 text-[11px] font-bold flex items-center justify-center">1</span>
+        <div className="pt-2 flex items-center justify-center gap-2 sm:gap-4 text-xs font-semibold text-slate-700 flex-wrap">
+          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white border border-blue-200 shadow-xs">
+            <span className="size-5 rounded-full bg-blue-100 text-blue-800 text-[11px] font-black flex items-center justify-center">1</span>
             <span>Doctor Prescribes</span>
           </div>
           <ArrowRight className="size-3.5 text-slate-400 shrink-0" />
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white border border-slate-200 shadow-2xs">
-            <span className="size-5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold flex items-center justify-center">2</span>
-            <span>Deterministic CDS Verification</span>
+          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white border border-emerald-200 shadow-xs">
+            <span className="size-5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-black flex items-center justify-center">2</span>
+            <span>Deterministic CDS Check</span>
           </div>
           <ArrowRight className="size-3.5 text-slate-400 shrink-0" />
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white border border-slate-200 shadow-2xs">
-            <span className="size-5 rounded-full bg-teal-100 text-teal-800 text-[11px] font-bold flex items-center justify-center">3</span>
+          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white border border-teal-200 shadow-xs">
+            <span className="size-5 rounded-full bg-teal-100 text-teal-800 text-[11px] font-black flex items-center justify-center">3</span>
             <span>Safe Pharmacist Dispense</span>
           </div>
         </div>
@@ -137,16 +140,16 @@ export default function HomePage() {
       <section aria-label="Clinical Workspaces" className="space-y-4">
         <div className="flex items-center justify-between px-1">
           <div>
-            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500">
+            <h2 className="text-xs font-extrabold uppercase tracking-wider text-slate-400">
               Select Clinical Portal to Enter
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-500 mt-0.5">
               Click any workspace to switch persona and open the corresponding portal.
             </p>
           </div>
 
           {user && (
-            <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-slate-500 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs">
+            <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-slate-500 bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-xs">
               <span className="text-slate-400">Current Session:</span>
               <span className="font-bold text-slate-800">{user.displayName}</span>
               <span className="size-1.5 rounded-full bg-emerald-500" />
@@ -162,31 +165,35 @@ export default function HomePage() {
             const themeStyles = {
               emerald: {
                 activeBorder: "border-emerald-500 ring-2 ring-emerald-500/20 shadow-emerald-500/10",
-                button: "bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20",
+                button: "bg-emerald-600 hover:bg-emerald-500 text-white shadow-glow-emerald",
                 iconBg: "bg-emerald-50 text-emerald-700 border-emerald-200",
                 hairline: "from-emerald-500 to-teal-400",
                 badge: "bg-emerald-50 text-emerald-800 border-emerald-200",
+                hoverShadow: "hover:shadow-glow-emerald",
               },
               blue: {
                 activeBorder: "border-blue-500 ring-2 ring-blue-500/20 shadow-blue-500/10",
-                button: "bg-blue-600 hover:bg-blue-700 text-white shadow-blue-600/20",
+                button: "bg-blue-600 hover:bg-blue-500 text-white shadow-glow-blue",
                 iconBg: "bg-blue-50 text-blue-700 border-blue-200",
                 hairline: "from-blue-600 to-sky-400",
                 badge: "bg-blue-50 text-blue-800 border-blue-200",
+                hoverShadow: "hover:shadow-glow-blue",
               },
               violet: {
                 activeBorder: "border-violet-500 ring-2 ring-violet-500/20 shadow-violet-500/10",
-                button: "bg-violet-600 hover:bg-violet-700 text-white shadow-violet-600/20",
+                button: "bg-violet-600 hover:bg-violet-500 text-white shadow-glow-violet",
                 iconBg: "bg-violet-50 text-violet-700 border-violet-200",
                 hairline: "from-violet-600 to-purple-400",
                 badge: "bg-violet-50 text-violet-800 border-violet-200",
+                hoverShadow: "hover:shadow-glow-violet",
               },
               indigo: {
                 activeBorder: "border-indigo-500 ring-2 ring-indigo-500/20 shadow-indigo-500/10",
-                button: "bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-600/20",
+                button: "bg-indigo-600 hover:bg-indigo-500 text-white shadow-glow-blue",
                 iconBg: "bg-indigo-50 text-indigo-700 border-indigo-200",
                 hairline: "from-indigo-600 to-slate-500",
                 badge: "bg-indigo-50 text-indigo-800 border-indigo-200",
+                hoverShadow: "hover:shadow-glow-blue",
               },
             }[card.themeColor];
 
@@ -201,39 +208,39 @@ export default function HomePage() {
               <div
                 key={card.role}
                 onClick={() => handleLaunchWorkspace(card.role, card.workspaceHref)}
-                className={`group relative bg-white rounded-2xl border p-6 flex flex-col justify-between transition-all duration-200 cursor-pointer shadow-subtle hover:shadow-md ${
+                className={`group relative bg-white rounded-2xl border p-6 flex flex-col justify-between transition-all duration-200 cursor-pointer shadow-subtle hover:shadow-lg ${
                   isCurrentActive ? `${themeStyles.activeBorder} bg-gradient-to-b from-white to-slate-50/50` : "border-slate-200/90 hover:border-slate-300"
                 }`}
               >
                 {/* Hairline Accent Top Bar */}
-                <div className={`h-1 absolute top-0 left-0 right-0 rounded-t-2xl bg-gradient-to-r ${themeStyles.hairline}`} />
+                <div className={`h-1.5 absolute top-0 left-0 right-0 rounded-t-2xl bg-gradient-to-r ${themeStyles.hairline}`} />
 
                 <div className="space-y-4">
                   {/* Card Top: Icon, Persona Label & Status */}
                   <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className={`size-11 rounded-xl flex items-center justify-center shrink-0 border transition-transform group-hover:scale-105 ${themeStyles.iconBg}`}>
+                    <div className="flex items-center gap-3.5">
+                      <div className={`size-12 rounded-xl flex items-center justify-center shrink-0 border transition-transform group-hover:scale-105 shadow-2xs ${themeStyles.iconBg}`}>
                         <Icon className="size-5" />
                       </div>
                       <div>
                         <div className="text-[11px] font-mono uppercase font-bold tracking-wider text-slate-400">
                           {card.roleSubtitle}
                         </div>
-                        <h3 className="text-base font-bold text-slate-900 group-hover:text-slate-950">
+                        <h3 className="text-base font-bold text-slate-900 group-hover:text-slate-950 mt-0.5">
                           {card.title}
                         </h3>
                       </div>
                     </div>
 
                     {isCurrentActive && (
-                      <span className={`text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full border ${themeStyles.badge}`}>
+                      <span className={`text-[10px] uppercase font-mono font-bold px-2.5 py-0.5 rounded-full border ${themeStyles.badge}`}>
                         Active
                       </span>
                     )}
                   </div>
 
                   {/* Body: Clear Value Description */}
-                  <p className="text-xs text-slate-600 leading-relaxed">
+                  <p className="text-xs text-slate-600 leading-relaxed font-normal">
                     {card.description}
                   </p>
                 </div>
@@ -241,7 +248,7 @@ export default function HomePage() {
                 {/* Footer: Live Queue Indicator & Primary Launch Button */}
                 <div className="pt-4 mt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-2">
-                    <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-md border ${statusColors}`}>
+                    <span className={`text-[11px] font-bold px-2.5 py-1 rounded-lg border shadow-xs ${statusColors}`}>
                       {card.statusText}
                     </span>
                   </div>
@@ -252,7 +259,7 @@ export default function HomePage() {
                       e.stopPropagation();
                       handleLaunchWorkspace(card.role, card.workspaceHref);
                     }}
-                    className={`h-9 px-4 rounded-xl font-semibold text-xs inline-flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer ${themeStyles.button}`}
+                    className={`h-9 px-4 rounded-xl font-bold text-xs inline-flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-95 ${themeStyles.button}`}
                   >
                     <span>Launch Workspace</span>
                     <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -264,12 +271,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 3. Safety Guarantees & Architecture Bar (Minimal & High Trust) */}
-      <section aria-label="Clinical Guarantees" className="bg-slate-50/70 rounded-2xl p-5 border border-slate-200/80">
+      {/* 3. Safety Guarantees & Architecture Bar (High Trust Bento) */}
+      <section aria-label="Clinical Guarantees" className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
           <div className="flex items-center gap-3">
-            <div className="size-8 rounded-lg bg-emerald-100/70 text-emerald-800 flex items-center justify-center shrink-0">
-              <CheckCircle2 className="size-4" />
+            <div className="size-9 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center shrink-0 shadow-2xs">
+              <CheckCircle2 className="size-4.5" />
             </div>
             <div>
               <div className="font-bold text-slate-900">Zero Hallucination</div>
@@ -278,8 +285,8 @@ export default function HomePage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="size-8 rounded-lg bg-blue-100/70 text-blue-800 flex items-center justify-center shrink-0">
-              <Lock className="size-4" />
+            <div className="size-9 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 flex items-center justify-center shrink-0 shadow-2xs">
+              <Lock className="size-4.5" />
             </div>
             <div>
               <div className="font-bold text-slate-900">Fails-Closed Gate</div>
@@ -288,8 +295,8 @@ export default function HomePage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="size-8 rounded-lg bg-violet-100/70 text-violet-800 flex items-center justify-center shrink-0">
-              <Camera className="size-4" />
+            <div className="size-9 rounded-xl bg-violet-50 text-violet-700 border border-violet-200 flex items-center justify-center shrink-0 shadow-2xs">
+              <Camera className="size-4.5" />
             </div>
             <div>
               <div className="font-bold text-slate-900">Line-by-Line OCR</div>
@@ -298,8 +305,8 @@ export default function HomePage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="size-8 rounded-lg bg-indigo-100/70 text-indigo-800 flex items-center justify-center shrink-0">
-              <Shield className="size-4" />
+            <div className="size-9 rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-200 flex items-center justify-center shrink-0 shadow-2xs">
+              <Shield className="size-4.5" />
             </div>
             <div>
               <div className="font-bold text-slate-900">Hospital RBAC</div>

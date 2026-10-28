@@ -2,7 +2,7 @@ import os
 import sys
 from playwright.sync_api import sync_playwright
 
-OUT_DIR = "/home/samudra/.gemini/antigravity-cli/brain/065f48aa-5b00-4964-abd4-5dc98a9c15df/screenshots/pinterest-bento"
+OUT_DIR = "/home/samudra/.gemini/antigravity-cli/brain/065f48aa-5b00-4964-abd4-5dc98a9c15df/screenshots/pinterest-vibrant-bento"
 os.makedirs(OUT_DIR, exist_ok=True)
 
 PAGES = [
@@ -34,4 +34,4 @@ with sync_playwright() as p:
                 print(f"Error capturing {name} {vp_name}: {e}")
         context.close()
     browser.close()
-print("Bento screenshots capture done!")
+print("Vibrant Bento screenshots capture done!")

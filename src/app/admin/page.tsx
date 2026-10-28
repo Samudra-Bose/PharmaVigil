@@ -20,6 +20,7 @@ import {
   Sparkles,
   KeyRound,
   Shield,
+  Fingerprint,
 } from "lucide-react";
 
 const INITIAL_MEMBERSHIPS = [
@@ -84,8 +85,11 @@ export default function AdminDashboardPage() {
       >
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-indigo-900 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200/80 shadow-2xs flex items-center gap-1.5">
-              <span className="size-1.5 rounded-full bg-indigo-600 animate-pulse" />
+            <span className="text-xs font-bold text-indigo-950 bg-gradient-to-r from-indigo-100 to-purple-100 px-3 py-1 rounded-full border border-indigo-300 shadow-xs flex items-center gap-1.5">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-600" />
+              </span>
               Hospital Governance Hub
             </span>
             <span className="text-slate-300">•</span>
@@ -105,7 +109,7 @@ export default function AdminDashboardPage() {
         <div className="flex items-center gap-3 shrink-0">
           <Link
             href="/admin/demo-reset"
-            className="h-10 px-4 rounded-xl bg-white hover:bg-rose-50 text-rose-700 font-semibold text-xs border border-rose-200 shadow-2xs inline-flex items-center gap-2 transition-all cursor-pointer hover:border-rose-300"
+            className="h-10 px-4 rounded-xl bg-white hover:bg-rose-50 text-rose-700 font-semibold text-xs border border-rose-200 shadow-xs inline-flex items-center gap-2 transition-all cursor-pointer hover:border-rose-300"
           >
             <RotateCcw className="size-3.5 text-rose-600" />
             <span>Scoped Demo Reset</span>
@@ -113,57 +117,103 @@ export default function AdminDashboardPage() {
         </div>
       </section>
 
-      {/* 2. GOVERNANCE PULSE BENTO STRIP (Apple/Medora Aesthetic) */}
+      {/* 2. SIGNATURE HERO BENTO CARD: Executive Obsidian & Electric Indigo Credentialing Card */}
+      {pendingMember && (
+        <section
+          aria-label="Pending Decision"
+          className="rounded-3xl bg-gradient-to-br from-[#090d19] via-[#0f172a] to-[#1e1b4b] border border-indigo-500/30 text-white shadow-xl shadow-indigo-950/20 p-6 sm:p-7 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6"
+        >
+          {/* Subtle Ambient Background Mesh */}
+          <div className="absolute -right-20 -top-20 size-72 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute right-40 -bottom-20 size-60 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="flex items-start gap-4 min-w-0 relative z-10">
+            <div className="size-13 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/30 border border-amber-400/40 text-amber-300 flex items-center justify-center shrink-0 shadow-lg shadow-amber-950/40">
+              <UserCheck className="size-6 text-amber-300" />
+            </div>
+            <div className="flex flex-col gap-1.5 min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-200 border border-amber-400/30 flex items-center gap-1.5 shadow-xs">
+                  <span className="size-1.5 rounded-full bg-amber-400 animate-pulse" />
+                  Decision Required
+                </span>
+                <span className="text-indigo-400/40">•</span>
+                <span className="text-xs font-mono font-medium text-indigo-200">
+                  Staff Applicant: {pendingMember.displayName}
+                </span>
+              </div>
+              <h2 className="text-lg sm:text-xl font-extrabold text-white tracking-tight">
+                Physician Access Request Awaiting Sign-off
+              </h2>
+              <p className="text-xs sm:text-sm text-indigo-100/80 leading-relaxed max-w-2xl font-normal">
+                Requested Role: <span className="font-mono font-bold text-white">{pendingMember.role}</span> ({pendingMember.email}). Unapproved clinician accounts remain locked out from patient records.
+              </p>
+            </div>
+          </div>
+
+          <div className="shrink-0 flex items-center gap-3 relative z-10">
+            <Link
+              href={`/admin/memberships/${pendingMember.id}`}
+              className="w-full sm:w-auto h-11 px-6 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-400 hover:to-purple-400 text-white font-extrabold text-xs shadow-lg shadow-indigo-500/30 inline-flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-[0.98]"
+            >
+              <span>Review Credentials</span>
+              <ArrowRight className="size-3.5 text-white" />
+            </Link>
+          </div>
+        </section>
+      )}
+
+      {/* 3. VIBRANT MULTI-HUE GOVERNANCE PULSE BENTO STRIP */}
       <section aria-label="Governance Overview" className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 sm:p-5 rounded-2xl bg-white border border-indigo-200/80 shadow-[0_2px_8px_rgba(99,102,241,0.04)] flex flex-col justify-between hover:border-indigo-300 transition-all">
+        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-indigo-500/10 via-indigo-50/40 to-white border border-indigo-200/90 shadow-[0_2px_8px_rgba(99,102,241,0.06)] flex flex-col justify-between hover:border-indigo-300 hover:shadow-md transition-all">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-indigo-900 uppercase tracking-wider">Clinicians</span>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200">
               Verified
             </span>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-black text-indigo-700 font-mono tracking-tight">
+            <div className="text-2xl font-black text-indigo-600 font-mono tracking-tight">
               {memberships.length} Users
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">Medical Staff Ledger</p>
+            <p className="text-[11px] text-slate-600 mt-1">Medical Staff Ledger</p>
           </div>
         </div>
 
-        <div className="p-4 sm:p-5 rounded-2xl bg-white border border-amber-200/80 shadow-[0_2px_8px_rgba(245,158,11,0.04)] flex flex-col justify-between hover:border-amber-300 transition-all">
+        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 via-amber-50/40 to-white border border-amber-200/90 shadow-[0_2px_8px_rgba(245,158,11,0.06)] flex flex-col justify-between hover:border-amber-300 hover:shadow-md transition-all">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-amber-900 uppercase tracking-wider">Pending Decisions</span>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
               Action Required
             </span>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-black text-amber-700 font-mono tracking-tight">
+            <div className="text-2xl font-black text-amber-600 font-mono tracking-tight">
               {pendingCount} Applicant{pendingCount === 1 ? "" : "s"}
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">Awaiting Sign-off</p>
+            <p className="text-[11px] text-slate-600 mt-1">Awaiting Sign-off</p>
           </div>
         </div>
 
-        <div className="p-4 sm:p-5 rounded-2xl bg-white border border-emerald-200/80 shadow-[0_2px_8px_rgba(16,185,129,0.04)] flex flex-col justify-between hover:border-emerald-300 transition-all">
+        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-emerald-500/10 via-emerald-50/40 to-white border border-emerald-200/90 shadow-[0_2px_8px_rgba(16,185,129,0.06)] flex flex-col justify-between hover:border-emerald-300 hover:shadow-md transition-all">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-emerald-900 uppercase tracking-wider">Security Boundary</span>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
               Isolated
             </span>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-black text-emerald-700 font-mono tracking-tight">
+            <div className="text-2xl font-black text-emerald-600 font-mono tracking-tight">
               Strict RBAC
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">Zero Cross-Tenant Leak</p>
+            <p className="text-[11px] text-slate-600 mt-1">Zero Cross-Tenant Leak</p>
           </div>
         </div>
 
-        <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/70 shadow-[0_2px_8px_rgba(0,0,0,0.02)] flex flex-col justify-between hover:border-slate-300 transition-all">
+        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-slate-500/10 via-slate-50/40 to-white border border-slate-200/90 shadow-[0_2px_8px_rgba(15,23,42,0.04)] flex flex-col justify-between hover:border-slate-300 hover:shadow-md transition-all">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">Compliance</span>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold border border-slate-200">
               SOC 2 / HIPAA
             </span>
           </div>
@@ -171,55 +221,15 @@ export default function AdminDashboardPage() {
             <div className="text-2xl font-black text-slate-900 font-mono tracking-tight">
               Append-Only
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">Cryptographic Ledger</p>
+            <p className="text-[11px] text-slate-600 mt-1">Cryptographic Ledger</p>
           </div>
         </div>
       </section>
 
-      {/* 3. CORE BENTO GRID LAYOUT (8 Cols + 4 Cols) */}
+      {/* 4. CORE BENTO GRID LAYOUT (8 Cols + 4 Cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column (8 cols): Staff Affiliations Ledger + Governance Pipeline */}
         <div className="lg:col-span-8 flex flex-col gap-6">
-          {/* Pending Decision Hero Card (When Action Required) */}
-          {pendingMember && (
-            <div className="bg-gradient-to-r from-amber-50/70 via-white to-amber-50/30 rounded-2xl border border-amber-300/90 p-5 sm:p-6 shadow-[0_2px_12px_rgba(245,158,11,0.04)]">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex items-start gap-4">
-                  <div className="size-11 rounded-xl bg-amber-100 border border-amber-200 text-amber-700 flex items-center justify-center shrink-0 shadow-2xs">
-                    <UserCheck className="size-5" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 uppercase tracking-wider">
-                        Decision Required
-                      </span>
-                      <span className="text-slate-300">•</span>
-                      <span className="text-xs font-mono font-medium text-slate-500">
-                        Staff Applicant: {pendingMember.displayName}
-                      </span>
-                    </div>
-                    <h2 className="text-base sm:text-lg font-bold text-slate-900 mt-1">
-                      Physician Access Request Awaiting Sign-off
-                    </h2>
-                    <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
-                      Requested Role: <span className="font-mono font-bold text-slate-800">{pendingMember.role}</span> ({pendingMember.email}). Unapproved clinician accounts remain locked out from patient records.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2.5 shrink-0">
-                  <Link
-                    href={`/admin/memberships/${pendingMember.id}`}
-                    className="h-10 px-5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-sm shadow-indigo-600/25 inline-flex items-center gap-2 transition-all cursor-pointer active:scale-[0.98]"
-                  >
-                    <span>Review Credentials</span>
-                    <ArrowRight className="size-3.5 text-indigo-100" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* Section A: Staff Affiliations & Credentialing Ledger */}
           <div className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex flex-col gap-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
@@ -258,7 +268,7 @@ export default function AdminDashboardPage() {
                   className="py-4 first:pt-1 last:pb-1 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/70 transition-colors rounded-xl px-2.5"
                 >
                   <div className="flex items-center gap-3.5 min-w-0">
-                    <div className="size-11 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
+                    <div className="size-11 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0 shadow-2xs">
                       <User className="size-5 text-slate-700" />
                     </div>
                     <div className="min-w-0 flex flex-col">
@@ -304,7 +314,7 @@ export default function AdminDashboardPage() {
 
                     <Link
                       href={`/admin/memberships/${m.id}`}
-                      className="h-8 px-3.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs inline-flex items-center gap-1 transition-all shadow-sm shadow-indigo-600/20 cursor-pointer"
+                      className="h-8 px-3.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs inline-flex items-center gap-1 transition-all shadow-xs shadow-indigo-600/20 cursor-pointer"
                     >
                       <span>Manage</span>
                       <ArrowRight className="size-3 text-indigo-100" />
@@ -422,7 +432,7 @@ export default function AdminDashboardPage() {
             <div className="pt-2 border-t border-slate-100">
               <Link
                 href="/admin/demo-reset"
-                className="w-full py-2 px-3 rounded-xl bg-slate-50 hover:bg-rose-50 text-slate-600 hover:text-rose-700 font-semibold text-xs border border-slate-200 hover:border-rose-200 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                className="w-full py-2.5 px-3 rounded-xl bg-slate-50 hover:bg-rose-50 text-slate-600 hover:text-rose-700 font-semibold text-xs border border-slate-200 hover:border-rose-200 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <RotateCcw className="size-3 text-rose-500" />
                 <span>Reset Demo Sandbox State</span>
