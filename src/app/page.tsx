@@ -376,7 +376,6 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-      </div>
 
       {/* 4. Safety Guarantees Bar (Themed Hairline Strip) */}
       <section
