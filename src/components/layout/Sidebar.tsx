@@ -193,8 +193,8 @@ export const Sidebar: React.FC = () => {
       >
         {!collapsed ? (
           <Link href="/" className="overflow-hidden min-w-0 pr-1 flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-xl bg-white text-slate-950 flex items-center justify-center font-bold shadow-md shadow-emerald-500/10 shrink-0">
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            <div className="size-8 rounded-xl bg-white text-slate-950 flex items-center justify-center font-bold shadow-md shadow-emerald-500/10 shrink-0">
+              <ShieldCheck className="size-4 text-emerald-600" />
             </div>
             <div className="overflow-hidden">
               <div className="text-sm font-extrabold tracking-tight text-white flex items-center gap-1.5">
@@ -212,10 +212,10 @@ export const Sidebar: React.FC = () => {
         ) : (
           <Link
             href="/"
-            className="w-8 h-8 rounded-xl bg-white text-slate-950 flex items-center justify-center font-bold shadow-md shadow-emerald-500/10 shrink-0"
+            className="size-8 rounded-xl bg-white text-slate-950 flex items-center justify-center font-bold shadow-md shadow-emerald-500/10 shrink-0"
             title={`PharmaVigil - ${roleTitle}`}
           >
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            <ShieldCheck className="size-4 text-emerald-600" />
           </Link>
         )}
 
@@ -228,12 +228,12 @@ export const Sidebar: React.FC = () => {
           )}
           title={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
         >
-          <ChevronLeft className="w-3.5 h-3.5" />
+          <ChevronLeft className="size-3.5" />
         </button>
       </div>
 
       {/* Nav List with Eduplex Pistachio Active Pill */}
-      <nav className="flex-1 py-4 px-2.5 space-y-1.5 overflow-y-auto">
+      <nav className="flex-1 py-4 px-2.5 flex flex-col gap-1.5 overflow-y-auto">
         {items.map((item) => {
           const Icon = item.icon;
           const isActive =
@@ -259,7 +259,7 @@ export const Sidebar: React.FC = () => {
             >
               <Icon
                 className={cn(
-                  "w-4 h-4 shrink-0 transition-colors",
+                  "size-4 shrink-0 transition-colors",
                   isActive ? "text-slate-950 stroke-[2.2]" : "text-slate-400 group-hover:text-white"
                 )}
               />
@@ -296,18 +296,18 @@ export const Sidebar: React.FC = () => {
 
       {/* Eduplex Style Bottom Feature Card */}
       {!collapsed && (
-        <div className="mx-2.5 mb-3 p-3.5 rounded-2xl bg-gradient-to-br from-[#1a202c] to-[#111827] border border-white/10 space-y-2 relative overflow-hidden">
-          <div className="flex items-center justify-between text-xs">
-            <div className="flex items-center gap-1.5 text-emerald-400 font-mono font-bold text-[11px]">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Gated Safety Engine</span>
+        <div className="mx-3 mb-3 p-4 rounded-2xl bg-[#bbf7d0] text-slate-950 flex flex-col gap-2 relative overflow-hidden shadow-sm">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5 font-bold text-xs tracking-tight">
+              <ShieldCheck className="size-4 text-slate-950" />
+              <span>Safety Engine Active</span>
             </div>
-            <div className="w-5 h-5 rounded-full bg-white/10 text-slate-300 flex items-center justify-center">
-              <ArrowUpRight className="w-3 h-3" />
+            <div className="size-6 rounded-full bg-slate-950 text-white flex items-center justify-center shrink-0">
+              <ArrowUpRight className="size-3.5" />
             </div>
           </div>
-          <p className="text-[11px] text-slate-400 leading-tight">
-            Deterministic rule checks enforced. Dispensing fails closed until review.
+          <p className="text-[11px] text-slate-800 font-medium leading-snug">
+            Deterministic rule checks enforced. Dispensing fails closed until clinician sign-off.
           </p>
         </div>
       )}
@@ -331,7 +331,7 @@ export const Sidebar: React.FC = () => {
             className="p-1 rounded text-slate-400 hover:text-white"
             title="Expand Sidebar"
           >
-            <ChevronRight className="w-3.5 h-3.5" />
+            <ChevronRight className="size-3.5" />
           </button>
         )}
       </div>
