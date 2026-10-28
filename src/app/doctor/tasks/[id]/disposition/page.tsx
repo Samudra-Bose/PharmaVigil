@@ -87,11 +87,11 @@ function RecordDispositionContent() {
           </p>
         </div>
 
-        <Link href={`/doctor/tasks/${alertId}?caseId=${caseId}`}>
-          <Button size="sm" variant="ghost" className="text-xs gap-1.5">
+        <Button asChild size="sm" variant="ghost" className="text-xs gap-1.5">
+          <Link href={`/doctor/tasks/${alertId}?caseId=${caseId}`}>
             <ArrowLeft className="w-3.5 h-3.5" /> Back to Case
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </div>
 
       {error && <ErrorDisplay error={error} />}
