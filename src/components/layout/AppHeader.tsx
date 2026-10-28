@@ -10,7 +10,7 @@ import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { cn } from "@/lib/utils";
 
 export const AppHeader: React.FC = () => {
-  const { user, membership, role, hospitalName, logout } = useAuth();
+  const { user, membership, role, hospitalName, logout, switchRole, isMockMode } = useAuth();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   return (
@@ -65,9 +65,9 @@ export const AppHeader: React.FC = () => {
           {/* User Profile & Actions */}
           {user ? (
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-              {/* Authenticated Role Badge */}
+              {/* Authenticated Role Badge & Quick Demo Persona Switcher */}
               {role && (
-                <div className="flex items-center">
+                <div className="flex items-center gap-1.5">
                   <span
                     data-testid="user-role-badge"
                     className={cn(
@@ -101,6 +101,21 @@ export const AppHeader: React.FC = () => {
                             : "Patient"}
                     </span>
                   </span>
+
+                  {isMockMode && (
+                    <select
+                      value={role}
+                      onChange={(e) => switchRole(e.target.value as any)}
+                      className="text-[11px] font-semibold bg-slate-50 border border-slate-200/80 rounded-lg px-2 py-0.5 text-slate-700 hover:bg-slate-100 transition-colors focus:outline-none cursor-pointer hidden md:inline-block"
+                      title="Switch Clinical Persona"
+                      aria-label="Switch Clinical Persona"
+                    >
+                      <option value="PHARMACIST">🌿 Pharmacist</option>
+                      <option value="DOCTOR">🩺 Doctor (MD)</option>
+                      <option value="PATIENT">👤 Patient</option>
+                      <option value="HOSPITAL_ADMIN">🛡️ Admin</option>
+                    </select>
+                  )}
                 </div>
               )}
 

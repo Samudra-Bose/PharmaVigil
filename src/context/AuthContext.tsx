@@ -30,6 +30,22 @@ interface AuthContextType {
   refreshSession: () => Promise<void>;
 }
 
+const DEFAULT_DEMO_USER: CurrentUserResponse["user"] = {
+  id: "usr_pharma_01",
+  displayName: "Priya Sharma, RPh",
+  accountStatus: "ACTIVE",
+};
+
+const DEFAULT_DEMO_MEMBERSHIP: Membership = {
+  id: "mem_usr_pharma_01",
+  hospitalId: "Metro General Hospital",
+  userId: "usr_pharma_01",
+  assignedRole: "PHARMACIST",
+  requestedRole: "PHARMACIST",
+  status: "ACTIVE",
+  version: 1,
+};
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -39,7 +55,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     if (typeof window !== "undefined") {
       try {
         const cached = localStorage.getItem("pharmavigil_user");
-        return cached ? JSON.parse(cached) : null;
+        if (cached) return JSON.parse(cached);
+        if (api.getMockMode()) return DEFAULT_DEMO_USER;
       } catch {
         return null;
       }
@@ -51,7 +68,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     if (typeof window !== "undefined") {
       try {
         const cached = localStorage.getItem("pharmavigil_membership");
-        return cached ? JSON.parse(cached) : null;
+        if (cached) return JSON.parse(cached);
+        if (api.getMockMode()) return DEFAULT_DEMO_MEMBERSHIP;
       } catch {
         return null;
       }
@@ -69,6 +87,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             mem.requestedRole ||
             mem.role) as UserRole | null;
         }
+        if (api.getMockMode()) return "PHARMACIST";
       } catch {
         return null;
       }
@@ -128,16 +147,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setRole(assigned || null);
       await resolveHospital(activeMem);
     } catch (err) {
-      setUser(null);
-      setMembership(null);
-      setRole(null);
-      setHospital(null);
-      if (
-        err instanceof ApiClientError &&
-        err.code === "UNAUTHENTICATED" &&
-        !pathname?.startsWith("/auth")
-      ) {
-        router.push("/auth/login");
+      if (isMockMode && !pathname?.startsWith("/auth")) {
+        setUser(DEFAULT_DEMO_USER);
+        setMembership(DEFAULT_DEMO_MEMBERSHIP);
+        setRole("PHARMACIST");
+      } else {
+        setUser(null);
+        setMembership(null);
+        setRole(null);
+        setHospital(null);
+        if (
+          err instanceof ApiClientError &&
+          err.code === "UNAUTHENTICATED" &&
+          !pathname?.startsWith("/auth")
+        ) {
+          router.push("/auth/login");
+        }
       }
     } finally {
       setIsLoading(false);
