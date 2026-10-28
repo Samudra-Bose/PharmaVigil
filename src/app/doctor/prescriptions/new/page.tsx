@@ -211,11 +211,11 @@ function CreateRevisionContent() {
           </p>
         </div>
 
-        <Link href="/doctor/prescriptions">
-          <Button size="sm" variant="ghost" className="text-xs gap-1.5">
+        <Button asChild size="sm" variant="ghost" className="text-xs gap-1.5">
+          <Link href="/doctor/prescriptions">
             <ArrowLeft className="w-3.5 h-3.5" /> Cancel
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </div>
 
       {/* Demo Accelerator Button */}

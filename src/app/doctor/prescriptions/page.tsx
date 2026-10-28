@@ -41,11 +41,11 @@ export default function DoctorPrescriptionsPage() {
           </p>
         </div>
 
-        <Link href="/doctor/prescriptions/new">
-          <Button size="sm" variant="primary" className="text-xs gap-1.5">
+        <Button asChild size="sm" variant="primary" className="text-xs gap-1.5">
+          <Link href="/doctor/prescriptions/new">
             <Plus className="w-3.5 h-3.5" /> + Create Prescription
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </div>
 
       {loading ? (
@@ -94,15 +94,16 @@ export default function DoctorPrescriptionsPage() {
                     </Badge>
                   </td>
                   <td className="py-3 px-4 text-right">
-                    <Link href={`/doctor/prescriptions/new?caseId=${c.id}`}>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="text-xs gap-1 h-7"
-                      >
+                    <Button
+                      asChild
+                      size="sm"
+                      variant="outline"
+                      className="text-xs gap-1 h-7"
+                    >
+                      <Link href={`/doctor/prescriptions/new?caseId=${c.id}`}>
                         Revise <ArrowRight className="w-3 h-3" />
-                      </Button>
-                    </Link>
+                      </Link>
+                    </Button>
                   </td>
                 </tr>
               ))}
