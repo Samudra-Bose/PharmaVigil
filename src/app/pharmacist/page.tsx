@@ -224,7 +224,7 @@ export default function PharmacistDashboard() {
         <div className="flex items-center gap-2.5 shrink-0">
           <Link
             href="/pharmacist/patients/search"
-            className="h-9 px-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/80 shadow-2xs inline-flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer"
+            className="h-9 px-3.5 rounded-xl bg-white hover:bg-emerald-50/70 text-slate-700 hover:text-emerald-900 font-semibold text-xs border border-slate-200/90 shadow-2xs inline-flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer"
           >
             <User data-icon="inline-start" className="size-3.5 text-slate-500" />
             <span>Search Patient</span>
@@ -232,38 +232,38 @@ export default function PharmacistDashboard() {
 
           <Link
             href="/pharmacist/capture"
-            className="h-9 px-4 rounded-xl bg-[#064e3b] hover:bg-[#047857] text-white font-semibold text-xs shadow-sm inline-flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer"
+            className="h-9 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-sm shadow-emerald-600/25 inline-flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer"
           >
-            <Camera data-icon="inline-start" className="size-3.5 text-emerald-300" />
+            <Camera data-icon="inline-start" className="size-3.5 text-emerald-100" />
             <span>+ Capture Prescription</span>
           </Link>
         </div>
       </section>
 
-      {/* 2. OPERATIONAL PULSE: Unified Metrics Strip with Restrained Hierarchy */}
-      <section aria-label="Operational Overview" className="bg-white rounded-2xl border border-slate-200/70 shadow-xs overflow-hidden">
+      {/* 2. OPERATIONAL PULSE: Unified Metrics Strip with Themed Vibrancy */}
+      <section aria-label="Operational Overview" className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
         <div className="grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 lg:divide-x divide-slate-100">
           {/* Metric 1: Flagged Concerns */}
-          <div className="p-4 sm:p-5 flex flex-col justify-between">
+          <div className="p-4 sm:p-5 flex flex-col justify-between bg-rose-50/30">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500">Flagged Concerns</span>
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200/70">
+              <span className="text-xs font-semibold text-rose-900">Flagged Concerns</span>
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-rose-100/90 text-rose-800 border border-rose-200">
                 Action Required
               </span>
             </div>
             <div className="mt-2">
-              <div className="text-xl font-extrabold text-slate-900 font-tabular font-mono">
+              <div className="text-xl font-extrabold text-rose-700 font-tabular font-mono">
                 {countFlagged} Blocked
               </div>
-              <p className="text-[11px] text-slate-500 mt-0.5 truncate">CYP3A4 Contraindications</p>
+              <p className="text-[11px] text-rose-600/80 mt-0.5 truncate">CYP3A4 Contraindications</p>
             </div>
           </div>
 
           {/* Metric 2: Active Work Queue */}
-          <div className="p-4 sm:p-5 flex flex-col justify-between">
+          <div className="p-4 sm:p-5 flex flex-col justify-between bg-slate-50/40">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500">Total Work Queue</span>
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
+              <span className="text-xs font-semibold text-slate-600">Total Work Queue</span>
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-200/80 text-slate-800">
                 Active Deck
               </span>
             </div>
@@ -276,38 +276,40 @@ export default function PharmacistDashboard() {
           </div>
 
           {/* Metric 3: Ready for Dispensing */}
-          <div className="p-4 sm:p-5 flex flex-col justify-between">
+          <div className="p-4 sm:p-5 flex flex-col justify-between bg-emerald-50/30">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500">Authorized Release</span>
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/70">
+              <span className="text-xs font-semibold text-emerald-900">Authorized Release</span>
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100/90 text-emerald-800 border border-emerald-200">
                 100% Gated
               </span>
             </div>
             <div className="mt-2">
-              <div className="text-xl font-extrabold text-slate-900 font-tabular font-mono">
+              <div className="text-xl font-extrabold text-emerald-700 font-tabular font-mono">
                 {countAuthorized} Dispensed
               </div>
-              <p className="text-[11px] text-slate-500 mt-0.5 truncate">Pharmacist Authorized</p>
+              <p className="text-[11px] text-emerald-600/80 mt-0.5 truncate">Pharmacist Authorized</p>
             </div>
           </div>
 
           {/* Metric 4: Gated Safety Engine Action */}
-          <div className="p-4 sm:p-5 bg-slate-50/50 flex flex-col justify-between">
+          <div className="p-4 sm:p-5 bg-teal-50/30 flex flex-col justify-between">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
-                <ShieldCheck className="size-3.5 text-emerald-600" />
+              <span className="text-xs font-semibold text-teal-900 flex items-center gap-1.5">
+                <ShieldCheck className="size-3.5 text-teal-700" />
                 <span>Safety Gate</span>
               </span>
-              <span className="text-[10px] font-mono text-emerald-800 font-semibold">Fails Closed</span>
+              <span className="text-[10px] font-mono text-teal-900 font-bold bg-teal-100/80 px-2 py-0.5 rounded-full border border-teal-200">
+                Fails Closed
+              </span>
             </div>
             <div className="mt-2">
               {activeFlaggedCase ? (
                 <Link
                   href={`/pharmacist/cases/${activeFlaggedCase.id}/results`}
-                  className="w-full h-7 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-[11px] shadow-2xs inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                  className="w-full h-7 px-3 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-[11px] shadow-sm shadow-emerald-700/20 inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                 >
                   <span>Inspect Hazard ({activeFlaggedCase.id})</span>
-                  <ArrowRight className="size-3 text-emerald-400" />
+                  <ArrowRight className="size-3 text-emerald-200" />
                 </Link>
               ) : (
                 <span className="text-xs text-slate-500 font-mono">All clinical checks clear</span>

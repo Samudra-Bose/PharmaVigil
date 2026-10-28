@@ -21,8 +21,49 @@ export const AppHeader: React.FC = () => {
     setMounted(true);
   }, []);
 
+  const getHeaderAccent = () => {
+    if (pathname?.startsWith("/pharmacist")) return "from-emerald-500 via-teal-500 to-emerald-400";
+    if (pathname?.startsWith("/doctor")) return "from-blue-600 via-indigo-500 to-sky-400";
+    if (pathname?.startsWith("/patient")) return "from-violet-600 via-purple-500 to-fuchsia-400";
+    if (pathname?.startsWith("/admin")) return "from-indigo-600 via-slate-600 to-purple-500";
+    return "from-emerald-500 via-blue-500 via-violet-500 to-indigo-500";
+  };
+
+  const getRoleBadgeStyle = (r: UserRole) => {
+    switch (r) {
+      case "PHARMACIST":
+        return {
+          pill: "bg-emerald-50 text-emerald-800 border-emerald-200/90",
+          dot: "bg-emerald-500",
+        };
+      case "DOCTOR":
+        return {
+          pill: "bg-blue-50 text-blue-800 border-blue-200/90",
+          dot: "bg-blue-500",
+        };
+      case "PATIENT":
+        return {
+          pill: "bg-violet-50 text-violet-800 border-violet-200/90",
+          dot: "bg-violet-500",
+        };
+      case "HOSPITAL_ADMIN":
+        return {
+          pill: "bg-indigo-50 text-indigo-800 border-indigo-200/90",
+          dot: "bg-indigo-500",
+        };
+      default:
+        return {
+          pill: "bg-slate-100 text-slate-800 border-slate-200/80",
+          dot: "bg-slate-500",
+        };
+    }
+  };
+
+  const roleTheme = role ? getRoleBadgeStyle(role) : null;
+
   return (
     <>
+      <div className={cn("h-[2.5px] w-full bg-gradient-to-r transition-all duration-300", getHeaderAccent())} />
       <header className="bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-40 select-none">
         <div className="w-full px-3 sm:px-5 lg:px-6 h-12 sm:h-13 flex items-center justify-between gap-2">
           {/* Brand & Left Mobile Trigger */}
@@ -102,16 +143,14 @@ export const AppHeader: React.FC = () => {
                   <span
                     data-testid="user-role-badge"
                     className={cn(
-                      "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold tracking-wide border select-none",
-                      role === "PHARMACIST"
-                        ? "bg-emerald-50 text-emerald-800 border-emerald-200/80"
-                        : "bg-slate-100 text-slate-800 border-slate-200/80",
+                      "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold tracking-wide border select-none transition-colors",
+                      roleTheme?.pill
                     )}
                   >
                     <span
                       className={cn(
                         "size-1.5 rounded-full shrink-0",
-                        role === "PHARMACIST" ? "bg-emerald-600" : "bg-slate-600",
+                        roleTheme?.dot
                       )}
                     />
                     <span>

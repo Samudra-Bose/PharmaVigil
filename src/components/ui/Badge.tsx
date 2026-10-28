@@ -20,7 +20,11 @@ export type BadgeVariant =
   | "authorized"
   | "failed"
   | "incomplete"
-  | "mock";
+  | "mock"
+  | "emerald"
+  | "sapphire"
+  | "violet"
+  | "indigo";
 
 interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: BadgeVariant;
@@ -108,6 +112,10 @@ export const Badge: React.FC<BadgeProps> = ({
     failed: "bg-rose-100 text-rose-900 border-rose-400 font-semibold",
     incomplete: "bg-orange-50 text-orange-900 border-orange-300 font-medium",
     mock: "bg-amber-100 text-amber-950 border-amber-400 font-mono text-[11px] font-semibold tracking-wider uppercase",
+    emerald: "bg-emerald-50 text-emerald-800 border-emerald-300 font-semibold",
+    sapphire: "bg-blue-50 text-blue-800 border-blue-300 font-semibold",
+    violet: "bg-violet-50 text-violet-800 border-violet-300 font-semibold",
+    indigo: "bg-indigo-50 text-indigo-800 border-indigo-300 font-semibold",
   };
 
   return (

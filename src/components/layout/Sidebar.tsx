@@ -85,6 +85,47 @@ export const Sidebar: React.FC = () => {
   let items: NavItem[] = [];
   let roleTitle = "Portal";
 
+  const roleTheme = (() => {
+    switch (effectiveRole) {
+      case "DOCTOR":
+        return {
+          activeBg: "bg-blue-50 text-blue-900 font-semibold border border-blue-200/90 shadow-2xs",
+          activeIcon: "text-blue-700 stroke-[2.2]",
+          activePip: "bg-blue-600",
+          tag: "bg-blue-50 text-blue-800 border-blue-200/80",
+          logoColor: "text-blue-400",
+          statusDot: "bg-blue-500",
+        };
+      case "PATIENT":
+        return {
+          activeBg: "bg-violet-50 text-violet-900 font-semibold border border-violet-200/90 shadow-2xs",
+          activeIcon: "text-violet-700 stroke-[2.2]",
+          activePip: "bg-violet-600",
+          tag: "bg-violet-50 text-violet-800 border-violet-200/80",
+          logoColor: "text-violet-400",
+          statusDot: "bg-violet-500",
+        };
+      case "HOSPITAL_ADMIN":
+        return {
+          activeBg: "bg-indigo-50 text-indigo-900 font-semibold border border-indigo-200/90 shadow-2xs",
+          activeIcon: "text-indigo-700 stroke-[2.2]",
+          activePip: "bg-indigo-600",
+          tag: "bg-indigo-50 text-indigo-800 border-indigo-200/80",
+          logoColor: "text-indigo-400",
+          statusDot: "bg-indigo-500",
+        };
+      default:
+        return {
+          activeBg: "bg-emerald-50 text-emerald-900 font-semibold border border-emerald-200/90 shadow-2xs",
+          activeIcon: "text-emerald-700 stroke-[2.2]",
+          activePip: "bg-emerald-600",
+          tag: "bg-emerald-50 text-emerald-800 border-emerald-200/80",
+          logoColor: "text-emerald-400",
+          statusDot: "bg-emerald-500",
+        };
+    }
+  })();
+
   if (effectiveRole === "PHARMACIST") {
     roleTitle = "Pharmacy CDS";
     items = [
@@ -191,12 +232,12 @@ export const Sidebar: React.FC = () => {
         {!collapsed ? (
           <Link href="/" className="overflow-hidden min-w-0 pr-1 flex items-center gap-2.5 group">
             <div className="size-8 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold shadow-2xs shrink-0 group-hover:bg-slate-800 transition-colors">
-              <ShieldCheck className="size-4 text-emerald-400" />
+              <ShieldCheck className={cn("size-4", roleTheme.logoColor)} />
             </div>
             <div className="overflow-hidden">
               <div className="text-sm font-bold tracking-tight text-slate-900 flex items-center gap-1.5">
                 <span>PharmaVigil</span>
-                <span className="text-[9px] uppercase font-mono font-bold px-1.5 py-0.2 bg-emerald-50 text-emerald-800 rounded border border-emerald-200/80">
+                <span className={cn("text-[9px] uppercase font-mono font-bold px-1.5 py-0.2 rounded border", roleTheme.tag)}>
                   CDS
                 </span>
               </div>
@@ -214,7 +255,7 @@ export const Sidebar: React.FC = () => {
             className="size-8 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold shadow-2xs shrink-0"
             title={`PharmaVigil - ${roleTitle}`}
           >
-            <ShieldCheck className="size-4 text-emerald-400" />
+            <ShieldCheck className={cn("size-4", roleTheme.logoColor)} />
           </Link>
         )}
 
@@ -252,14 +293,14 @@ export const Sidebar: React.FC = () => {
                 "flex items-center rounded-xl text-xs transition-all group relative cursor-pointer",
                 collapsed ? "justify-center p-2.5" : "gap-3 px-3 py-2",
                 isActive
-                  ? "bg-emerald-50 text-emerald-900 font-semibold border border-emerald-200/80 shadow-2xs"
+                  ? roleTheme.activeBg
                   : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium"
               )}
             >
               <Icon
                 className={cn(
                   "size-4 shrink-0 transition-colors",
-                  isActive ? "text-emerald-700 stroke-[2.2]" : "text-slate-400 group-hover:text-slate-700"
+                  isActive ? roleTheme.activeIcon : "text-slate-400 group-hover:text-slate-700"
                 )}
               />
 
@@ -284,7 +325,7 @@ export const Sidebar: React.FC = () => {
 
               {/* Indicator Pip for active state when collapsed */}
               {collapsed && isActive && (
-                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-emerald-600 rounded-r-full" />
+                <span className={cn("absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full", roleTheme.activePip)} />
               )}
             </Link>
           );
@@ -301,7 +342,7 @@ export const Sidebar: React.FC = () => {
         {!collapsed ? (
           <>
             <span className="flex items-center gap-1.5">
-              <span className="size-1.5 rounded-full bg-emerald-500" />
+              <span className={cn("size-1.5 rounded-full", roleTheme.statusDot)} />
               <span>Fails-Closed Active</span>
             </span>
             <kbd className="px-1.5 py-0.5 bg-slate-100 rounded border border-slate-200 text-slate-600">

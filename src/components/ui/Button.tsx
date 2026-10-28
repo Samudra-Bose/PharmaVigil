@@ -11,6 +11,14 @@ export const buttonVariants = cva(
       variant: {
         primary:
           "bg-slate-900 text-white hover:bg-slate-800 active:bg-slate-950 shadow-sm",
+        emerald:
+          "bg-emerald-600 text-white hover:bg-emerald-700 active:bg-emerald-800 shadow-sm shadow-emerald-600/20",
+        blue:
+          "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 shadow-sm shadow-blue-600/20",
+        violet:
+          "bg-violet-600 text-white hover:bg-violet-700 active:bg-violet-800 shadow-sm shadow-violet-600/20",
+        indigo:
+          "bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800 shadow-sm shadow-indigo-600/20",
         teal: "bg-teal-700 text-white hover:bg-teal-800 active:bg-teal-900 shadow-sm",
         secondary:
           "bg-slate-100 text-slate-900 hover:bg-slate-200 active:bg-slate-300 border border-slate-200",
