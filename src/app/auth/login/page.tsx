@@ -60,7 +60,7 @@ const PRIMARY_PERSONAS: TestPersona[] = [
     password: "DemoPassword123!",
     hospital: "demo-hospital",
     icon: Stethoscope,
-    badgeColor: "bg-teal-50 text-teal-800 border-teal-200",
+    badgeColor: "bg-blue-50 text-blue-800 border-blue-200",
     desc: "Clinical triage queue, prescriptions, alert dispositions with overrides, appointments.",
   },
   {
@@ -71,7 +71,7 @@ const PRIMARY_PERSONAS: TestPersona[] = [
     password: "DemoPassword123!",
     hospital: "demo-hospital",
     icon: User,
-    badgeColor: "bg-sky-50 text-sky-800 border-sky-200",
+    badgeColor: "bg-violet-50 text-violet-800 border-violet-200",
     desc: "Outpatient portal, prescription tracking, self-reported allergies & medication history.",
   },
   {
@@ -82,7 +82,7 @@ const PRIMARY_PERSONAS: TestPersona[] = [
     password: "DemoPassword123!",
     hospital: "demo-hospital",
     icon: ShieldCheck,
-    badgeColor: "bg-purple-50 text-purple-800 border-purple-200",
+    badgeColor: "bg-indigo-50 text-indigo-800 border-indigo-200",
     desc: "Governance, staff approvals, clinical rulesets, audit trail, demo reset.",
   },
 ];
