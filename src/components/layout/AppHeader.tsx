@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
-import { Shield, Building2, User, LogOut, Menu } from "lucide-react";
+import { Shield, Building2, User, LogOut, Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
@@ -65,6 +65,18 @@ export const AppHeader: React.FC = () => {
                 />
               </div>
             )}
+          </div>
+
+          {/* Center: Search pill bar (Eduplex Style) */}
+          <div className="hidden lg:flex items-center flex-1 max-w-md mx-6">
+            <div className="relative w-full">
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search prescriptions, patients, clinical rules..."
+                className="w-full pl-9 pr-4 py-1.5 text-xs rounded-full bg-slate-50 border border-slate-200/80 text-slate-700 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 transition-all shadow-2xs"
+              />
+            </div>
           </div>
 
           {/* User Profile & Actions */}

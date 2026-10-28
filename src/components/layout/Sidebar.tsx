@@ -192,29 +192,31 @@ export const Sidebar: React.FC = () => {
         )}
       >
         {!collapsed ? (
-          <div className="overflow-hidden min-w-0 pr-1 flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-              <Activity className="w-4 h-4 text-emerald-400" />
+          <Link href="/" className="overflow-hidden min-w-0 pr-1 flex items-center gap-2.5 group">
+            <div className="w-8 h-8 rounded-xl bg-white text-slate-950 flex items-center justify-center font-bold shadow-md shadow-emerald-500/10 shrink-0">
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
             </div>
             <div className="overflow-hidden">
-              <div className="text-xs font-extrabold uppercase tracking-wider text-white truncate">
-                {roleTitle}
+              <div className="text-sm font-extrabold tracking-tight text-white flex items-center gap-1.5">
+                <span>PharmaVigil</span>
+                <span className="text-[9px] uppercase font-mono font-bold px-1.5 py-0.2 bg-emerald-500/20 text-emerald-300 rounded border border-emerald-500/30">CDS</span>
               </div>
               <div
                 className="text-[11px] font-medium text-slate-400 truncate mt-0.5"
                 title={hospitalName}
               >
-                {hospitalName}
+                {roleTitle} • {hospitalName}
               </div>
             </div>
-          </div>
+          </Link>
         ) : (
-          <div
-            className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0"
-            title={roleTitle}
+          <Link
+            href="/"
+            className="w-8 h-8 rounded-xl bg-white text-slate-950 flex items-center justify-center font-bold shadow-md shadow-emerald-500/10 shrink-0"
+            title={`PharmaVigil - ${roleTitle}`}
           >
-            <Activity className="w-4 h-4 text-emerald-400" />
-          </div>
+            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+          </Link>
         )}
 
         <button

@@ -22,16 +22,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full">
-      <body className="h-full flex flex-col font-sans text-slate-900 bg-clinical-canvas antialiased selection:bg-slate-200">
+      <body className="h-full flex font-sans text-slate-900 bg-[#f4f5f8] antialiased selection:bg-slate-200">
         <AuthProvider>
           <Toaster richColors position="top-right" closeButton />
           <HotkeysHandler />
-          <GlobalBanner />
-          <AppHeader />
-          <div className="flex-1 flex min-h-0 w-full overflow-hidden">
+          <div className="flex h-screen w-full overflow-hidden">
             <Sidebar />
-            <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
-              <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
+            <div className="flex-1 flex flex-col min-w-0 h-full overflow-y-auto">
+              <GlobalBanner />
+              <AppHeader />
+              <main className="flex-1 w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
                 <Breadcrumbs />
                 {children}
               </main>

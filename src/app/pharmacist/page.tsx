@@ -10,14 +10,6 @@ import {
 import { Badge, type BadgeVariant } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PrescriptionTableSkeleton } from "@/components/skeletons";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableHead,
-  TableRow,
-  TableCell,
-} from "@/components/ui/Table";
 import { ClinicalTooltip } from "@/components/clinical/ClinicalTooltip";
 import { formatDateTime } from "@/lib/utils";
 import {
@@ -31,12 +23,22 @@ import {
   X,
   Lock,
   ChevronRight,
+  ChevronLeft,
   Activity,
   Layers,
   FileText,
   Clock,
   Sparkles,
   CheckCircle2,
+  Calendar as CalendarIcon,
+  ArrowUpRight,
+  ShieldCheck,
+  TrendingUp,
+  FileCheck2,
+  Stethoscope,
+  Building2,
+  Check,
+  Plus,
 } from "lucide-react";
 
 export default function PharmacistDashboard() {
@@ -128,473 +130,560 @@ export default function PharmacistDashboard() {
   );
 
   return (
-    <div className="space-y-5 max-w-7xl mx-auto pb-10">
-      {/* 1. Header Row (Section C.1) */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1 border-b border-slate-200/60">
+    <div className="space-y-6 max-w-[1400px] mx-auto pb-12">
+      {/* 1. Eduplex-Style Greeting & Primary Actions Header */}
+      <section
+        aria-label="Welcome and Quick Actions"
+        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+      >
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <span>Prescription Work Queue</span>
-            <span className="hidden sm:inline-block text-[10px] uppercase font-mono font-semibold px-2 py-0.5 bg-forest-50 text-forest-900 rounded-full border border-forest-200">
-              CDS Deterministic
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-[10px] uppercase font-mono font-bold tracking-wider text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+              CDS Deterministic Verification
             </span>
+            <span className="text-slate-300">•</span>
+            <span className="text-xs text-slate-500 font-mono">
+              Cardiology Outpatient Clinic
+            </span>
+          </div>
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2">
+            <span>Welcome back, Priya Sharma</span>
+            <span>👋</span>
           </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Deterministic clinical safety verification, drug-drug interaction
-            screening, and gated dispensing authorization.
+          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+            Deterministic clinical safety verification, drug-drug interaction screening, and gated dispensing authorization.
           </p>
         </div>
 
-        {/* Action Buttons: Zero wrapping, distinct primary vs secondary */}
-        <div className="flex items-center gap-2 shrink-0">
+        {/* Action Buttons: Clean, rounded, distinct hierarchy */}
+        <div className="flex items-center gap-2.5 shrink-0">
           <Link href="/pharmacist/patients/search">
-            <button className="h-8 sm:h-9 px-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/90 shadow-2xs flex items-center gap-1.5 transition-all whitespace-nowrap">
+            <button className="h-9 px-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/90 shadow-2xs flex items-center gap-2 transition-all whitespace-nowrap">
               <User className="w-3.5 h-3.5 text-slate-500" />
               <span>Search Patient</span>
             </button>
           </Link>
 
           <Link href="/pharmacist/capture">
-            <button className="h-8 sm:h-9 px-4 rounded-xl bg-forest-900 hover:bg-forest-800 text-white font-semibold text-xs shadow-lux flex items-center gap-1.5 transition-all whitespace-nowrap">
-              <Camera className="w-3.5 h-3.5 text-emerald-300" />
+            <button className="h-9 px-4 rounded-2xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-md shadow-slate-900/10 flex items-center gap-2 transition-all whitespace-nowrap">
+              <Camera className="w-3.5 h-3.5 text-emerald-400" />
               <span>+ New Capture</span>
             </button>
           </Link>
         </div>
+      </section>
+
+      {/* 2. TOP TIER: 4-Card Bento Grid (Direct match to Eduplex reference: 3 Pastel + 1 Dark Card) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Card 1: Pastel Coral / Peach Squircle */}
+        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200">
+          <div>
+            <div className="flex items-center justify-between">
+              <div className="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-100/80 text-amber-600 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-5 h-5 text-amber-600" />
+              </div>
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-100">
+                Requires Action
+              </span>
+            </div>
+            <div className="mt-3">
+              <h3 className="text-sm font-bold text-slate-900">Flagged Concerns</h3>
+              <p className="text-xs text-slate-500 mt-0.5">DDI CYP3A4 Contraindications</p>
+            </div>
+          </div>
+          <div className="pt-4 mt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+            <div>
+              <span className="text-[10px] uppercase font-mono text-slate-400 block">Severity</span>
+              <span className="font-bold text-rose-700 font-mono">Severe DDI</span>
+            </div>
+            <div className="text-right">
+              <span className="text-[10px] uppercase font-mono text-slate-400 block">Cases</span>
+              <span className="font-bold text-slate-900 font-mono font-tabular">{countFlagged} Blocked</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 2: Pastel Lime / Mint Squircle */}
+        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200">
+          <div>
+            <div className="flex items-center justify-between">
+              <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0">
+                <Layers className="w-5 h-5 text-emerald-700" />
+              </div>
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
+                Active Queue
+              </span>
+            </div>
+            <div className="mt-3">
+              <h3 className="text-sm font-bold text-slate-900">Total Work Queue</h3>
+              <p className="text-xs text-slate-500 mt-0.5">Inpatient & Outpatient Rx</p>
+            </div>
+          </div>
+          <div className="pt-4 mt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+            <div>
+              <span className="text-[10px] uppercase font-mono text-slate-400 block">Throughput</span>
+              <span className="font-bold text-emerald-700 font-mono">98.6% Target</span>
+            </div>
+            <div className="text-right">
+              <span className="text-[10px] uppercase font-mono text-slate-400 block">Queue</span>
+              <span className="font-bold text-slate-900 font-mono font-tabular">{cases.length} Total</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 3: Pastel Sky / Indigo Squircle */}
+        <div className="bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between transition-all hover:border-slate-200">
+          <div>
+            <div className="flex items-center justify-between">
+              <div className="w-11 h-11 rounded-2xl bg-sky-50 border border-sky-100/80 text-sky-700 flex items-center justify-center shrink-0">
+                <FileCheck2 className="w-5 h-5 text-sky-700" />
+              </div>
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-100">
+                Deterministic
+              </span>
+            </div>
+            <div className="mt-3">
+              <h3 className="text-sm font-bold text-slate-900">Ready to Dispense</h3>
+              <p className="text-xs text-slate-500 mt-0.5">Checks Cleared for Release</p>
+            </div>
+          </div>
+          <div className="pt-4 mt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+            <div>
+              <span className="text-[10px] uppercase font-mono text-slate-400 block">Verified</span>
+              <span className="font-bold text-sky-700 font-mono">100% Gated</span>
+            </div>
+            <div className="text-right">
+              <span className="text-[10px] uppercase font-mono text-slate-400 block">Released</span>
+              <span className="font-bold text-slate-900 font-mono font-tabular">{countAuthorized} Authorized</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 4: DARK EDU-ACTION CARD (Direct match to Eduplex "Go Premium" card) */}
+        <div className="bg-[#111317] rounded-3xl p-5 shadow-lux-black border border-slate-800 text-white relative overflow-hidden flex flex-col justify-between">
+          <div className="space-y-2 relative z-10">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5 text-emerald-400 font-mono font-bold text-[10px] uppercase tracking-wider">
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>Gated Safety Engine</span>
+              </div>
+              <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+            </div>
+
+            <h3 className="text-base font-extrabold text-white leading-tight">
+              Dispensing Gated
+            </h3>
+            <p className="text-[11px] text-slate-400 leading-snug">
+              Deterministic rule checks enforced. Dispensing fails closed until attending disposition.
+            </p>
+          </div>
+
+          <div className="mt-4 pt-3 border-t border-white/10 relative z-10 flex items-center justify-between gap-2">
+            {activeFlaggedCase ? (
+              <Link
+                href={`/pharmacist/cases/${activeFlaggedCase.id}/results`}
+                className="w-full"
+              >
+                <button className="w-full h-8 px-3 rounded-xl bg-[#bbf7d0] hover:bg-[#86efac] text-slate-950 font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
+                  <span>Review Hazard</span>
+                  <ArrowRight className="w-3 h-3 text-slate-950" />
+                </button>
+              </Link>
+            ) : (
+              <span className="text-xs font-mono text-emerald-400">All checks clear</span>
+            )}
+          </div>
+
+          {/* Decorative Background Graphic */}
+          <div className="absolute -bottom-6 -right-6 w-24 h-24 rounded-full bg-emerald-500/10 blur-xl pointer-events-none" />
+        </div>
       </div>
 
-      {/* 2. Priority Overview: Prominent Blocked Work + Restrained Metric Rail (Section C.2) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-        {/* Left (7 or 8 cols): Visually Prominent Treatment for Genuine Flagged or Blocked Work */}
-        <div className="lg:col-span-8">
-          {activeFlaggedCase ? (
-            <div className="bg-white rounded-2xl p-5 shadow-lux border-l-4 border-l-rose-500 border-t border-r border-b border-slate-100 flex flex-col justify-between h-full relative overflow-hidden">
-              <div className="space-y-3">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-rose-600 animate-pulse" />
-                    <span className="text-xs font-bold uppercase tracking-wider text-rose-950 font-mono">
-                      Priority Safety Flag • Dispensing Blocked (Fails-Closed)
+      {/* 3. MIDDLE TIER: Asymmetric 3-Column Bento (Hours Activity + Daily Schedule + Mini Calendar) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+        {/* Col 1: Hours Activity / Verification Trends (~45% width: 5 cols) */}
+        <div className="lg:col-span-5 bg-white rounded-3xl p-6 shadow-lux border border-slate-100 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div>
+                <h3 className="text-base font-bold text-slate-900">Hours Activity</h3>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                    <TrendingUp className="w-3 h-3" />
+                    +14% vs last week
+                  </span>
+                </div>
+              </div>
+              <div className="text-xs font-semibold px-2.5 py-1 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-600">
+                Weekly ⌵
+              </div>
+            </div>
+
+            {/* Stylized Modern Bar Chart (Direct match to Eduplex Hours Activity Chart) */}
+            <div className="pt-6 pb-2">
+              <div className="h-44 flex items-end justify-between gap-3 px-2 relative">
+                {/* Floating Tooltip above Thursday Bar (Eduplex Feature) */}
+                <div className="absolute top-1 left-[54%] -translate-x-1/2 bg-[#111317] text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-lg flex items-center gap-1 z-20 pointer-events-none">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#bbf7d0]" />
+                  <span>6h 45 min • 14 Rx</span>
+                </div>
+
+                {/* Day Bars */}
+                {[
+                  { day: "Su", height: "h-14", active: false },
+                  { day: "Mo", height: "h-28", active: false },
+                  { day: "Tu", height: "h-20", active: false },
+                  { day: "We", height: "h-36", active: false },
+                  { day: "Th", height: "h-36", active: true },
+                  { day: "Fr", height: "h-16", active: false },
+                  { day: "Sa", height: "h-24", active: false },
+                ].map((item, i) => (
+                  <div key={i} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
+                    <div className="w-full max-w-[14px] bg-slate-100 rounded-full h-36 flex items-end">
+                      <div
+                        className={`w-full rounded-full transition-all ${
+                          item.active
+                            ? "bg-[#bbf7d0] shadow-sm shadow-emerald-400/30"
+                            : "bg-[#111317] group-hover:bg-slate-700"
+                        } ${item.height}`}
+                      />
+                    </div>
+                    <span className={`text-[11px] font-mono ${item.active ? "font-bold text-slate-900" : "text-slate-400"}`}>
+                      {item.day}
                     </span>
                   </div>
-                  <span className="text-[11px] font-mono text-slate-400">
-                    Rule: DDI-CYP3A4-ATOR-CLAR
-                  </span>
-                </div>
-
-                <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 pt-1 border-t border-slate-100/80">
-                  <div>
-                    <div className="text-base font-bold text-slate-900 flex items-center gap-2">
-                      <span className="font-mono">{activeFlaggedCase.id}</span>
-                      <span className="text-slate-300">•</span>
-                      <span>
-                        Patient: Rajan Sharma ({activeFlaggedCase.patientId})
-                      </span>
-                    </div>
-                    <div className="text-xs text-slate-500 mt-0.5">
-                      Cardiology Outpatient • Attending: Dr. Sarah Chen •
-                      Revision {activeFlaggedCase.currentRevisionNumber}
-                    </div>
-                  </div>
-
-                  <Badge
-                    variant="high"
-                    className="text-xs shrink-0 self-start sm:self-auto"
-                  >
-                    Severe DDI Hazard
-                  </Badge>
-                </div>
-
-                <div className="p-3 bg-slate-50/80 rounded-xl border border-slate-100 text-xs text-slate-700 leading-relaxed">
-                  <span className="font-semibold text-slate-900">
-                    Pharmacological Conflict:
-                  </span>{" "}
-                  Concurrent administration of{" "}
-                  <span className="font-semibold text-slate-900">
-                    Atorvastatin 40mg
-                  </span>{" "}
-                  and{" "}
-                  <span className="font-semibold text-slate-900">
-                    Clarithromycin 500mg
-                  </span>{" "}
-                  causes potent CYP3A4 enzyme inhibition, markedly increasing
-                  statin systemic exposure and rhabdomyolysis hazard.
-                </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-2 text-xs text-amber-700 font-medium">
-                  <Lock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                  <span>
-                    Dispensing Authorization Locked: Requires Attending
-                    Physician Disposition
-                  </span>
-                </div>
-
-                <Link
-                  href={`/pharmacist/cases/${activeFlaggedCase.id}/results`}
-                  className="shrink-0"
-                >
-                  <button className="h-8 px-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs shadow-2xs flex items-center gap-1.5 transition-all">
-                    <span>Review Contraindication</span>
-                    <ArrowRight className="w-3 h-3 text-emerald-300" />
-                  </button>
-                </Link>
+                ))}
               </div>
             </div>
-          ) : (
-            <div className="bg-white rounded-2xl p-5 shadow-lux border border-slate-100 flex items-center justify-between h-full">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold text-slate-900">
-                    Safety Queue Clear
-                  </h3>
-                  <p className="text-xs text-slate-500">
-                    All prescription cases are processed or cleared for
-                    outpatient dispensing.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
+          </div>
+
+          <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+            <span>Safety Throughput:</span>
+            <span className="font-semibold text-emerald-700">100% Deterministic</span>
+          </div>
         </div>
 
-        {/* Right (4 or 5 cols): Restrained Operational Metric Rail */}
-        <div className="lg:col-span-4 bg-white rounded-2xl p-4 shadow-lux border border-slate-100 flex flex-col justify-between">
+        {/* Col 2: Daily Schedule / Verification Pipeline (~35% width: 4 cols) */}
+        <div className="lg:col-span-4 bg-white rounded-3xl p-6 shadow-lux border border-slate-100 flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between pb-2.5 border-b border-slate-100 text-xs">
-              <span className="font-bold text-slate-700 uppercase tracking-wider text-[11px] font-mono flex items-center gap-1.5">
-                <Activity className="w-3.5 h-3.5 text-forest-900" /> Queue
-                Summary
-              </span>
-              <span className="text-[10px] font-mono text-slate-400">
-                v1.0.0-illustrative
-              </span>
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <h3 className="text-base font-bold text-slate-900">Clinical Pipeline</h3>
+              <span className="text-[10px] font-mono text-slate-400">Deterministic CDS</span>
             </div>
 
-            <div className="divide-y divide-slate-100 text-xs">
-              <div className="py-2.5 flex items-center justify-between">
-                <span className="text-slate-600 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" />
-                  Flagged Concerns
-                </span>
-                <span className="font-mono font-bold text-rose-700 font-tabular text-sm">
-                  {countFlagged}
-                </span>
+            {/* List with squircle pastel icons & right chevrons (Eduplex "Daily Schedule" style) */}
+            <div className="divide-y divide-slate-100 mt-2">
+              <div className="py-2.5 flex items-center justify-between group cursor-pointer">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-orange-50 border border-orange-100 text-orange-600 flex items-center justify-center shrink-0">
+                    <Camera className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-slate-900">OCR Capture</div>
+                    <div className="text-[11px] text-slate-500">99.4% Confidence Score</div>
+                  </div>
+                </div>
+                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
               </div>
 
-              <div className="py-2.5 flex items-center justify-between">
-                <span className="text-slate-600 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-slate-400 shrink-0" />
-                  Active in Queue
-                </span>
-                <span className="font-mono font-bold text-slate-900 font-tabular text-sm">
-                  {cases.length}
-                </span>
+              <div className="py-2.5 flex items-center justify-between group cursor-pointer">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-purple-50 border border-purple-100 text-purple-600 flex items-center justify-center shrink-0">
+                    <ShieldAlert className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-slate-900">DDI Interaction Check</div>
+                    <div className="text-[11px] text-rose-600 font-medium">CYP3A4 Flagged (Severe)</div>
+                  </div>
+                </div>
+                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
               </div>
 
-              <div className="py-2.5 flex items-center justify-between">
-                <span className="text-slate-600 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-teal-500 shrink-0" />
-                  Ready to Dispense
-                </span>
-                <span className="font-mono font-bold text-slate-900 font-tabular text-sm">
-                  {countReady}
-                </span>
+              <div className="py-2.5 flex items-center justify-between group cursor-pointer">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                    <Stethoscope className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-slate-900">Physician Review</div>
+                    <div className="text-[11px] text-slate-500">Attending: Dr. Sarah Chen</div>
+                  </div>
+                </div>
+                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
               </div>
 
-              <div className="py-2.5 flex items-center justify-between">
-                <span className="text-slate-600 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
-                  Authorized
-                </span>
-                <span className="font-mono font-bold text-slate-900 font-tabular text-sm">
-                  {countAuthorized}
-                </span>
+              <div className="py-2.5 flex items-center justify-between group cursor-pointer">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                    <Lock className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-slate-900">Dispensing Gate</div>
+                    <div className="text-[11px] text-amber-700 font-medium">Locked (Fails Closed)</div>
+                  </div>
+                </div>
+                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-700 transition-colors" />
               </div>
             </div>
           </div>
 
-          <div className="pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-mono">
-            <span>Safety Isolation:</span>
-            <span className="font-semibold text-emerald-700">
-              100% Gated RBAC
-            </span>
+          <div className="pt-3 border-t border-slate-100 text-[11px] text-slate-400 font-mono flex items-center justify-between">
+            <span>Audit Trail:</span>
+            <span className="text-slate-700 font-medium">v1.0 Immutable</span>
+          </div>
+        </div>
+
+        {/* Col 3: Mini Calendar & Priority Tasks (~20% width: 3 cols) */}
+        <div className="lg:col-span-3 bg-white rounded-3xl p-5 shadow-lux border border-slate-100 flex flex-col justify-between">
+          <div>
+            {/* Calendar Widget (Eduplex Mini Calendar) */}
+            <div className="flex items-center justify-between pb-2 text-xs">
+              <span className="font-bold text-slate-900">October, 2026</span>
+              <div className="flex items-center gap-1 text-slate-400">
+                <ChevronLeft className="w-3.5 h-3.5 cursor-pointer hover:text-slate-700" />
+                <ChevronRight className="w-3.5 h-3.5 cursor-pointer hover:text-slate-700" />
+              </div>
+            </div>
+
+            {/* Days Grid */}
+            <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-mono py-2 border-b border-slate-100">
+              <span className="text-slate-400 font-bold">S</span>
+              <span className="text-slate-400 font-bold">M</span>
+              <span className="text-slate-400 font-bold">T</span>
+              <span className="text-slate-400 font-bold">W</span>
+              <span className="text-slate-400 font-bold">T</span>
+              <span className="text-slate-400 font-bold">F</span>
+              <span className="text-slate-400 font-bold">S</span>
+
+              {[...Array(31)].map((_, i) => {
+                const day = i + 1;
+                const isSelected = day === 28;
+                return (
+                  <span
+                    key={i}
+                    className={`py-1 rounded-full text-[10px] flex items-center justify-center ${
+                      isSelected
+                        ? "bg-[#bbf7d0] text-slate-950 font-extrabold shadow-xs"
+                        : "text-slate-600 hover:bg-slate-50"
+                    }`}
+                  >
+                    {day}
+                  </span>
+                );
+              })}
+            </div>
+
+            {/* Assignments / Tasks Widget (Eduplex Style) */}
+            <div className="mt-3">
+              <div className="flex items-center justify-between pb-1.5">
+                <span className="text-xs font-bold text-slate-900">Tasks</span>
+                <button
+                  type="button"
+                  className="w-4 h-4 rounded-full bg-[#bbf7d0] text-slate-950 flex items-center justify-center text-[10px] font-bold"
+                  title="Add task"
+                >
+                  +
+                </button>
+              </div>
+
+              <div className="space-y-2 mt-1">
+                <div className="p-2 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-[11px]">
+                  <div>
+                    <div className="font-bold text-slate-900">Review case_rx_9021</div>
+                    <div className="text-[10px] text-slate-400 font-mono">10:30 AM UTC</div>
+                  </div>
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-rose-100 text-rose-800">
+                    Blocked
+                  </span>
+                </div>
+
+                <div className="p-2 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-between text-[11px]">
+                  <div>
+                    <div className="font-bold text-slate-900">Stock Reorder</div>
+                    <div className="text-[10px] text-slate-400 font-mono">02:00 PM UTC</div>
+                  </div>
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                    Done
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-2 text-[10px] font-mono text-slate-400 text-right">
+            Shift: Morning Clinical
           </div>
         </div>
       </div>
 
-      {/* 3. Work Toolbar: Unified Filters & Search Region (Section C.3) */}
-      <div className="bg-white rounded-2xl p-2 sm:p-2.5 border border-slate-100 shadow-lux flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-        {/* Segmented Pill Tabs with explicit active states */}
-        <div className="flex flex-wrap items-center gap-1 p-1 bg-slate-100 rounded-xl select-none">
-          <button
-            onClick={() => setFilter("ALL")}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-              filter === "ALL"
-                ? "bg-white text-slate-900 shadow-xs"
-                : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
-            }`}
-          >
-            All Cases ({cases.length})
-          </button>
-          <button
-            onClick={() => setFilter("NEEDS_ACTION")}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-              filter === "NEEDS_ACTION"
-                ? "bg-white text-rose-700 shadow-xs"
-                : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
-            }`}
-          >
-            Needs Action ({countFlagged})
-          </button>
-          <button
-            onClick={() => setFilter("READY")}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-              filter === "READY"
-                ? "bg-white text-teal-700 shadow-xs"
-                : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
-            }`}
-          >
-            Ready ({countReady})
-          </button>
-          <button
-            onClick={() => setFilter("AUTHORIZED")}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-              filter === "AUTHORIZED"
-                ? "bg-white text-slate-900 shadow-xs"
-                : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
-            }`}
-          >
-            Authorized ({countAuthorized})
-          </button>
-        </div>
+      {/* 4. BOTTOM TIER: Active Prescriptions & Cases Ledger (Eduplex "Course You're Taking" Style) */}
+      <div className="bg-white rounded-3xl p-6 shadow-lux border border-slate-100 space-y-4">
+        {/* Ledger Header & Segmented Pill Tabs */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+          <div>
+            <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+              <span>Prescription Cases Ledger</span>
+              <span className="text-xs font-mono font-semibold text-slate-400">
+                ({filteredCases.length} records)
+              </span>
+            </h3>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Review OCR extracts, deterministic checks, and authorized dispensing records.
+            </p>
+          </div>
 
-        {/* Accessible Search Input */}
-        <div className="relative w-full sm:w-64 md:w-72 shrink-0">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Filter queue or medication..."
-            className="w-full pl-8 pr-7 py-1.5 text-xs rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 transition-colors"
-          />
-          {searchQuery && (
+          {/* Segmented Filter Pills */}
+          <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-2xl select-none self-start sm:self-auto">
             <button
-              onClick={() => setSearchQuery("")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
-              aria-label="Clear search"
+              onClick={() => setFilter("ALL")}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-xl transition-all ${
+                filter === "ALL"
+                  ? "bg-white text-slate-900 shadow-xs"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
+              }`}
             >
-              <X className="w-3 h-3" />
+              All ({cases.length})
             </button>
-          )}
-        </div>
-      </div>
-
-      {/* 4. Case List: Master Data Table on Desktop, Useful Card List on Mobile (Section C.4) */}
-      {loading ? (
-        <PrescriptionTableSkeleton rowCount={5} className="my-4" />
-      ) : filteredCases.length === 0 ? (
-        <EmptyState
-          title="No prescription cases match this filter"
-          description="Search for a synthetic patient or create a new capture to begin the outpatient safety workflow."
-          actionLabel="Search Patient (P-9021)"
-          onAction={() =>
-            (window.location.href = "/pharmacist/patients/search")
-          }
-        />
-      ) : (
-        <>
-          {/* Desktop/Tablet Master Data Table */}
-          <div className="hidden sm:block bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-lux">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-slate-50/80 border-b border-slate-100">
-                  <TableHead className="w-40 text-[11px] font-bold text-slate-500 uppercase tracking-wider py-3">
-                    Case & Patient
-                  </TableHead>
-                  <TableHead className="text-[11px] font-bold text-slate-500 uppercase tracking-wider py-3">
-                    Prescribed Regimen
-                  </TableHead>
-                  <TableHead className="w-16 text-center text-[11px] font-bold text-slate-500 uppercase tracking-wider py-3">
-                    <ClinicalTooltip
-                      term="Rev"
-                      explanation="Prescription version number. Revisions are immutable and increment each time a physician modifies therapy."
-                    />
-                  </TableHead>
-                  <TableHead className="w-44 text-[11px] font-bold text-slate-500 uppercase tracking-wider py-3">
-                    Safety Status
-                  </TableHead>
-                  <TableHead className="w-32 text-[11px] font-bold text-slate-500 uppercase tracking-wider py-3">
-                    Updated
-                  </TableHead>
-                  <TableHead className="w-28 text-right text-[11px] font-bold text-slate-500 uppercase tracking-wider py-3">
-                    Action
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredCases.map((c) => {
-                  const statusInfo = getStatusBadge(c.status);
-                  return (
-                    <TableRow
-                      key={c.id}
-                      className="hover:bg-slate-50/80 transition-colors border-b border-slate-100 last:border-b-0"
-                    >
-                      <TableCell className="py-3.5 align-middle">
-                        <div className="font-mono font-bold text-xs text-slate-900 font-tabular">
-                          {c.id}
-                        </div>
-                        <div className="text-[11px] font-mono text-slate-500 mt-0.5 flex items-center gap-1">
-                          <User className="w-3 h-3 text-slate-400" />
-                          <span>{c.patientId}</span>
-                        </div>
-                      </TableCell>
-
-                      <TableCell className="py-3.5 align-middle">
-                        <div className="text-xs font-semibold text-slate-900 flex items-center gap-1.5">
-                          <Pill className="w-3.5 h-3.5 text-slate-400" />
-                          <span>
-                            {c.items.length} prescribed medication
-                            {c.items.length !== 1 ? "s" : ""}
-                          </span>
-                        </div>
-                        <div className="text-[11px] text-slate-600 truncate max-w-xs md:max-w-md font-mono mt-0.5">
-                          {c.items
-                            .map((i) => i.canonicalIngredientIds.join(", "))
-                            .join("; ")}
-                        </div>
-                      </TableCell>
-
-                      <TableCell className="py-3.5 align-middle text-center font-mono text-xs text-slate-600 font-tabular font-bold">
-                        v{c.currentRevisionNumber}
-                      </TableCell>
-
-                      <TableCell className="py-3.5 align-middle">
-                        <Badge
-                          variant={statusInfo.variant}
-                          className="text-[11px] whitespace-nowrap"
-                        >
-                          {statusInfo.label}
-                        </Badge>
-                      </TableCell>
-
-                      <TableCell className="py-3.5 align-middle text-slate-500 font-mono text-[11px] font-tabular whitespace-nowrap">
-                        {formatDateTime(c.updatedAt)}
-                      </TableCell>
-
-                      <TableCell className="py-3.5 align-middle text-right">
-                        <Link
-                          href={
-                            c.status === "CHECK_PASSED"
-                              ? `/pharmacist/cases/${c.id}/authorize`
-                              : c.status === "CHECK_FLAGGED"
-                                ? `/pharmacist/cases/${c.id}/results`
-                                : `/pharmacist/cases/${c.id}/medicines`
-                          }
-                        >
-                          <button className="h-8 px-3 rounded-xl bg-forest-900 hover:bg-forest-800 text-white font-medium text-xs shadow-2xs flex items-center gap-1 ml-auto transition-all">
-                            <span>Review</span>
-                            <ArrowRight className="w-3 h-3 text-emerald-300" />
-                          </button>
-                        </Link>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+            <button
+              onClick={() => setFilter("NEEDS_ACTION")}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-xl transition-all ${
+                filter === "NEEDS_ACTION"
+                  ? "bg-white text-rose-700 shadow-xs"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
+              }`}
+            >
+              Needs Action ({countFlagged})
+            </button>
+            <button
+              onClick={() => setFilter("READY")}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-xl transition-all ${
+                filter === "READY"
+                  ? "bg-white text-teal-700 shadow-xs"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
+              }`}
+            >
+              Ready ({countReady})
+            </button>
+            <button
+              onClick={() => setFilter("AUTHORIZED")}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-xl transition-all ${
+                filter === "AUTHORIZED"
+                  ? "bg-white text-slate-900 shadow-xs"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
+              }`}
+            >
+              Authorized ({countAuthorized})
+            </button>
           </div>
+        </div>
 
-          {/* Mobile Reflow Card View (< 640px) */}
-          <div className="sm:hidden space-y-3">
+        {/* Cases List */}
+        {loading ? (
+          <PrescriptionTableSkeleton rowCount={4} className="my-2" />
+        ) : filteredCases.length === 0 ? (
+          <EmptyState
+            title="No prescription cases match this filter"
+            description="Search for a synthetic patient or create a new capture to begin the outpatient safety workflow."
+            actionLabel="Search Patient (P-9021)"
+            onAction={() =>
+              (window.location.href = "/pharmacist/patients/search")
+            }
+          />
+        ) : (
+          <div className="divide-y divide-slate-100">
             {filteredCases.map((c) => {
               const statusInfo = getStatusBadge(c.status);
               return (
                 <div
                   key={c.id}
-                  className="bg-white p-4 rounded-2xl border border-slate-100 shadow-lux space-y-3"
+                  className="py-4 first:pt-1 last:pb-1 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/60 transition-colors rounded-2xl px-2"
                 >
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono font-bold text-xs text-slate-900">
-                      {c.id}
-                    </span>
-                    <Badge variant={statusInfo.variant} className="text-[10px]">
+                  {/* Left: Squircle Icon + Case ID + Patient */}
+                  <div className="flex items-center gap-3.5 min-w-0">
+                    <div className="w-11 h-11 rounded-2xl bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
+                      <Pill className="w-5 h-5 text-slate-700" />
+                    </div>
+                    <div className="min-w-0 space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono font-bold text-sm text-slate-900 font-tabular">
+                          {c.id}
+                        </span>
+                        <span className="text-slate-300">•</span>
+                        <span className="font-mono text-xs text-slate-600 flex items-center gap-1">
+                          <User className="w-3 h-3 text-slate-400" />
+                          {c.patientId}
+                        </span>
+                        <span className="text-[10px] font-mono px-1.5 py-0.2 bg-slate-100 text-slate-600 rounded">
+                          v{c.currentRevisionNumber}
+                        </span>
+                      </div>
+                      <div className="text-xs text-slate-600 truncate max-w-md font-mono">
+                        {c.items
+                          .map((i) => i.canonicalIngredientIds.join(", "))
+                          .join("; ")}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right: Status Badge + Date + CTA */}
+                  <div className="flex items-center justify-between md:justify-end gap-3 shrink-0">
+                    <Badge
+                      variant={statusInfo.variant}
+                      className="text-xs whitespace-nowrap"
+                    >
                       {statusInfo.label}
                     </Badge>
-                  </div>
 
-                  <div className="flex items-center justify-between text-xs text-slate-600">
-                    <span className="flex items-center gap-1 font-mono text-[11px] bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
-                      <User className="w-3 h-3 text-slate-500" />
-                      {c.patientId}
+                    <span className="text-slate-400 font-mono text-[11px] hidden sm:inline-block">
+                      {formatDateTime(c.updatedAt)}
                     </span>
-                    <span className="font-mono text-[11px] text-slate-500">
-                      v{c.currentRevisionNumber} • {formatDateTime(c.updatedAt)}
-                    </span>
-                  </div>
 
-                  <div className="text-xs text-slate-700 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                    <div className="font-medium text-slate-800">
-                      {c.items.length} prescribed medication
-                      {c.items.length !== 1 ? "s" : ""}
-                    </div>
-                    <div className="text-[11px] text-slate-500 truncate mt-0.5 font-mono">
-                      {c.items
-                        .map((i) => i.canonicalIngredientIds.join(", "))
-                        .join("; ")}
-                    </div>
+                    <Link
+                      href={
+                        c.status === "CHECK_PASSED"
+                          ? `/pharmacist/cases/${c.id}/authorize`
+                          : c.status === "CHECK_FLAGGED"
+                            ? `/pharmacist/cases/${c.id}/results`
+                            : `/pharmacist/cases/${c.id}/medicines`
+                      }
+                    >
+                      <button className="h-8 px-4 rounded-xl bg-[#111317] hover:bg-slate-800 text-white font-semibold text-xs shadow-2xs flex items-center gap-1.5 transition-all">
+                        <span>Review</span>
+                        <ArrowRight className="w-3 h-3 text-emerald-300" />
+                      </button>
+                    </Link>
                   </div>
-
-                  <Link
-                    href={
-                      c.status === "CHECK_PASSED"
-                        ? `/pharmacist/cases/${c.id}/authorize`
-                        : c.status === "CHECK_FLAGGED"
-                          ? `/pharmacist/cases/${c.id}/results`
-                          : `/pharmacist/cases/${c.id}/medicines`
-                    }
-                    className="block"
-                  >
-                    <button className="w-full h-9 rounded-xl bg-forest-900 hover:bg-forest-800 text-white font-medium text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
-                      <span>Open Clinical Case</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-emerald-300" />
-                    </button>
-                  </Link>
                 </div>
               );
             })}
           </div>
-        </>
-      )}
+        )}
 
-      {/* 5. Minimalist Quick Synthetic Presets */}
-      <div className="pt-2 border-t border-slate-200/60 flex flex-wrap items-center justify-between text-xs text-slate-500 gap-2">
-        <span className="text-[11px] text-slate-400 font-mono">
-          Synthetic Patient Records:
-        </span>
-        <div className="flex flex-wrap items-center gap-2">
-          <Link
-            href="/pharmacist/patients/confirm?id=P-9021"
-            className="font-mono text-[11px] bg-white border border-slate-200/90 px-2.5 py-1 rounded-xl hover:bg-slate-50 text-slate-700 transition-colors shadow-2xs"
-          >
-            P-9021 (Rajan Sharma)
-          </Link>
-          <Link
-            href="/pharmacist/patients/confirm?id=P-9022"
-            className="font-mono text-[11px] bg-white border border-slate-200/90 px-2.5 py-1 rounded-xl hover:bg-slate-50 text-slate-700 transition-colors shadow-2xs"
-          >
-            P-9022 (Sunita Verma)
-          </Link>
-          <Link
-            href="/pharmacist/patients/confirm?id=P-9023"
-            className="font-mono text-[11px] bg-white border border-slate-200/90 px-2.5 py-1 rounded-xl hover:bg-slate-50 text-slate-700 transition-colors shadow-2xs"
-          >
-            P-9023 (Amit Kumar)
-          </Link>
+        {/* Quick Synthetic Demo Patient Links */}
+        <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between text-xs text-slate-500 gap-2">
+          <span className="text-[11px] text-slate-400 font-mono">
+            Synthetic Patient Records:
+          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <Link
+              href="/pharmacist/patients/confirm?id=P-9021"
+              className="font-mono text-[11px] bg-slate-50 border border-slate-200/90 px-3 py-1 rounded-xl hover:bg-white text-slate-700 transition-colors shadow-2xs"
+            >
+              P-9021 (Rajan Sharma)
+            </Link>
+            <Link
+              href="/pharmacist/patients/confirm?id=P-9022"
+              className="font-mono text-[11px] bg-slate-50 border border-slate-200/90 px-3 py-1 rounded-xl hover:bg-white text-slate-700 transition-colors shadow-2xs"
+            >
+              P-9022 (Sunita Verma)
+            </Link>
+            <Link
+              href="/pharmacist/patients/confirm?id=P-9023"
+              className="font-mono text-[11px] bg-slate-50 border border-slate-200/90 px-3 py-1 rounded-xl hover:bg-white text-slate-700 transition-colors shadow-2xs"
+            >
+              P-9023 (Amit Kumar)
+            </Link>
+          </div>
         </div>
       </div>
     </div>
