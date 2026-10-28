@@ -17,10 +17,18 @@ A comprehensive functional audit and implementation pass was executed across all
 2. **Clinical Safety Constraints (Absolute & Non-Negotiable):**
    - **Zero False Reassurance:** Strictly **no green badges** or "Safe / Cleared" messaging. Unmatched rules display neutral slate notices (`NO_MATCHING_RULE`) with deterministic explanation and coverage matrix.
    - **Dual-Cue Severity Indicators:** Icon + text cues with contrast ratio $\ge 4.5:1$.
-   - **Untrusted OCR Boundary:** Raw OCR output is visually styled with warning callouts and persists edited lines before medicine matching.
+   - **Untrusted OCR Boundary & Individual Line Verification:** Raw OCR output is styled with warning callouts. The naive "Verify All" bulk button has been eliminated: pharmacists must individually confirm each extracted line or edit line text. Unverified lines lock the progression gate (`Gate Closed: X unreviewed lines remaining`).
    - **Mandatory-Rationale Physician Disposition:** Doctors cannot record dispositions without entering at least 15 characters of documented clinical justification.
    - **Fails-Closed Dispensing Authorization:** Dispensing approval remains mechanically disabled until zero unresolved alerts exist.
-3. **Workflow Implementations & Enhancements:**
+3. **UI Library Integration Pass:**
+   - **shadcn/ui:** Primary foundation for accessible Radix primitives, dialogs, forms, badges, and alerts.
+   - **COSS UI:** Micro-borders (`coss-border`) and high-density metric strips (`CossMetricStrip`).
+   - **HeroUI:** Accessible pill tabs with keyboard navigation (`SegmentedControl`).
+   - **Magic UI:** Attention-directing border beams (`BorderBeam`) respecting `prefers-reduced-motion`.
+   - **Aceternity UI:** Ambient dot-pattern depth (`GridPattern`) on auth gateways.
+   - **daisyUI:** Scoped utility tokens configured with `du-` prefix to avoid class collisions.
+   - **Mantine:** Headless keyboard hotkeys (`@mantine/hooks` `useHotkeys` via `HotkeysHandler`) for `Alt+1` through `Alt+4` portal navigation.
+4. **Workflow Implementations & Enhancements:**
    - **Multi-Patient Presets:** Interactive quick-search chips for `P-9021` (Rajan Sharma), `P-9022` (Sunita Verma), and `P-9023` (Amit Kumar).
    - **File Upload Fallback:** Native file picker and camera capture on `/pharmacist/capture`.
    - **OCR Line Persistence:** Pharmacist line edits and deletions are persisted via `api.updateExtractedText()`.
@@ -29,8 +37,8 @@ A comprehensive functional audit and implementation pass was executed across all
    - **Appointment Management:** Full patient booking, viewing, and cancellation flow (`/patient/appointments`, `/patient/appointments/new`) and doctor consultation view (`/doctor/appointments`).
    - **Admin Membership Lifecycle:** Public applicant registration (`/auth/register`) creates pending memberships; admins can approve, suspend, and reactivate credentials directly with inline actions (`/admin/memberships`).
    - **Demo State Hydration:** Safe `sessionStorage` synchronization prevents state loss across browser reloads.
-4. **Verification:**
-   - **25 / 25 Automated Tests Passing** in Vitest across 6 test suites.
+5. **Verification:**
+   - **26 / 26 Automated Tests Passing** in Vitest across 6 test suites (including new `TEST-PHARM-OCR-002`).
    - **TypeScript Clean (`tsc --noEmit`):** 0 errors.
    - **Production Next.js Build (`npm run build`):** 100% clean compilation across all 26 static/prerendered routes.
 
@@ -109,15 +117,16 @@ flowchart TD
 
 ## 4. Test Suite Execution Results
 
-All 25 automated test specifications across 6 suites pass cleanly:
+All 26 automated test specifications across 6 suites pass cleanly:
 
 ```bash
  RUN  v2.1.9 /home/samudra/Projects/VisualSCode/VisualCode/PharmaVigil/medication-safety-frontend
 
- ✓ test/pharmacist-workflow.test.tsx (5 tests)
+ ✓ test/pharmacist-workflow.test.tsx (6 tests)
    ✓ TEST-PHARM-PAT-001: Multi-patient lookup returns matching synthetic records
    ✓ TEST-PHARM-PAT-002: Patient record retrieval contains demographics and synthetic link status
    ✓ TEST-PHARM-OCR-001: Pharmacist can correct extracted OCR text and persist changes
+   ✓ TEST-PHARM-OCR-002: Enforces individual line verification and persists line count fidelity
    ✓ TEST-PHARM-MED-001: Medicine reconciliation confirms matched items
    ✓ TEST-PHARM-MED-002: Searching catalogue returns relevant candidate medications
  ✓ test/appointments.test.tsx (5 tests)
@@ -147,8 +156,8 @@ All 25 automated test specifications across 6 suites pass cleanly:
    ✓ TEST-SAFE-006: Doctor disposition required before dispensing can be authorized
 
  Test Files  6 passed (6)
-      Tests  25 passed (25)
-   Duration  1.19s
+      Tests  26 passed (26)
+   Duration  1.18s
 ```
 
 ---
