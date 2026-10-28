@@ -15,73 +15,54 @@ interface CossMetricStripProps {
 }
 
 /**
- * COSS UI - High Density Metric Strip
- * Employs COSS UI's signature 1px crisp micro-borders, inner bevel highlights,
- * and compact tabular data presentation for operational clinical dashboards.
+ * COSS UI — High-Craft Clinical Metric Rail
+ * Inspired by Linear's operational dashboards and COSS UI's crisp 1px micro-borders.
+ * Replaces fragmented "card soup" with a monolithic, high-density metric rail.
  */
 export const CossMetricStrip: React.FC<CossMetricStripProps> = ({ metrics, className }) => {
-  const getToneStyles = (tone: CossMetricItem["tone"]) => {
+  const getIndicatorDot = (tone: CossMetricItem["tone"]) => {
     switch (tone) {
       case "urgent":
-        return {
-          bar: "bg-rose-500",
-          card: "bg-rose-50/20 border-rose-200/80",
-          val: "text-rose-950",
-          label: "text-rose-900",
-        };
+        return <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" aria-hidden="true" />;
       case "success":
-        return {
-          bar: "bg-teal-600",
-          card: "bg-teal-50/20 border-teal-200/80",
-          val: "text-teal-950",
-          label: "text-teal-900",
-        };
+        return <span className="w-1.5 h-1.5 rounded-full bg-teal-500 shrink-0" aria-hidden="true" />;
       case "info":
-        return {
-          bar: "bg-blue-500",
-          card: "bg-blue-50/20 border-blue-200/80",
-          val: "text-blue-950",
-          label: "text-blue-900",
-        };
+        return <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" aria-hidden="true" />;
       default:
-        return {
-          bar: "bg-slate-700",
-          card: "bg-white border-slate-200/90",
-          val: "text-slate-900",
-          label: "text-slate-500",
-        };
+        return <span className="w-1.5 h-1.5 rounded-full bg-slate-300 shrink-0" aria-hidden="true" />;
     }
   };
 
   return (
-    <div className={cn("grid grid-cols-2 lg:grid-cols-4 gap-3", className)}>
+    <section
+      aria-label="Operational Metrics"
+      className={cn(
+        "bg-white border border-slate-200/80 rounded-lg shadow-2xs divide-y sm:divide-y-0 sm:divide-x divide-slate-100 flex flex-col sm:flex-row items-stretch select-none",
+        className
+      )}
+    >
       {metrics.map((m, idx) => {
-        const styles = getToneStyles(m.tone);
         const Icon = m.icon;
 
         return (
           <div
             key={idx}
-            className={cn(
-              "relative rounded-lg p-3.5 border shadow-subtle flex flex-col justify-between transition-all",
-              styles.card
-            )}
+            className="flex-1 px-4 py-3 flex flex-col justify-between hover:bg-slate-50/50 transition-colors"
           >
-            <div className={cn("absolute top-0 left-0 right-0 h-0.5 rounded-t-lg", styles.bar)} />
-
-            <div className="flex items-center justify-between">
-              <span className={cn("text-[11px] font-semibold tracking-tight uppercase", styles.label)}>
-                {m.label}
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[11px] font-medium tracking-wider uppercase text-slate-500 flex items-center gap-1.5">
+                {getIndicatorDot(m.tone)}
+                <span className="truncate">{m.label}</span>
               </span>
-              {Icon && <Icon className={cn("w-4 h-4 shrink-0 opacity-70", styles.label)} />}
+              {Icon && <Icon className="w-3.5 h-3.5 text-slate-400 shrink-0 opacity-70" />}
             </div>
 
-            <div className="mt-1 flex items-baseline justify-between">
-              <span className={cn("text-2xl font-bold font-mono tracking-tight font-tabular", styles.val)}>
+            <div className="mt-1 flex items-baseline justify-between gap-2">
+              <span className="text-2xl font-bold font-mono tracking-tight text-slate-900 font-tabular">
                 {m.value}
               </span>
               {m.subtext && (
-                <span className="text-[10px] text-slate-500 font-medium">
+                <span className="text-[10px] text-slate-400 font-mono font-medium truncate">
                   {m.subtext}
                 </span>
               )}
@@ -89,6 +70,6 @@ export const CossMetricStrip: React.FC<CossMetricStripProps> = ({ metrics, class
           </div>
         );
       })}
-    </div>
+    </section>
   );
 };
