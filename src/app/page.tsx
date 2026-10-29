@@ -17,6 +17,7 @@ import {
   Camera,
   Activity,
   FileCheck,
+  KeyRound,
 } from "lucide-react";
 import type { UserRole } from "@/types";
 
@@ -30,6 +31,8 @@ interface RoleCardConfig {
   statusText: string;
   statusVariant: "rose" | "amber" | "emerald" | "slate";
   workspaceHref: string;
+  loginHref: string;
+  roleShort: string;
   themeColor: "emerald" | "blue" | "violet" | "indigo";
 }
 
@@ -38,48 +41,56 @@ const ROLE_CARDS: RoleCardConfig[] = [
     role: "PHARMACIST",
     title: "Pharmacist Operations",
     roleSubtitle: "Pharmacy CDS & Dispensing",
-    userDisplayName: "Sarah Jane Smith, RPh",
+    userDisplayName: "Priya Sharma, RPh",
     icon: Pill,
     description: "Scan prescriptions via camera OCR, verify automated drug interaction checks, and authorize physical dispensing.",
     statusText: "1 Case Awaiting Verification",
     statusVariant: "rose",
     workspaceHref: "/pharmacist",
+    loginHref: "/auth/login/pharmacist",
+    roleShort: "Pharmacist",
     themeColor: "emerald",
   },
   {
     role: "DOCTOR",
     title: "Doctor Triage & Revisions",
     roleSubtitle: "Attending Prescriber Portal",
-    userDisplayName: "Dr. Clara Oswald, MD",
+    userDisplayName: "Dr. Arvind Patel, MD",
     icon: Stethoscope,
     description: "Review flagged pharmacological conflicts, document mandatory clinical rationales, and issue revised prescriptions.",
     statusText: "1 Flagged Case Needs Triage",
     statusVariant: "amber",
     workspaceHref: "/doctor",
+    loginHref: "/auth/login/doctor",
+    roleShort: "Doctor",
     themeColor: "blue",
   },
   {
     role: "PATIENT",
     title: "Patient Care Portal",
     roleSubtitle: "Outpatient Medication Hub",
-    userDisplayName: "Donna Noble (P-9021)",
+    userDisplayName: "Rajan Sharma (P-9021)",
     icon: UserCheck,
     description: "View plain-language daily dosing instructions, check pharmacy pickup readiness, and self-report home allergies.",
     statusText: "1 Medication Ready at Pharmacy",
     statusVariant: "emerald",
     workspaceHref: "/patient",
+    loginHref: "/auth/login/patient",
+    roleShort: "Patient",
     themeColor: "violet",
   },
   {
     role: "HOSPITAL_ADMIN",
     title: "Hospital Governance",
     roleSubtitle: "Compliance & Staff Directory",
-    userDisplayName: "Dr. Arthur Pendelton",
+    userDisplayName: "Sunita Verma",
     icon: ShieldAlert,
     description: "Manage clinical staff credentials, review published CDS ruleset thresholds, and inspect immutable audit event logs.",
     statusText: "Audit Ledger Synchronized",
     statusVariant: "slate",
     workspaceHref: "/admin",
+    loginHref: "/auth/login/admin",
+    roleShort: "Admin",
     themeColor: "indigo",
   },
 ];
@@ -202,29 +213,40 @@ export default function HomePage() {
                   </p>
                 </div>
 
-                {/* Footer: Live Queue Indicator & Primary Launch Button */}
-                <div className="pt-4 mt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                {/* Footer: Live Queue Indicator & Primary Launch / Login Buttons */}
+                <div className="pt-4 mt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                   <div className="flex items-center gap-2">
                     <span className="text-[11px] font-bold px-2.5 py-1 rounded-lg border bg-slate-50 text-slate-700 border-slate-200">
                       {card.statusText}
                     </span>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleLaunchWorkspace(card.role, card.workspaceHref);
-                    }}
-                    className={`h-9 px-4 rounded-xl font-bold text-xs inline-flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-95 ${
-                      isCurrentActive
-                        ? "bg-teal-700 hover:bg-teal-600 text-white shadow-sm shadow-teal-700/20"
-                        : "bg-slate-900 hover:bg-slate-800 text-white"
-                    }`}
-                  >
-                    <span>Launch Workspace</span>
-                    <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={card.loginHref}
+                      onClick={(e) => e.stopPropagation()}
+                      className="h-8 px-2.5 rounded-xl font-semibold text-xs inline-flex items-center justify-center gap-1.5 transition-all border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 shadow-2xs"
+                    >
+                      <KeyRound className="size-3 text-slate-500" />
+                      <span>{card.roleShort} Login</span>
+                    </Link>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleLaunchWorkspace(card.role, card.workspaceHref);
+                      }}
+                      className={`h-8 px-3 rounded-xl font-bold text-xs inline-flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-95 ${
+                        isCurrentActive
+                          ? "bg-teal-700 hover:bg-teal-600 text-white shadow-sm shadow-teal-700/20"
+                          : "bg-slate-900 hover:bg-slate-800 text-white"
+                      }`}
+                    >
+                      <span>{isCurrentActive ? "Open Portal" : "Enter Portal"}</span>
+                      <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
+                    </button>
+                  </div>
                 </div>
               </div>
             );

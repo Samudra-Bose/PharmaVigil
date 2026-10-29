@@ -311,7 +311,20 @@ export class ApiClient {
   // ==========================================
   async login(email: string, password?: string): Promise<CurrentUserResponse> {
     if (this.isMockMode) {
-      return mockEngine.login(email);
+      const res = await mockEngine.login(email);
+      if (typeof window !== "undefined" && res.user) {
+        try {
+          localStorage.setItem(SESSION_USER_KEY, JSON.stringify(res.user));
+          const mem =
+            res.memberships?.[0] || (res as any).membership;
+          if (mem) {
+            localStorage.setItem(SESSION_MEMBERSHIP_KEY, JSON.stringify(mem));
+          }
+        } catch {
+          // Ignore
+        }
+      }
+      return res;
     }
     const res = await this.post<
       CurrentUserResponse & { token?: string; sessionToken?: string }

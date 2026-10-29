@@ -190,7 +190,21 @@ class MockEngine {
 
   // Auth Operations
   async login(email: string): Promise<CurrentUserResponse> {
-    const user = FIXTURE_USERS[email.toLowerCase()];
+    const raw = email.trim().toLowerCase();
+    const aliasMap: Record<string, string> = {
+      doctor: "doctor@metro-general.invalid",
+      "dr. arvind patel": "doctor@metro-general.invalid",
+      pharmacist: "pharma@metro-general.invalid",
+      pharma: "pharma@metro-general.invalid",
+      "priya sharma": "pharma@metro-general.invalid",
+      patient: "patient@metro-general.invalid",
+      "rajan sharma": "patient@metro-general.invalid",
+      "p-9021": "patient@metro-general.invalid",
+      admin: "admin@metro-general.invalid",
+      "sunita verma": "admin@metro-general.invalid",
+    };
+    const targetEmail = aliasMap[raw] || raw;
+    const user = FIXTURE_USERS[targetEmail];
     if (!user) {
       // Check if user is a dynamically registered pending applicant
       const dynMem = this.memberships.find(
