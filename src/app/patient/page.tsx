@@ -29,7 +29,10 @@ import {
   TrendingUp,
   HeartPulse,
   Sparkles,
+  Check,
+  Copy,
 } from "lucide-react";
+import { clinicalToast } from "@/lib/toast";
 
 function formatIngredientLabel(raw: string) {
   const map: Record<string, string> = {
@@ -74,6 +77,37 @@ export default function PatientHomePage() {
   const isReady = activeRx?.status === "DISPENSING_AUTHORIZED";
   const upcomingApt = appointments.find((a) => a.status === "SCHEDULED");
 
+  const [dosesTaken, setDosesTaken] = useState<Record<string, boolean>>({
+    morning: true,
+    midday: true,
+    evening: false,
+  });
+  const [copiedMRN, setCopiedMRN] = useState(false);
+
+  const toggleDose = (id: string, name: string) => {
+    setDosesTaken((prev) => {
+      const nextVal = !prev[id];
+      const updated = { ...prev, [id]: nextVal };
+      if (nextVal) {
+        clinicalToast.success(`Dose Logged: ${name}`, "Recorded as taken on schedule.");
+      }
+      return updated;
+    });
+  };
+
+  const copyPatientMRN = (mrn: string) => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(mrn);
+      setCopiedMRN(true);
+      clinicalToast.info("Patient MRN Copied", `${mrn} copied to clipboard.`);
+      setTimeout(() => setCopiedMRN(false), 2000);
+    }
+  };
+
+  const doseKeys = ["morning", "midday", "evening"];
+  const completedDosesCount = doseKeys.filter((k) => dosesTaken[k]).length;
+  const adherenceProgressPercent = Math.round((completedDosesCount / doseKeys.length) * 100);
+
   return (
     <div className="flex flex-col gap-6 max-w-7xl mx-auto pb-16 font-sans">
       {/* 1. Pinterest/Dribbble Modern Bento Header */}
@@ -88,9 +122,23 @@ export default function PatientHomePage() {
               Patient Care Hub
             </span>
             <span className="text-slate-300">•</span>
-            <span className="text-xs text-slate-500 font-medium">
-              MRN: <span className="font-semibold text-slate-700 font-mono">{patient?.syntheticHospitalPatientId || "P-9021"}</span>
-            </span>
+            <button
+              type="button"
+              onClick={() => copyPatientMRN(patient?.syntheticHospitalPatientId || "P-9021")}
+              className="text-xs text-slate-500 font-medium inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full hover:bg-slate-100 transition-colors group cursor-pointer border border-transparent hover:border-slate-200"
+              title="Click to copy Patient MRN"
+              aria-label="Copy Patient MRN"
+            >
+              <span>MRN:</span>
+              <span className="font-semibold text-slate-700 font-mono">
+                {patient?.syntheticHospitalPatientId || "P-9021"}
+              </span>
+              {copiedMRN ? (
+                <Check className="size-3 text-emerald-600" />
+              ) : (
+                <Copy className="size-3 text-slate-400 group-hover:text-slate-600" />
+              )}
+            </button>
           </div>
 
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 font-display">
@@ -301,75 +349,205 @@ export default function PatientHomePage() {
             </div>
           </div>
 
-          {/* Section B: Daily Dosing Schedule (Clean Editorial Timeline) */}
-          <div className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex flex-col gap-3">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          {/* Section B: Daily Dosing Schedule (Interactive Adherence Checklist) */}
+          <div className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex flex-col gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
               <div>
-                <h3 className="text-base font-bold text-slate-900">Daily Administration Schedule</h3>
-                <p className="text-xs text-slate-500 mt-0.5">Recommended daily dosing intervals</p>
+                <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                  <span>Daily Administration & Dose Tracker</span>
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-teal-50 text-teal-800 border border-teal-200">
+                    Live
+                  </span>
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Tap any scheduled dose to record your administration on schedule
+                </p>
               </div>
-              <span className="text-xs font-mono font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                96.4% Adherence
-              </span>
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono font-bold text-teal-900 bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200">
+                  {completedDosesCount} of 3 Taken ({adherenceProgressPercent}%)
+                </span>
+              </div>
+            </div>
+
+            {/* Visual Progress Bar */}
+            <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden -mt-1">
+              <div
+                className="bg-teal-600 h-full rounded-full transition-all duration-500 ease-out"
+                style={{ width: `${adherenceProgressPercent}%` }}
+              />
             </div>
 
             <div className="divide-y divide-slate-100">
-              <Link href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`} className="block group">
-                <div className="py-3 flex items-center justify-between hover:bg-slate-50/70 rounded-xl px-2 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs font-mono font-bold text-slate-400 w-16">08:00 AM</span>
-                    <div className="size-8 rounded-lg bg-amber-50 border border-amber-200/80 text-amber-700 flex items-center justify-center shrink-0">
-                      <Pill className="size-4" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">
+              {/* Morning Dose */}
+              <div
+                className={`py-3 flex items-center justify-between rounded-xl px-2.5 transition-all ${
+                  dosesTaken.morning ? "bg-teal-50/40" : "hover:bg-slate-50/70"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-mono font-bold text-slate-400 w-16">08:00 AM</span>
+                  <div className="size-8 rounded-lg bg-amber-50 border border-amber-200/80 text-amber-700 flex items-center justify-center shrink-0">
+                    <Pill className="size-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-slate-900 flex items-center gap-2">
+                      <span className={dosesTaken.morning ? "line-through text-slate-500" : ""}>
                         Morning Dose — Coumadin 5mg
-                      </div>
-                      <div className="text-[11px] text-slate-500">Oral tablet with water before breakfast</div>
+                      </span>
+                      {dosesTaken.morning && (
+                        <span className="text-[10px] font-semibold text-teal-800 bg-teal-50 px-1.5 py-0.2 rounded border border-teal-200">
+                          Taken
+                        </span>
+                      )}
                     </div>
+                    <div className="text-[11px] text-slate-500">Oral tablet with water before breakfast</div>
                   </div>
-                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-600 transition-colors" />
                 </div>
-              </Link>
 
-              <Link href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`} className="block group">
-                <div className="py-3 flex items-center justify-between hover:bg-slate-50/70 rounded-xl px-2 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs font-mono font-bold text-slate-400 w-16">01:00 PM</span>
-                    <div className="size-8 rounded-lg bg-blue-50 border border-blue-200/80 text-blue-700 flex items-center justify-center shrink-0">
-                      <Pill className="size-4" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => toggleDose("morning", "Coumadin 5mg")}
+                    className={`h-7 px-3 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 ${
+                      dosesTaken.morning
+                        ? "bg-teal-600 text-white shadow-2xs"
+                        : "bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200"
+                    }`}
+                  >
+                    {dosesTaken.morning ? (
+                      <>
+                        <Check className="size-3 stroke-[3]" />
+                        <span>Taken</span>
+                      </>
+                    ) : (
+                      <span>Log Dose</span>
+                    )}
+                  </button>
+                  <Link
+                    href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`}
+                    className="p-1 text-slate-400 hover:text-slate-700 rounded transition-colors"
+                    title="View details"
+                  >
+                    <ChevronRight className="size-4" />
+                  </Link>
+                </div>
+              </div>
+
+              {/* Midday Maintenance */}
+              <div
+                className={`py-3 flex items-center justify-between rounded-xl px-2.5 transition-all ${
+                  dosesTaken.midday ? "bg-teal-50/40" : "hover:bg-slate-50/70"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-mono font-bold text-slate-400 w-16">01:00 PM</span>
+                  <div className="size-8 rounded-lg bg-blue-50 border border-blue-200/80 text-blue-700 flex items-center justify-center shrink-0">
+                    <Pill className="size-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-slate-900 flex items-center gap-2">
+                      <span className={dosesTaken.midday ? "line-through text-slate-500" : ""}>
                         Midday Maintenance — Metformin 500mg
-                      </div>
-                      <div className="text-[11px] text-slate-500">Oral tablet with lunch</div>
+                      </span>
+                      {dosesTaken.midday && (
+                        <span className="text-[10px] font-semibold text-teal-800 bg-teal-50 px-1.5 py-0.2 rounded border border-teal-200">
+                          Taken
+                        </span>
+                      )}
                     </div>
+                    <div className="text-[11px] text-slate-500">Oral tablet with lunch</div>
                   </div>
-                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-600 transition-colors" />
                 </div>
-              </Link>
 
-              <Link href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`} className="block group">
-                <div className="py-3 flex items-center justify-between hover:bg-slate-50/70 rounded-xl px-2 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs font-mono font-bold text-slate-400 w-16">08:00 PM</span>
-                    <div className="size-8 rounded-lg bg-violet-50 border border-violet-200/80 text-violet-700 flex items-center justify-center shrink-0">
-                      <Pill className="size-4" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => toggleDose("midday", "Metformin 500mg")}
+                    className={`h-7 px-3 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 ${
+                      dosesTaken.midday
+                        ? "bg-teal-600 text-white shadow-2xs"
+                        : "bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200"
+                    }`}
+                  >
+                    {dosesTaken.midday ? (
+                      <>
+                        <Check className="size-3 stroke-[3]" />
+                        <span>Taken</span>
+                      </>
+                    ) : (
+                      <span>Log Dose</span>
+                    )}
+                  </button>
+                  <Link
+                    href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`}
+                    className="p-1 text-slate-400 hover:text-slate-700 rounded transition-colors"
+                    title="View details"
+                  >
+                    <ChevronRight className="size-4" />
+                  </Link>
+                </div>
+              </div>
+
+              {/* Evening Dose */}
+              <div
+                className={`py-3 flex items-center justify-between rounded-xl px-2.5 transition-all ${
+                  dosesTaken.evening ? "bg-teal-50/40" : "hover:bg-slate-50/70"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-mono font-bold text-slate-400 w-16">08:00 PM</span>
+                  <div className="size-8 rounded-lg bg-violet-50 border border-violet-200/80 text-violet-700 flex items-center justify-center shrink-0">
+                    <Pill className="size-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-slate-900 flex items-center gap-2">
+                      <span className={dosesTaken.evening ? "line-through text-slate-500" : ""}>
                         Evening Dose — Disprin 100mg
-                      </div>
-                      <div className="text-[11px] text-slate-500">Oral tablet with water after dinner</div>
+                      </span>
+                      {dosesTaken.evening && (
+                        <span className="text-[10px] font-semibold text-teal-800 bg-teal-50 px-1.5 py-0.2 rounded border border-teal-200">
+                          Taken
+                        </span>
+                      )}
                     </div>
+                    <div className="text-[11px] text-slate-500">Oral tablet with water after dinner</div>
                   </div>
-                  <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-600 transition-colors" />
                 </div>
-              </Link>
 
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => toggleDose("evening", "Disprin 100mg")}
+                    className={`h-7 px-3 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 ${
+                      dosesTaken.evening
+                        ? "bg-teal-600 text-white shadow-2xs"
+                        : "bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200"
+                    }`}
+                  >
+                    {dosesTaken.evening ? (
+                      <>
+                        <Check className="size-3 stroke-[3]" />
+                        <span>Taken</span>
+                      </>
+                    ) : (
+                      <span>Log Dose</span>
+                    )}
+                  </button>
+                  <Link
+                    href={`/patient/prescriptions/${activeRx?.id || "case_rx_9021_01"}`}
+                    className="p-1 text-slate-400 hover:text-slate-700 rounded transition-colors"
+                    title="View details"
+                  >
+                    <ChevronRight className="size-4" />
+                  </Link>
+                </div>
+              </div>
+
+              {/* INR Log Entry */}
               <Link href="/patient/history" className="block group">
-                <div className="py-3 flex items-center justify-between hover:bg-slate-50/70 rounded-xl px-2 transition-colors">
+                <div className="py-3 flex items-center justify-between hover:bg-slate-50/70 rounded-xl px-2.5 transition-colors">
                   <div className="flex items-center gap-3">
                     <span className="text-xs font-mono font-bold text-rose-600 w-16">INR LOG</span>
                     <div className="size-8 rounded-lg bg-rose-50 border border-rose-200/80 text-rose-700 flex items-center justify-center shrink-0">

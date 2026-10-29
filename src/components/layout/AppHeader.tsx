@@ -19,8 +19,10 @@ import {
   KeyRound,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { Kbd } from "@/components/ui/Kbd";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
+import { openCommandPalette } from "@/components/layout/CommandPalette";
 import { cn } from "@/lib/utils";
 import type { UserRole } from "@/types";
 
@@ -115,25 +117,27 @@ export const AppHeader: React.FC = () => {
             )}
           </div>
 
-          {/* Center: Search pill bar (Eduplex Style) */}
+          {/* Center: Command Palette Trigger Button (Eduplex / Raycast Spotlight Style) */}
           <div className="hidden lg:flex items-center flex-1 max-w-md mx-6">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (!searchQuery.trim()) return;
-                router.push(`/pharmacist/patients/search?q=${encodeURIComponent(searchQuery.trim())}`);
-              }}
-              className="relative w-full"
+            <button
+              type="button"
+              onClick={openCommandPalette}
+              className="w-full flex items-center justify-between pl-3.5 pr-2.5 py-1.5 text-xs rounded-full bg-slate-50 hover:bg-slate-100/90 border border-slate-200/80 text-slate-500 hover:text-slate-800 transition-all shadow-2xs group cursor-pointer text-left"
+              title="Search prescriptions, patients, clinical rules (⌘K)"
+              aria-label="Open Command Palette Search"
             >
-              <Search className="size-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search prescriptions, patients, clinical rules..."
-                className="w-full pl-9 pr-4 py-1.5 text-xs rounded-full bg-slate-50 border border-slate-200/80 text-slate-700 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 transition-all shadow-2xs"
-              />
-            </form>
+              <div className="flex items-center gap-2.5 min-w-0">
+                <Search className="size-3.5 text-slate-400 group-hover:text-teal-700 transition-colors shrink-0" />
+                <span className="truncate text-slate-400 group-hover:text-slate-600">
+                  Search prescriptions, patients, clinical rules...
+                </span>
+              </div>
+              <div className="flex items-center gap-1 shrink-0">
+                <Kbd className="bg-white border-slate-200 text-slate-400 group-hover:text-slate-700 text-[10px]">
+                  ⌘K
+                </Kbd>
+              </div>
+            </button>
           </div>
 
           {/* User Profile & Actions */}
@@ -185,6 +189,17 @@ export const AppHeader: React.FC = () => {
                 </div>
               )}
 
+              {/* Mobile Quick Spotlight Search */}
+              <button
+                type="button"
+                onClick={openCommandPalette}
+                className="lg:hidden p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                title="Search Command Palette (⌘K)"
+                aria-label="Search Command Palette"
+              >
+                <Search className="size-4" />
+              </button>
+
               {/* Notifications Bell */}
               <NotificationBell />
 
@@ -216,6 +231,16 @@ export const AppHeader: React.FC = () => {
             </div>
           ) : (
             <div className="flex items-center gap-2 relative">
+              <button
+                type="button"
+                onClick={openCommandPalette}
+                className="lg:hidden p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                title="Search Command Palette (⌘K)"
+                aria-label="Search Command Palette"
+              >
+                <Search className="size-4" />
+              </button>
+
               <div className="relative">
                 <button
                   type="button"

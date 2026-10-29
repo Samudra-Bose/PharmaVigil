@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { openShortcutsModal } from "@/components/layout/ShortcutsModal";
 import { cn } from "@/lib/utils";
 import {
   ClipboardList,
@@ -308,15 +309,21 @@ export const Sidebar: React.FC = () => {
         )}
       >
         {!collapsed ? (
-          <>
+          <button
+            type="button"
+            onClick={openShortcutsModal}
+            className="w-full flex items-center justify-between text-left hover:text-slate-800 transition-colors group cursor-pointer"
+            title="Click to view keyboard shortcuts (?)"
+            aria-label="View keyboard shortcuts"
+          >
             <span className="flex items-center gap-1.5">
               <span className={cn("size-1.5 rounded-full", roleTheme.statusDot)} />
-              <span>Fails-Closed Active</span>
+              <span className="group-hover:text-slate-700">Fails-Closed Active</span>
             </span>
-            <kbd className="px-1.5 py-0.5 bg-slate-100 rounded border border-slate-200 text-slate-600">
+            <kbd className="px-1.5 py-0.5 bg-slate-100 group-hover:bg-slate-200 rounded border border-slate-200 text-slate-600 group-hover:text-slate-900 transition-colors">
               ⌥1..4
             </kbd>
-          </>
+          </button>
         ) : (
           <button
             onClick={toggleCollapsed}

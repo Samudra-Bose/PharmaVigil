@@ -27,7 +27,10 @@ import {
   Building2,
   Zap,
   Check,
+  Copy,
+  X,
 } from "lucide-react";
+import { clinicalToast } from "@/lib/toast";
 
 function formatIngredientLabel(raw: string) {
   const map: Record<string, string> = {
@@ -58,6 +61,13 @@ export default function PharmacistDashboard() {
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<string>("ALL");
   const [searchQuery, setSearchQuery] = useState<string>("");
+
+  const copyText = (text: string, label: string) => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      clinicalToast.info(`${label} Copied`, `${text} copied to clipboard.`);
+    }
+  };
 
   useEffect(() => {
     async function loadCases() {
