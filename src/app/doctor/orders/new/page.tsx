@@ -274,9 +274,9 @@ export default function NewDoctorOrderPage() {
 
       toast.success(`Inpatient order #${created.id} submitted successfully!`);
       router.push("/doctor/orders");
-    } catch (err: any) {
-      console.error("Order prescribing failed", err);
-      toast.error(err.message || "Failed to submit medication order.");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to submit medication order.";
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }

@@ -7,7 +7,7 @@ import { api, type NotificationItem } from "@/lib/api-client";
 import { clinicalToast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
 
-export const NotificationBell: React.FC = () => {
+export const NotificationBell: React.FC = React.memo(function NotificationBell() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"ALL" | "UNREAD">("ALL");
@@ -24,7 +24,9 @@ export const NotificationBell: React.FC = () => {
       setNotifications(data || []);
     } catch (err) {
       // Background fetch failure should not crash UI
-      console.warn("Notification auto-refresh failed:", err);
+      if (process.env.NODE_ENV === "development") {
+        console.warn("Notification auto-refresh failed:", err);
+      }
     }
   }, []);
 
@@ -353,4 +355,4 @@ export const NotificationBell: React.FC = () => {
       )}
     </div>
   );
-};
+});

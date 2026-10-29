@@ -167,8 +167,9 @@ export default function PharmacistOrdersPage() {
       );
       setReviewModalOpen(false);
       await fetchOrders();
-    } catch (err: any) {
-      toast.error(err.message || "Failed to place order on hold.");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to place order on hold.";
+      toast.error(message);
     } finally {
       setUpdating(false);
     }

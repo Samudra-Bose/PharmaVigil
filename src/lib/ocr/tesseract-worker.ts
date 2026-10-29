@@ -105,15 +105,19 @@ export async function recognizePrescriptionImage(
       phase: "PARSING",
     });
 
-    const rawWords: any[] =
-      (data as any).words ||
+    const rawWords: Array<{
+      text: string;
+      confidence: number;
+      bbox?: { x0: number; y0: number; x1: number; y1: number };
+    }> =
+      (data as { words?: Array<{ text: string; confidence: number; bbox?: { x0: number; y0: number; x1: number; y1: number } }> }).words ||
       (data.blocks
         ? data.blocks.flatMap((b) =>
             b.paragraphs.flatMap((p) => p.lines.flatMap((l) => l.words)),
           )
         : []);
 
-    const words: OcrWordDetail[] = rawWords.map((w: any) => ({
+    const words: OcrWordDetail[] = rawWords.map((w) => ({
       text: w.text,
       confidence: w.confidence,
       bbox: w.bbox
@@ -140,8 +144,11 @@ export async function recognizePrescriptionImage(
     });
 
     return result;
-  } catch (err: any) {
-    if (err.name === "AbortError") {
+  } catch (err: unknown) {
+    const isAbort =
+      (err instanceof DOMException && err.name === "AbortError") ||
+      (err instanceof Error && err.name === "AbortError");
+    if (isAbort) {
       onProgress?.({
         status: "OCR Cancelled",
         progress: 0,
@@ -150,7 +157,7 @@ export async function recognizePrescriptionImage(
       throw err;
     }
 
-    const message = err?.message || "Optical character recognition failed";
+    const message = err instanceof Error ? err.message : "Optical character recognition failed";
     onProgress?.({
       status: `Error: ${message}`,
       progress: 0,

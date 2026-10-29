@@ -30,7 +30,7 @@ import {
 
 export default function PatientMedicationHistoryPage() {
   const { user } = useAuth();
-  const patientId = (user as any)?.syntheticHospitalPatientId || "P-9021";
+  const patientId = (user as { syntheticHospitalPatientId?: string } | null)?.syntheticHospitalPatientId || "P-9021";
 
   const [activeTab, setActiveTab] = useState<"ALLERGIES" | "HOME_MEDS">(
     "ALLERGIES",
@@ -109,8 +109,9 @@ export default function PatientMedicationHistoryPage() {
       setAllergySubstance("");
       setAllergyReaction("");
       await loadData();
-    } catch (err: any) {
-      toast.error(err.message || "Failed to submit allergy.");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to submit allergy.";
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }
@@ -144,8 +145,9 @@ export default function PatientMedicationHistoryPage() {
       setMedName("");
       setMedDose("");
       await loadData();
-    } catch (err: any) {
-      toast.error(err.message || "Failed to submit home medication.");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to submit home medication.";
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }
@@ -429,7 +431,11 @@ export default function PatientMedicationHistoryPage() {
               </label>
               <select
                 value={allergyType}
-                onChange={(e) => setAllergyType(e.target.value as any)}
+                onChange={(e) =>
+                  setAllergyType(
+                    e.target.value as "ALLERGY" | "ADVERSE_REACTION" | "INTOLERANCE"
+                  )
+                }
                 className="w-full h-8 px-2 rounded-md border border-slate-200 bg-white text-xs font-medium"
               >
                 <option value="ALLERGY">
@@ -450,7 +456,11 @@ export default function PatientMedicationHistoryPage() {
               </label>
               <select
                 value={allergySeverity}
-                onChange={(e) => setAllergySeverity(e.target.value as any)}
+                onChange={(e) =>
+                  setAllergySeverity(
+                    e.target.value as "MILD" | "MODERATE" | "SEVERE" | "LIFE_THREATENING"
+                  )
+                }
                 className="w-full h-8 px-2 rounded-md border border-slate-200 bg-white text-xs font-medium"
               >
                 <option value="MILD">Mild (Localized rash, itching)</option>
@@ -600,7 +610,9 @@ export default function PatientMedicationHistoryPage() {
               </label>
               <select
                 value={medStatus}
-                onChange={(e) => setMedStatus(e.target.value as any)}
+                onChange={(e) =>
+                  setMedStatus(e.target.value as "ACTIVE" | "STOPPED")
+                }
                 className="w-full h-8 px-2 rounded-md border border-slate-200 bg-white text-xs font-medium"
               >
                 <option value="ACTIVE">Currently Taking (Active)</option>

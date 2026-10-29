@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { api } from "@/lib/api-client";
+import { api, type HospitalMemberRecord } from "@/lib/api-client";
 import {
   ShieldCheck,
   UserCheck,
@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { clinicalToast } from "@/lib/toast";
 
-const INITIAL_MEMBERSHIPS = [
+const INITIAL_MEMBERSHIPS: HospitalMemberRecord[] = [
   {
     id: "mem_01",
     userId: "usr_pharma_01",
@@ -52,7 +52,7 @@ const INITIAL_MEMBERSHIPS = [
 ];
 
 export default function AdminDashboardPage() {
-  const [memberships, setMemberships] = useState<any[]>(INITIAL_MEMBERSHIPS);
+  const [memberships, setMemberships] = useState<HospitalMemberRecord[]>(INITIAL_MEMBERSHIPS);
   const [loading, setLoading] = useState(false);
 
   const copyText = (text: string, label: string) => {

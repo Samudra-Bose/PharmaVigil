@@ -6,6 +6,7 @@ import React, {
   useEffect,
   useState,
   useCallback,
+  useMemo,
 } from "react";
 import {
   api,
@@ -53,6 +54,14 @@ export function getLoginRedirectForPath(pathname: string | null | undefined): st
   return "/auth/login";
 }
 
+type MembershipWithRole = Membership & { role?: string };
+
+function extractUserRole(mem: MembershipWithRole | null | undefined): UserRole | null {
+  if (!mem) return null;
+  const roleStr = mem.assignedRole || mem.requestedRole || mem.role;
+  return (roleStr as UserRole) || null;
+}
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -72,7 +81,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const isMockMode = api.getMockMode();
 
-  const resolveHospital = async (activeMem: Membership | null) => {
+  const resolveHospital = useCallback(async (activeMem: Membership | null) => {
     try {
       const currentHosp = await api.getCurrentHospital();
       if (currentHosp && currentHosp.name) {
@@ -84,12 +93,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     } catch {
       setHospitalName(activeMem?.hospitalId || "Metro General Hospital");
     }
-  };
+  }, []);
 
   const refreshSession = useCallback(async () => {
     let hasToken: string | null = null;
     let cachedUser: CurrentUserResponse["user"] | null = null;
-    let cachedMem: Membership | null = null;
+    let cachedMem: MembershipWithRole | null = null;
 
     try {
       if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
@@ -145,25 +154,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       if (isMockMode && cachedUser) {
         setUser(cachedUser);
         setMembership(cachedMem);
-        const assigned = (cachedMem?.assignedRole ||
-          cachedMem?.requestedRole ||
-          (cachedMem as any)?.role) as UserRole | undefined;
-        setRole(assigned || null);
-        api.restoreMockSession(cachedUser.id, assigned);
+        const assigned = extractUserRole(cachedMem);
+        setRole(assigned);
+        if (assigned) {
+          api.restoreMockSession(cachedUser.id, assigned);
+        }
         await resolveHospital(cachedMem);
       } else {
         const res = await api.getCurrentUser();
         setUser(res.user);
         const activeMem =
-          res.memberships?.[0] || (res as any).membership || null;
+          res.memberships?.[0] ||
+          (res as unknown as { membership?: MembershipWithRole }).membership ||
+          null;
         setMembership(activeMem);
-        const assigned = (activeMem?.assignedRole ||
-          activeMem?.requestedRole ||
-          (activeMem as any)?.role) as UserRole | undefined;
-        setRole(assigned || null);
+        const assigned = extractUserRole(activeMem as MembershipWithRole);
+        setRole(assigned);
         await resolveHospital(activeMem);
       }
-    } catch (err) {
+    } catch {
       clearStoredSession();
       setUser(null);
       setMembership(null);
@@ -175,44 +184,48 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     } finally {
       setIsLoading(false);
     }
-  }, [pathname, router, isMockMode]);
+  }, [pathname, router, isMockMode, resolveHospital]);
 
   useEffect(() => {
     refreshSession();
   }, [refreshSession]);
 
-  const login = async (email: string, password?: string) => {
-    setIsLoading(true);
-    try {
-      const res = await api.login(email, password);
-      setUser(res.user);
-      const activeMem = res.memberships?.[0] || (res as any).membership || null;
-      setMembership(activeMem);
-      const userRole = (activeMem?.assignedRole ||
-        activeMem?.requestedRole ||
-        (activeMem as any)?.role) as UserRole | undefined;
-      setRole(userRole || null);
-      await resolveHospital(activeMem);
+  const login = useCallback(
+    async (email: string, password?: string) => {
+      setIsLoading(true);
+      try {
+        const res = await api.login(email, password);
+        setUser(res.user);
+        const activeMem =
+          res.memberships?.[0] ||
+          (res as unknown as { membership?: MembershipWithRole }).membership ||
+          null;
+        setMembership(activeMem);
+        const userRole = extractUserRole(activeMem as MembershipWithRole);
+        setRole(userRole);
+        await resolveHospital(activeMem);
 
-      if (activeMem?.status === "PENDING") {
-        router.push("/auth/pending");
-      } else if (userRole === "PHARMACIST") {
-        router.push("/pharmacist");
-      } else if (userRole === "DOCTOR") {
-        router.push("/doctor");
-      } else if (userRole === "PATIENT") {
-        router.push("/patient");
-      } else if (userRole === "HOSPITAL_ADMIN") {
-        router.push("/admin");
-      } else {
-        router.push("/");
+        if (activeMem?.status === "PENDING") {
+          router.push("/auth/pending");
+        } else if (userRole === "PHARMACIST") {
+          router.push("/pharmacist");
+        } else if (userRole === "DOCTOR") {
+          router.push("/doctor");
+        } else if (userRole === "PATIENT") {
+          router.push("/patient");
+        } else if (userRole === "HOSPITAL_ADMIN") {
+          router.push("/admin");
+        } else {
+          router.push("/");
+        }
+      } finally {
+        setIsLoading(false);
       }
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+    [router, resolveHospital]
+  );
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       await api.logout();
     } finally {
@@ -223,38 +236,56 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setHospital(null);
       router.push("/auth/login");
     }
-  };
+  }, [router]);
 
-  const switchRole = async (targetRole: UserRole) => {
-    if (isMockMode) {
-      const emailMap: Record<UserRole, string> = {
-        PHARMACIST: "pharma@metro-general.invalid",
-        DOCTOR: "doctor@metro-general.invalid",
-        PATIENT: "patient@metro-general.invalid",
-        HOSPITAL_ADMIN: "admin@metro-general.invalid",
-      };
-      await login(emailMap[targetRole]);
-    } else {
-      console.warn("Role switching is disabled in live authenticated mode.");
-    }
-  };
+  const switchRole = useCallback(
+    async (targetRole: UserRole) => {
+      if (isMockMode) {
+        const emailMap: Record<UserRole, string> = {
+          PHARMACIST: "pharma@metro-general.invalid",
+          DOCTOR: "doctor@metro-general.invalid",
+          PATIENT: "patient@metro-general.invalid",
+          HOSPITAL_ADMIN: "admin@metro-general.invalid",
+        };
+        await login(emailMap[targetRole]);
+      } else {
+        console.warn("Role switching is disabled in live authenticated mode.");
+      }
+    },
+    [isMockMode, login]
+  );
+
+  const value = useMemo<AuthContextType>(
+    () => ({
+      user,
+      membership,
+      role,
+      hospitalName,
+      hospital,
+      isLoading,
+      isMockMode,
+      login,
+      logout,
+      switchRole,
+      refreshSession,
+    }),
+    [
+      user,
+      membership,
+      role,
+      hospitalName,
+      hospital,
+      isLoading,
+      isMockMode,
+      login,
+      logout,
+      switchRole,
+      refreshSession,
+    ]
+  );
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        membership,
-        role,
-        hospitalName,
-        hospital,
-        isLoading,
-        isMockMode,
-        login,
-        logout,
-        switchRole,
-        refreshSession,
-      }}
-    >
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

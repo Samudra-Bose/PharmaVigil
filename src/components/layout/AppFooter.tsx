@@ -7,7 +7,7 @@ import { openShortcutsModal } from "@/components/layout/ShortcutsModal";
 import { Kbd } from "@/components/ui/Kbd";
 import { Shield, Sparkles, Keyboard } from "lucide-react";
 
-export const AppFooter: React.FC = () => {
+export const AppFooter: React.FC = React.memo(function AppFooter() {
   const { hospitalName } = useAuth();
   return (
     <footer className="bg-white/80 backdrop-blur-xs border-t border-slate-200/80 py-3 text-xs text-slate-500 select-none">
@@ -59,4 +59,4 @@ export const AppFooter: React.FC = () => {
       </div>
     </footer>
   );
-};
+});

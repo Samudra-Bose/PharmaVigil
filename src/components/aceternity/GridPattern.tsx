@@ -1,7 +1,7 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 
-interface GridPatternProps {
+interface GridPatternProps extends React.SVGProps<SVGSVGElement> {
   width?: number;
   height?: number;
   x?: number;
@@ -9,8 +9,6 @@ interface GridPatternProps {
   cx?: number;
   cy?: number;
   cr?: number;
-  className?: string;
-  [key: string]: any;
 }
 
 /**

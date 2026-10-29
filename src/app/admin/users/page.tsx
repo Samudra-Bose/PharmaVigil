@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { api } from "@/lib/api-client";
-import { Badge } from "@/components/ui/Badge";
+import { api, type HospitalMemberRecord } from "@/lib/api-client";
+import { Badge, type BadgeVariant } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import {
@@ -17,7 +17,7 @@ import {
 import { Users, ArrowLeft } from "lucide-react";
 
 export default function AdminUsersPage() {
-  const [memberships, setMemberships] = useState<any[]>([]);
+  const [memberships, setMemberships] = useState<HospitalMemberRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function AdminUsersPage() {
           </TableHeader>
           <TableBody>
             {memberships.map((m) => {
-              const roleVariant =
+              const roleVariant: BadgeVariant =
                 m.role === "DOCTOR"
                   ? "sapphire"
                   : m.role === "PHARMACIST"
@@ -84,7 +84,7 @@ export default function AdminUsersPage() {
                     {m.email}
                   </TableCell>
                   <TableCell>
-                    <Badge variant={roleVariant as any} className="text-[11px]">
+                    <Badge variant={roleVariant} className="text-[11px]">
                       {m.role}
                     </Badge>
                   </TableCell>

@@ -3,26 +3,25 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { api } from "@/lib/api-client";
+import { api, type HospitalMemberRecord } from "@/lib/api-client";
 import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
-import { UserCheck, ArrowLeft, Check, ShieldAlert } from "lucide-react";
+import { UserCheck, ArrowLeft, Check } from "lucide-react";
 
 export default function MembershipDetailPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
 
-  const [member, setMember] = useState<any>(null);
-  const [selectedRole, setSelectedRole] = useState<string>("DOCTOR");
-  const [status, setStatus] = useState<string>("ACTIVE");
+  const [member, setMember] = useState<HospitalMemberRecord | null>(null);
+  const [selectedRole, setSelectedRole] = useState<HospitalMemberRecord["role"]>("DOCTOR");
+  const [status, setStatus] = useState<HospitalMemberRecord["status"]>("ACTIVE");
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     async function load() {
       const all = await api.getMemberships();
       const target = all.find((m) => m.id === id) || all[0];
-      setMember(target);
+      setMember(target || null);
       if (target) {
         setSelectedRole(target.role);
         setStatus(target.status);
@@ -35,7 +34,7 @@ export default function MembershipDetailPage() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await api.updateMembershipStatus(id, status as any, selectedRole as any);
+      await api.updateMembershipStatus(id, status, selectedRole);
       router.push("/admin/memberships");
     } finally {
       setSubmitting(false);
@@ -81,7 +80,7 @@ export default function MembershipDetailPage() {
           </label>
           <select
             value={selectedRole}
-            onChange={(e) => setSelectedRole(e.target.value)}
+            onChange={(e) => setSelectedRole(e.target.value as HospitalMemberRecord["role"])}
             className="w-full p-2 rounded border border-slate-300 text-xs font-semibold text-slate-800 bg-white"
           >
             <option value="DOCTOR">Doctor / Attending Physician</option>
@@ -97,7 +96,7 @@ export default function MembershipDetailPage() {
           </label>
           <select
             value={status}
-            onChange={(e) => setStatus(e.target.value)}
+            onChange={(e) => setStatus(e.target.value as HospitalMemberRecord["status"])}
             className="w-full p-2 rounded border border-slate-300 text-xs font-semibold text-slate-800 bg-white"
           >
             <option value="ACTIVE">

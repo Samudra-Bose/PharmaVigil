@@ -341,7 +341,8 @@ export class ApiClient {
         try {
           localStorage.setItem(SESSION_USER_KEY, JSON.stringify(res.user));
           const mem =
-            res.memberships?.[0] || (res as any).membership;
+            res.memberships?.[0] ||
+            (res as unknown as { membership?: unknown }).membership;
           if (mem) {
             localStorage.setItem(SESSION_MEMBERSHIP_KEY, JSON.stringify(mem));
           }
@@ -366,7 +367,8 @@ export class ApiClient {
       try {
         localStorage.setItem(SESSION_USER_KEY, JSON.stringify(res.user));
         const mem =
-          res.memberships?.[0] || (res as any).membership;
+          res.memberships?.[0] ||
+          (res as unknown as { membership?: unknown }).membership;
         if (mem) {
           localStorage.setItem(SESSION_MEMBERSHIP_KEY, JSON.stringify(mem));
         }
@@ -404,7 +406,8 @@ export class ApiClient {
       try {
         localStorage.setItem(SESSION_USER_KEY, JSON.stringify(res.user));
         const mem =
-          res.memberships?.[0] || (res as any).membership;
+          res.memberships?.[0] ||
+          (res as unknown as { membership?: unknown }).membership;
         if (mem) {
           localStorage.setItem(SESSION_MEMBERSHIP_KEY, JSON.stringify(mem));
         }
@@ -614,7 +617,7 @@ export class ApiClient {
 
   async updateExtraction(
     caseId: string,
-    updates: { extractedText?: string; items?: any[] },
+    updates: { extractedText?: string; items?: Array<Partial<PrescriptionItem>> },
     expectedVersion: number = 1,
   ): Promise<FixtureCase> {
     if (this.isMockMode) {
@@ -629,7 +632,7 @@ export class ApiClient {
 
   async updateCapture(
     caseId: string,
-    updates: { extractedText?: string; items?: any[] },
+    updates: { extractedText?: string; items?: Array<Partial<PrescriptionItem>> },
     expectedVersion: number = 1,
   ): Promise<FixtureCase> {
     return this.updateExtraction(caseId, updates, expectedVersion);
@@ -704,19 +707,22 @@ export class ApiClient {
     rationale: string,
     expectedVersion: number = 1,
   ): Promise<void> {
-    if (this.isMockMode) {
-      return mockEngine.recordDisposition(
-        alertId,
-        dispositionType as any,
-        rationale,
-      );
-    }
-
     // Normalize CLINICAL_DISPOSITION_RECORDED to CLINICALLY_REVIEWED for OpenAPI contract conformance
-    const normalizedType =
+    const normalizedType:
+      | "CHANGE_REQUIRED"
+      | "CLINICALLY_REVIEWED"
+      | "OTHER_DOCUMENTED" =
       dispositionType === "CLINICAL_DISPOSITION_RECORDED"
         ? "CLINICALLY_REVIEWED"
         : dispositionType;
+
+    if (this.isMockMode) {
+      return mockEngine.recordDisposition(
+        alertId,
+        normalizedType,
+        rationale,
+      );
+    }
 
     await this.post(
       `/alerts/${alertId}/disposition`,
@@ -768,7 +774,16 @@ export class ApiClient {
     data: CreateAppointmentInput,
   ): Promise<AppointmentRecord> {
     if (this.isMockMode) {
-      return mockEngine.createAppointment(data as any);
+      return mockEngine.createAppointment({
+        patientId: data.patientId,
+        patientDisplayName: data.patientDisplayName || "Patient",
+        clinicianUserId: data.clinicianUserId || data.doctorUserId || "usr_doctor_01",
+        clinicianDisplayName: data.clinicianDisplayName || "Attending Physician",
+        department: data.department || "Cardiology",
+        slotStart: data.slotStart || data.startAt || new Date().toISOString(),
+        slotEnd: data.slotEnd || data.endAt || new Date(Date.now() + 30 * 60000).toISOString(),
+        reason: data.reason || "Outpatient Clinical Follow-up",
+      });
     }
     const payload = {
       patientId: data.patientId,
@@ -981,7 +996,9 @@ export class ApiClient {
       params.append("status", filter.status);
     if (filter?.limit) params.append("limit", String(filter.limit));
     const qs = params.toString() ? `?${params.toString()}` : "";
-    const res = await this.get<any>(`/medication-orders${qs}`);
+    const res = await this.get<
+      InpatientMedicationOrder[] | { data: InpatientMedicationOrder[] }
+    >(`/medication-orders${qs}`);
     return Array.isArray(res) ? res : res?.data || [];
   }
 
@@ -1000,24 +1017,29 @@ export class ApiClient {
     if (this.isMockMode) {
       return mockEngine.getMedicationOrder(id);
     }
-    const res = await this.get<any>(`/medication-orders/${id}`);
-    return res?.data ?? res;
+    const res = await this.get<
+      | { order: InpatientMedicationOrder; versions?: MedicationOrderVersion[] }
+      | { data: { order: InpatientMedicationOrder; versions?: MedicationOrderVersion[] } }
+    >(`/medication-orders/${id}`);
+    return "data" in res ? res.data : res;
   }
 
   async createMedicationOrder(data: {
     patientId: string;
-    items: any[];
+    items: InpatientMedicationOrderItem[];
     notes?: string;
     ward?: string;
     bed?: string;
     scheduleFrequency?: string;
     route?: string;
-  }): Promise<any> {
+  }): Promise<InpatientMedicationOrder> {
     if (this.isMockMode) {
-      return mockEngine.createMedicationOrder(data as any);
+      return mockEngine.createMedicationOrder(data);
     }
-    const res = await this.post<any>("/medication-orders", data);
-    return res?.data ?? res;
+    const res = await this.post<
+      InpatientMedicationOrder | { data: InpatientMedicationOrder }
+    >("/medication-orders", data);
+    return "data" in res ? res.data : res;
   }
 
   async updateMedicationOrderStatus(
@@ -1027,10 +1049,12 @@ export class ApiClient {
     if (this.isMockMode) {
       return mockEngine.updateMedicationOrderStatus(id, status);
     }
-    const res = await this.post<any>(`/medication-orders/${id}/status`, {
+    const res = await this.post<
+      InpatientMedicationOrder | { data: InpatientMedicationOrder }
+    >(`/medication-orders/${id}/status`, {
       status,
     });
-    return res?.data ?? res;
+    return "data" in res ? res.data : res;
   }
 
   // ==========================================

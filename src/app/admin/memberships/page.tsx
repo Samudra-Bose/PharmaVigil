@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { api } from "@/lib/api-client";
+import { api, type HospitalMemberRecord } from "@/lib/api-client";
 import { clinicalToast } from "@/lib/toast";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -26,11 +26,11 @@ import {
 } from "lucide-react";
 
 export default function AdminMembershipsPage() {
-  const [memberships, setMemberships] = useState<any[]>([]);
+  const [memberships, setMemberships] = useState<HospitalMemberRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       const data = await api.getMemberships();
@@ -38,16 +38,16 @@ export default function AdminMembershipsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [loadData]);
 
   const handleQuickStatusChange = async (
     id: string,
     newStatus: "ACTIVE" | "SUSPENDED" | "PENDING",
-    currentRole: any,
+    currentRole: HospitalMemberRecord["role"],
   ) => {
     setActionLoading(id);
     try {

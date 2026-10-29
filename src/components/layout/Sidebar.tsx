@@ -39,7 +39,7 @@ interface NavItem {
   badgeVariant?: "urgent" | "neutral";
 }
 
-export const Sidebar: React.FC = () => {
+export const Sidebar: React.FC = React.memo(function Sidebar() {
   const { role, hospitalName } = useAuth();
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
@@ -337,4 +337,4 @@ export const Sidebar: React.FC = () => {
       </div>
     </aside>
   );
-};
+});

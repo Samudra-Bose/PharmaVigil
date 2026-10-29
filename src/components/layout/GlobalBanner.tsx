@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { AlertCircle, X } from "lucide-react";
 
-export const GlobalBanner: React.FC = () => {
+export const GlobalBanner: React.FC = React.memo(function GlobalBanner() {
   const { isMockMode } = useAuth();
   const [dismissed, setDismissed] = useState(false);
 
@@ -48,4 +48,4 @@ export const GlobalBanner: React.FC = () => {
       </div>
     </aside>
   );
-};
+});

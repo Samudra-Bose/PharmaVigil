@@ -74,29 +74,37 @@ export const CameraCaptureModal: React.FC<CameraCaptureModalProps> = ({
           videoRef.current.srcObject = mediaStream;
           await videoRef.current.play();
         }
-      } catch (err: any) {
-        console.warn("Camera access failed:", err);
+      } catch (err: unknown) {
         if (
-          err.name === "NotAllowedError" ||
-          err.name === "PermissionDeniedError"
+          process.env.NODE_ENV === "development" &&
+          typeof window !== "undefined" &&
+          !process.env.VITEST
+        ) {
+          console.warn("Camera access failed:", err);
+        }
+        const errName = err instanceof Error ? err.name : "";
+        const errMsg = err instanceof Error ? err.message : "";
+        if (
+          errName === "NotAllowedError" ||
+          errName === "PermissionDeniedError"
         ) {
           setError(
             "Camera permission was denied. Please allow camera access in your browser settings or use the file upload fallback.",
           );
         } else if (
-          err.name === "NotFoundError" ||
-          err.name === "DevicesNotFoundError"
+          errName === "NotFoundError" ||
+          errName === "DevicesNotFoundError"
         ) {
           setError("No video camera device was detected on your hardware.");
         } else if (
-          err.name === "NotReadableError" ||
-          err.name === "TrackStartError"
+          errName === "NotReadableError" ||
+          errName === "TrackStartError"
         ) {
           setError(
             "The camera is currently in use by another application or browser tab.",
           );
         } else {
-          setError(err.message || "Failed to initialize video camera stream.");
+          setError(errMsg || "Failed to initialize video camera stream.");
         }
       } finally {
         setLoadingCamera(false);

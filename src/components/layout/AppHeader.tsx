@@ -26,7 +26,7 @@ import { openCommandPalette } from "@/components/layout/CommandPalette";
 import { cn } from "@/lib/utils";
 import type { UserRole } from "@/types";
 
-export const AppHeader: React.FC = () => {
+export const AppHeader: React.FC = React.memo(function AppHeader() {
   const router = useRouter();
   const pathname = usePathname();
   const { user, membership, role, hospitalName, logout, switchRole, isMockMode } = useAuth();
@@ -175,7 +175,7 @@ export const AppHeader: React.FC = () => {
                   {isMockMode && (
                     <select
                       value={role}
-                      onChange={(e) => switchRole(e.target.value as any)}
+                      onChange={(e) => switchRole(e.target.value as UserRole)}
                       className="text-[11px] font-semibold bg-slate-50 border border-slate-200/80 rounded-full px-2.5 py-1 text-slate-700 hover:bg-slate-100 transition-colors focus:outline-none cursor-pointer hidden md:inline-block shadow-2xs"
                       title="Switch Clinical Persona"
                       aria-label="Switch Clinical Persona"
@@ -346,4 +346,4 @@ export const AppHeader: React.FC = () => {
       />
     </>
   );
-};
+});

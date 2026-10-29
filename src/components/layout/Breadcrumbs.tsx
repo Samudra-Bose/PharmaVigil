@@ -35,7 +35,7 @@ const ROUTE_LABELS: Record<string, string> = {
   "demo-reset": "Demo Reset",
 };
 
-export const Breadcrumbs: React.FC = () => {
+export const Breadcrumbs: React.FC = React.memo(function Breadcrumbs() {
   const pathname = usePathname();
 
   if (!pathname || pathname === "/" || pathname.startsWith("/auth")) {
@@ -104,4 +104,4 @@ export const Breadcrumbs: React.FC = () => {
       </ol>
     </nav>
   );
-};
+});

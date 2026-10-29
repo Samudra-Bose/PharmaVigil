@@ -73,17 +73,18 @@ export default function OcrExtractPage() {
         setCaseData(data);
 
         if (data) {
-          const rawItems = (data as any).items;
+          const rawItems = data.items;
           const rawExtracted =
-            (data as any).extractedText || (data as any).extractedOcrText;
+            (data as { extractedText?: string }).extractedText ||
+            data.extractedRawText;
 
           if (Array.isArray(rawItems) && rawItems.length > 0) {
             setLines(
-              rawItems.map((item: any, idx: number) => ({
+              rawItems.map((item, idx: number) => ({
                 id: idx + 1,
                 text:
                   item.rawExtractedText || item.brandText || `Item ${idx + 1}`,
-                confidence: item.matchConfidence ?? item.confidence ?? 0.88,
+                confidence: item.matchConfidence ?? 0.88,
                 status:
                   item.matchStatus === "CONFIRMED" ? "CONFIRMED" : "UNREVIEWED",
               })),
@@ -156,7 +157,7 @@ export default function OcrExtractPage() {
           text: l.text,
           confidence: l.confidence,
         })),
-        (caseData as any)?.version || 1,
+        (caseData as { version?: number } | null)?.version || 1,
       );
       clinicalToast.success(
         "OCR Transcription Saved",

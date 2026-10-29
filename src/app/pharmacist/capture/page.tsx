@@ -220,8 +220,11 @@ function CapturePrescriptionContent() {
           `Recognized ${items.length} prescription medication item(s) (${result.confidence}% confidence)`,
         );
       }
-    } catch (err: any) {
-      if (err.name === "AbortError") {
+    } catch (err: unknown) {
+      const isAbort =
+        (err instanceof DOMException && err.name === "AbortError") ||
+        (err instanceof Error && err.name === "AbortError");
+      if (isAbort) {
         clinicalToast.info("OCR Cancelled", "Scan processing aborted");
       } else {
         clinicalToast.error(err, "OCR Recognition Failed");
@@ -285,7 +288,7 @@ function CapturePrescriptionContent() {
       );
 
       router.push(`/pharmacist/cases/${created.id}/extract`);
-    } catch (err: any) {
+    } catch (err: unknown) {
       clinicalToast.error(err, "Failed to save prescription capture");
     } finally {
       setSubmitting(false);

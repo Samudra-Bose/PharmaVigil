@@ -32,7 +32,10 @@ interface MobileNavProps {
   onClose: () => void;
 }
 
-export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
+export const MobileNav: React.FC<MobileNavProps> = React.memo(function MobileNav({
+  isOpen,
+  onClose,
+}) {
   const { role, user, hospitalName, logout } = useAuth();
   const pathname = usePathname();
 
@@ -260,4 +263,4 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
       </div>
     </div>
   );
-};
+});
