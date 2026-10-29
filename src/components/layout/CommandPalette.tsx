@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { openShortcutsModal } from "@/components/layout/ShortcutsModal";
@@ -97,16 +97,20 @@ export const CommandPalette: React.FC = () => {
 
   useEffect(() => {
     if (open) {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         inputRef.current?.focus();
       }, 50);
+      return () => clearTimeout(timer);
     }
   }, [open]);
 
-  const navigateTo = (path: string) => {
-    setOpen(false);
-    router.push(path);
-  };
+  const navigateTo = useCallback(
+    (path: string) => {
+      setOpen(false);
+      router.push(path);
+    },
+    [router]
+  );
 
   const allItems: CommandItem[] = useMemo(() => {
     const items: CommandItem[] = [
@@ -383,7 +387,7 @@ export const CommandPalette: React.FC = () => {
     ];
 
     return items;
-  }, [isMockMode, switchRole]);
+  }, [isMockMode, switchRole, navigateTo]);
 
   // Filter items based on search query
   const filteredItems = useMemo(() => {
