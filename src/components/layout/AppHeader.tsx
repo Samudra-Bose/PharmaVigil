@@ -24,38 +24,22 @@ export const AppHeader: React.FC = () => {
   }, []);
 
   const getHeaderAccent = () => {
-    if (pathname?.startsWith("/pharmacist")) return "from-emerald-500 via-teal-500 to-emerald-400";
-    if (pathname?.startsWith("/doctor")) return "from-blue-600 via-indigo-500 to-sky-400";
-    if (pathname?.startsWith("/patient")) return "from-violet-600 via-purple-500 to-fuchsia-400";
-    if (pathname?.startsWith("/admin")) return "from-indigo-600 via-slate-600 to-purple-500";
-    return "from-emerald-500 via-blue-500 via-violet-500 to-indigo-500";
+    return "from-teal-700 via-teal-500 to-slate-800";
   };
 
   const getRoleBadgeStyle = (r: UserRole) => {
     switch (r) {
       case "PHARMACIST":
-        return {
-          pill: "bg-emerald-50 text-emerald-800 border-emerald-200/90",
-          dot: "bg-emerald-500",
-        };
       case "DOCTOR":
-        return {
-          pill: "bg-blue-50 text-blue-800 border-blue-200/90",
-          dot: "bg-blue-500",
-        };
       case "PATIENT":
-        return {
-          pill: "bg-violet-50 text-violet-800 border-violet-200/90",
-          dot: "bg-violet-500",
-        };
       case "HOSPITAL_ADMIN":
         return {
-          pill: "bg-indigo-50 text-indigo-800 border-indigo-200/90",
-          dot: "bg-indigo-500",
+          pill: "bg-teal-50 text-teal-900 border-teal-200/90 font-bold",
+          dot: "bg-teal-600",
         };
       default:
         return {
-          pill: "bg-slate-100 text-slate-800 border-slate-200/80",
+          pill: "bg-slate-100 text-slate-800 border-slate-200/80 font-medium",
           dot: "bg-slate-500",
         };
     }

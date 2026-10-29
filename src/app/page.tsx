@@ -99,14 +99,11 @@ export default function HomePage() {
     <div className="flex flex-col gap-10 max-w-6xl mx-auto pb-16 pt-2 font-sans">
       {/* 1. Pinterest/Dribbble High-Energy Atmospheric Hero Section */}
       <section aria-label="Overview" className="text-center max-w-3xl mx-auto space-y-4 relative">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-emerald-100 via-teal-50 to-blue-100 border border-emerald-300 text-xs font-bold text-slate-800 shadow-xs">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600" />
-          </span>
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-50 border border-teal-200/80 text-xs font-bold text-teal-900 shadow-2xs">
+          <span className="size-2 rounded-full bg-teal-600" />
           <span>Metro General Hospital</span>
-          <span className="text-slate-400">•</span>
-          <span className="text-emerald-800 font-semibold">Clinical Safety Engine Active</span>
+          <span className="text-slate-300">•</span>
+          <span className="text-teal-800 font-semibold">Clinical Safety Engine Active</span>
         </div>
 
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-tight font-display">
@@ -119,18 +116,18 @@ export default function HomePage() {
 
         {/* 3-Step Safety Loop Visualizer */}
         <div className="pt-2 flex items-center justify-center gap-2 sm:gap-4 text-xs font-semibold text-slate-700 flex-wrap">
-          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white border border-blue-200 shadow-xs">
-            <span className="size-5 rounded-full bg-blue-100 text-blue-800 text-[11px] font-black flex items-center justify-center">1</span>
+          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs">
+            <span className="size-5 rounded-full bg-slate-100 text-slate-800 text-[11px] font-black flex items-center justify-center">1</span>
             <span>Doctor Prescribes</span>
           </div>
           <ArrowRight className="size-3.5 text-slate-400 shrink-0" />
-          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white border border-emerald-200 shadow-xs">
-            <span className="size-5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-black flex items-center justify-center">2</span>
+          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-teal-50 border border-teal-200/80 text-teal-900 shadow-2xs">
+            <span className="size-5 rounded-full bg-teal-600 text-white text-[11px] font-black flex items-center justify-center">2</span>
             <span>Deterministic CDS Check</span>
           </div>
           <ArrowRight className="size-3.5 text-slate-400 shrink-0" />
-          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white border border-teal-200 shadow-xs">
-            <span className="size-5 rounded-full bg-teal-100 text-teal-800 text-[11px] font-black flex items-center justify-center">3</span>
+          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs">
+            <span className="size-5 rounded-full bg-slate-100 text-slate-800 text-[11px] font-black flex items-center justify-center">3</span>
             <span>Safe Pharmacist Dispense</span>
           </div>
         </div>
@@ -152,7 +149,7 @@ export default function HomePage() {
             <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500 bg-white px-3.5 py-1.5 rounded-xl border border-slate-200 shadow-xs">
               <span className="text-slate-400 font-medium">Current Session:</span>
               <span className="font-bold text-slate-800">{user.displayName}</span>
-              <span className="size-2 rounded-full bg-emerald-500" />
+              <span className="size-2 rounded-full bg-teal-600" />
             </div>
           )}
         </div>
@@ -162,64 +159,24 @@ export default function HomePage() {
             const Icon = card.icon;
             const isCurrentActive = role === card.role;
 
-            const themeStyles = {
-              emerald: {
-                activeBorder: "border-emerald-500 ring-2 ring-emerald-500/20 shadow-emerald-500/10",
-                button: "bg-emerald-600 hover:bg-emerald-500 text-white shadow-glow-emerald",
-                iconBg: "bg-emerald-50 text-emerald-700 border-emerald-200",
-                hairline: "from-emerald-500 to-teal-400",
-                badge: "bg-emerald-50 text-emerald-800 border-emerald-200",
-                hoverShadow: "hover:shadow-glow-emerald",
-              },
-              blue: {
-                activeBorder: "border-blue-500 ring-2 ring-blue-500/20 shadow-blue-500/10",
-                button: "bg-blue-600 hover:bg-blue-500 text-white shadow-glow-blue",
-                iconBg: "bg-blue-50 text-blue-700 border-blue-200",
-                hairline: "from-blue-600 to-sky-400",
-                badge: "bg-blue-50 text-blue-800 border-blue-200",
-                hoverShadow: "hover:shadow-glow-blue",
-              },
-              violet: {
-                activeBorder: "border-violet-500 ring-2 ring-violet-500/20 shadow-violet-500/10",
-                button: "bg-violet-600 hover:bg-violet-500 text-white shadow-glow-violet",
-                iconBg: "bg-violet-50 text-violet-700 border-violet-200",
-                hairline: "from-violet-600 to-purple-400",
-                badge: "bg-violet-50 text-violet-800 border-violet-200",
-                hoverShadow: "hover:shadow-glow-violet",
-              },
-              indigo: {
-                activeBorder: "border-indigo-500 ring-2 ring-indigo-500/20 shadow-indigo-500/10",
-                button: "bg-indigo-600 hover:bg-indigo-500 text-white shadow-glow-blue",
-                iconBg: "bg-indigo-50 text-indigo-700 border-indigo-200",
-                hairline: "from-indigo-600 to-slate-500",
-                badge: "bg-indigo-50 text-indigo-800 border-indigo-200",
-                hoverShadow: "hover:shadow-glow-blue",
-              },
-            }[card.themeColor];
-
-            const statusColors = {
-              rose: "bg-rose-50 text-rose-800 border-rose-200",
-              amber: "bg-amber-50 text-amber-800 border-amber-200",
-              emerald: "bg-emerald-50 text-emerald-800 border-emerald-200",
-              slate: "bg-slate-100 text-slate-700 border-slate-200",
-            }[card.statusVariant];
-
             return (
               <div
                 key={card.role}
                 onClick={() => handleLaunchWorkspace(card.role, card.workspaceHref)}
-                className={`group relative bg-white rounded-2xl border p-6 flex flex-col justify-between transition-all duration-200 cursor-pointer shadow-subtle hover:shadow-lg ${
-                  isCurrentActive ? `${themeStyles.activeBorder} bg-gradient-to-b from-white to-slate-50/50` : "border-slate-200/90 hover:border-slate-300"
+                className={`group relative bg-white rounded-2xl border p-6 flex flex-col justify-between transition-all duration-200 cursor-pointer shadow-xs hover:shadow-md ${
+                  isCurrentActive ? "border-teal-600 ring-2 ring-teal-600/15" : "border-slate-200/90 hover:border-slate-300"
                 }`}
               >
                 {/* Hairline Accent Top Bar */}
-                <div className={`h-1.5 absolute top-0 left-0 right-0 rounded-t-2xl bg-gradient-to-r ${themeStyles.hairline}`} />
+                <div className={`h-1.5 absolute top-0 left-0 right-0 rounded-t-2xl ${isCurrentActive ? "bg-teal-600" : "bg-transparent"}`} />
 
                 <div className="space-y-4">
                   {/* Card Top: Icon, Persona Label & Status */}
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3.5">
-                      <div className={`size-12 rounded-xl flex items-center justify-center shrink-0 border transition-transform group-hover:scale-105 shadow-2xs ${themeStyles.iconBg}`}>
+                      <div className={`size-12 rounded-xl flex items-center justify-center shrink-0 border transition-transform group-hover:scale-105 shadow-2xs ${
+                        isCurrentActive ? "bg-teal-50 text-teal-800 border-teal-200" : "bg-slate-50 text-slate-700 border-slate-200"
+                      }`}>
                         <Icon className="size-5" />
                       </div>
                       <div>
@@ -233,7 +190,7 @@ export default function HomePage() {
                     </div>
 
                     {isCurrentActive && (
-                      <span className={`text-[10px] uppercase font-mono font-bold px-2.5 py-0.5 rounded-full border ${themeStyles.badge}`}>
+                      <span className="text-[10px] uppercase font-bold px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-800 border border-teal-200">
                         Active
                       </span>
                     )}
@@ -248,7 +205,7 @@ export default function HomePage() {
                 {/* Footer: Live Queue Indicator & Primary Launch Button */}
                 <div className="pt-4 mt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-2">
-                    <span className={`text-[11px] font-bold px-2.5 py-1 rounded-lg border shadow-xs ${statusColors}`}>
+                    <span className="text-[11px] font-bold px-2.5 py-1 rounded-lg border bg-slate-50 text-slate-700 border-slate-200">
                       {card.statusText}
                     </span>
                   </div>
@@ -259,7 +216,11 @@ export default function HomePage() {
                       e.stopPropagation();
                       handleLaunchWorkspace(card.role, card.workspaceHref);
                     }}
-                    className={`h-9 px-4 rounded-xl font-bold text-xs inline-flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-95 ${themeStyles.button}`}
+                    className={`h-9 px-4 rounded-xl font-bold text-xs inline-flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-95 ${
+                      isCurrentActive
+                        ? "bg-teal-700 hover:bg-teal-600 text-white shadow-sm shadow-teal-700/20"
+                        : "bg-slate-900 hover:bg-slate-800 text-white"
+                    }`}
                   >
                     <span>Launch Workspace</span>
                     <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -275,7 +236,7 @@ export default function HomePage() {
       <section aria-label="Clinical Guarantees" className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
           <div className="flex items-center gap-3">
-            <div className="size-9 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center shrink-0 shadow-2xs">
+            <div className="size-9 rounded-xl bg-teal-50 text-teal-800 border border-teal-200/80 flex items-center justify-center shrink-0 shadow-2xs">
               <CheckCircle2 className="size-4.5" />
             </div>
             <div>
@@ -285,7 +246,7 @@ export default function HomePage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="size-9 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 flex items-center justify-center shrink-0 shadow-2xs">
+            <div className="size-9 rounded-xl bg-teal-50 text-teal-800 border border-teal-200/80 flex items-center justify-center shrink-0 shadow-2xs">
               <Lock className="size-4.5" />
             </div>
             <div>
@@ -295,7 +256,7 @@ export default function HomePage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="size-9 rounded-xl bg-violet-50 text-violet-700 border border-violet-200 flex items-center justify-center shrink-0 shadow-2xs">
+            <div className="size-9 rounded-xl bg-teal-50 text-teal-800 border border-teal-200/80 flex items-center justify-center shrink-0 shadow-2xs">
               <Camera className="size-4.5" />
             </div>
             <div>
@@ -305,7 +266,7 @@ export default function HomePage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="size-9 rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-200 flex items-center justify-center shrink-0 shadow-2xs">
+            <div className="size-9 rounded-xl bg-teal-50 text-teal-800 border border-teal-200/80 flex items-center justify-center shrink-0 shadow-2xs">
               <Shield className="size-4.5" />
             </div>
             <div>
