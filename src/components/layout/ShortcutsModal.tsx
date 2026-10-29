@@ -11,6 +11,18 @@ export function openShortcutsModal() {
   }
 }
 
+interface ShortcutItem {
+  keys: string[];
+  altKeys?: string[];
+  description: string;
+  icon?: React.ComponentType<{ className?: string }>;
+}
+
+interface ShortcutGroup {
+  title: string;
+  items: ShortcutItem[];
+}
+
 export const ShortcutsModal: React.FC = () => {
   const [open, setOpen] = useState(false);
 
@@ -27,7 +39,7 @@ export const ShortcutsModal: React.FC = () => {
     };
   }, []);
 
-  const shortcutGroups = [
+  const shortcutGroups: ShortcutGroup[] = [
     {
       title: "Global & Search Navigation",
       items: [

@@ -363,8 +363,18 @@ export default function PharmacistDashboard() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Filter by Rx, Patient MRN, Drug..."
-                  className="w-full pl-8 pr-3 py-1.5 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-600 focus:bg-white transition-all shadow-inner/10"
+                  className="w-full pl-8 pr-8 py-1.5 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-teal-700 focus:bg-white transition-all shadow-inner/10"
                 />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5"
+                    title="Clear search"
+                  >
+                    <X className="size-3.5" />
+                  </button>
+                )}
               </div>
 
               {/* Segmented Filter Pills */}
@@ -457,13 +467,31 @@ export default function PharmacistDashboard() {
                               Rajan Sharma
                             </span>
                             <span className="text-slate-300">•</span>
-                            <span className="text-xs text-slate-500 font-medium">
-                              MRN: {formatPatientMRN(c.patientId)}
-                            </span>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                copyText(formatPatientMRN(c.patientId), "Patient MRN");
+                              }}
+                              className="text-xs text-slate-500 hover:text-slate-900 font-medium inline-flex items-center gap-1 cursor-pointer group/copy"
+                              title="Click to copy Patient MRN"
+                            >
+                              <span>MRN: {formatPatientMRN(c.patientId)}</span>
+                              <Copy className="size-2.5 text-slate-400 group-hover/copy:text-slate-700" />
+                            </button>
                             <span className="text-slate-300">•</span>
-                            <span className="text-[11px] font-mono px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md font-semibold border border-slate-200/60">
-                              Rx #{formatCaseId(c.id)} (v{c.currentRevisionNumber})
-                            </span>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                copyText(formatCaseId(c.id), "Rx Case ID");
+                              }}
+                              className="text-[11px] font-mono px-2 py-0.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md font-semibold border border-slate-200/60 inline-flex items-center gap-1 transition-colors cursor-pointer group/copy"
+                              title="Click to copy Rx Case ID"
+                            >
+                              <span>Rx #{formatCaseId(c.id)} (v{c.currentRevisionNumber})</span>
+                              <Copy className="size-2.5 text-slate-400 group-hover/copy:text-slate-700" />
+                            </button>
                           </div>
 
                           {/* Human Readable Medication Pills */}

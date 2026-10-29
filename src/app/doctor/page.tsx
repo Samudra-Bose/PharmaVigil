@@ -27,7 +27,11 @@ import {
   Activity,
   HeartPulse,
   Pill,
+  Search,
+  Copy,
+  X,
 } from "lucide-react";
+import { clinicalToast } from "@/lib/toast";
 
 function formatPatientMRN(raw: string) {
   if (!raw) return "P-9021";
@@ -44,6 +48,14 @@ function formatCaseId(caseId: string) {
 export default function DoctorDashboard() {
   const [cases, setCases] = useState<FixtureCase[]>([INITIAL_FIXTURE_CASE]);
   const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const copyText = (text: string, label: string) => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      clinicalToast.info(`${label} Copied`, `${text} copied to clipboard.`);
+    }
+  };
 
   useEffect(() => {
     async function loadData() {
@@ -91,6 +103,18 @@ export default function DoctorDashboard() {
       (severityRank[a.alert.severity] || 5) -
       (severityRank[b.alert.severity] || 5),
   );
+
+  const filteredTasks = tasks.filter((t) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase().trim();
+    return (
+      t.caseId.toLowerCase().includes(q) ||
+      t.patientId.toLowerCase().includes(q) ||
+      (t.alert.ruleId && t.alert.ruleId.toLowerCase().includes(q)) ||
+      (t.alert.rationale && t.alert.rationale.toLowerCase().includes(q)) ||
+      (t.alert.severity && t.alert.severity.toLowerCase().includes(q))
+    );
+  });
 
   const primaryTask = tasks[0];
 
@@ -303,26 +327,54 @@ export default function DoctorDashboard() {
                 <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
                   <span>Prioritized Safety Triage Queue</span>
                   <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
-                    {tasks.length}
+                    {filteredTasks.length}
                   </span>
                 </h2>
                 <p className="text-xs text-slate-500 mt-0.5">
                   Review pharmacological evidence, drug alternatives, and provide required clinical rationale.
                 </p>
               </div>
+
+              {/* Triage Search Filter */}
+              <div className="relative w-full sm:w-64">
+                <Search className="size-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Filter tasks, MRN, alert..."
+                  className="w-full pl-8.5 pr-8 py-1.5 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-teal-700 focus:bg-white transition-all shadow-inner/10"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 cursor-pointer"
+                    title="Clear filter"
+                  >
+                    <X className="size-3.5" />
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Task List */}
             {loading ? (
               <div className="py-8 text-center text-xs text-slate-400 font-mono">Loading clinical cases...</div>
-            ) : tasks.length === 0 ? (
+            ) : filteredTasks.length === 0 ? (
               <EmptyState
-                title="All clinical safety flags resolved"
-                description="No active drug-drug interaction or contraindication flags currently require physician review."
+                title={searchQuery ? "No matching triage tasks found" : "All clinical safety flags resolved"}
+                description={
+                  searchQuery
+                    ? "Try adjusting your search query or clear the filter to view all triage items."
+                    : "No active drug-drug interaction or contraindication flags currently require physician review."
+                }
+                actionLabel={searchQuery ? "Clear Search Filter" : undefined}
+                onAction={searchQuery ? () => setSearchQuery("") : undefined}
               />
             ) : (
               <div className="divide-y divide-slate-100">
-                {tasks.map((t) => (
+                {filteredTasks.map((t) => (
                   <div
                     key={`${t.caseId}-${t.alert.ruleId}`}
                     className="py-4 first:pt-1 last:pb-1 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/70 transition-colors rounded-xl px-2.5"
@@ -338,13 +390,31 @@ export default function DoctorDashboard() {
                             Rajan Sharma
                           </span>
                           <span className="text-slate-300">•</span>
-                          <span className="text-xs text-slate-500 font-medium">
-                            MRN: {formatPatientMRN(t.patientId)}
-                          </span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              copyText(formatPatientMRN(t.patientId), "Patient MRN");
+                            }}
+                            className="text-xs text-slate-500 hover:text-slate-900 font-medium inline-flex items-center gap-1 cursor-pointer group/copy"
+                            title="Click to copy Patient MRN"
+                          >
+                            <span>MRN: {formatPatientMRN(t.patientId)}</span>
+                            <Copy className="size-2.5 text-slate-400 group-hover/copy:text-slate-700" />
+                          </button>
                           <span className="text-slate-300">•</span>
-                          <span className="text-[11px] font-mono px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md font-semibold border border-slate-200/60">
-                            Rx #{formatCaseId(t.caseId)} (v{t.revisionNumber})
-                          </span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              copyText(formatCaseId(t.caseId), "Rx Case ID");
+                            }}
+                            className="text-[11px] font-mono px-2 py-0.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md font-semibold border border-slate-200/60 inline-flex items-center gap-1 transition-colors cursor-pointer group/copy"
+                            title="Click to copy Rx Case ID"
+                          >
+                            <span>Rx #{formatCaseId(t.caseId)} (v{t.revisionNumber})</span>
+                            <Copy className="size-2.5 text-slate-400 group-hover/copy:text-slate-700" />
+                          </button>
                         </div>
                         <div className="text-xs text-slate-700 truncate max-w-lg font-medium mt-0.5">
                           {t.alert.rationale}
