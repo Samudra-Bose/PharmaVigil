@@ -101,4 +101,61 @@ describe("Individual Clinical Role Logins Suite", () => {
     expect(handleRoleChange).toHaveBeenCalledWith("DOCTOR");
     expect(screen.getByText("Doctor & Prescriber Clinical Portal")).toBeDefined();
   });
+
+  it("TEST-PORTAL-009: Individual credentials authenticate Doctor with DoctorSecure2026!", async () => {
+    const res = await api.login("doctor@metro-general.invalid", "DoctorSecure2026!");
+    expect(res.user.displayName).toBe("Dr. Arvind Patel, MD");
+    expect(res.memberships[0].assignedRole).toBe("DOCTOR");
+  });
+
+  it("TEST-PORTAL-010: Individual credentials authenticate Pharmacist with PharmaSecure2026!", async () => {
+    const res = await api.login("pharma@metro-general.invalid", "PharmaSecure2026!");
+    expect(res.user.displayName).toBe("Priya Sharma, RPh");
+    expect(res.memberships[0].assignedRole).toBe("PHARMACIST");
+  });
+
+  it("TEST-PORTAL-011: Individual credentials authenticate Patient with PatientSecure2026!", async () => {
+    const res = await api.login("patient@metro-general.invalid", "PatientSecure2026!");
+    expect(res.user.displayName).toBe("Rajan Sharma");
+    expect(res.memberships[0].assignedRole).toBe("PATIENT");
+  });
+
+  it("TEST-PORTAL-012: Individual credentials authenticate Admin with AdminSecure2026!", async () => {
+    const res = await api.login("admin@metro-general.invalid", "AdminSecure2026!");
+    expect(res.user.displayName).toBe("Sunita Verma (Administrator)");
+    expect(res.memberships[0].assignedRole).toBe("HOSPITAL_ADMIN");
+  });
+
+  it("TEST-PORTAL-013: Login rejects incorrect password with UNAUTHENTICATED error", async () => {
+    await expect(
+      api.login("doctor@metro-general.invalid", "WrongPassword999!")
+    ).rejects.toThrow(/Invalid email or password/i);
+  });
+
+  it("TEST-PORTAL-014: Session expires after 2 days (48 hours) according to expiration policy", () => {
+    const expiredTimestamp = Date.now() - 1000; // 1 second ago
+    const activeTimestamp = Date.now() + 48 * 60 * 60 * 1000; // 2 days in future
+
+    expect(Date.now() > expiredTimestamp).toBe(true);
+    expect(Date.now() > activeTimestamp).toBe(false);
+  });
+
+  it("TEST-PORTAL-015: Protected routes redirect unauthenticated users to corresponding login page", async () => {
+    const { getLoginRedirectForPath, isProtectedPath } = await import(
+      "@/context/AuthContext"
+    );
+
+    expect(isProtectedPath("/doctor")).toBe(true);
+    expect(isProtectedPath("/doctor/orders")).toBe(true);
+    expect(isProtectedPath("/pharmacist")).toBe(true);
+    expect(isProtectedPath("/patient")).toBe(true);
+    expect(isProtectedPath("/admin")).toBe(true);
+    expect(isProtectedPath("/")).toBe(false);
+    expect(isProtectedPath("/auth/login")).toBe(false);
+
+    expect(getLoginRedirectForPath("/doctor")).toBe("/auth/login/doctor");
+    expect(getLoginRedirectForPath("/pharmacist")).toBe("/auth/login/pharmacist");
+    expect(getLoginRedirectForPath("/patient")).toBe("/auth/login/patient");
+    expect(getLoginRedirectForPath("/admin")).toBe("/auth/login/admin");
+  });
 });

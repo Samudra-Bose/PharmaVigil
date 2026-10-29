@@ -69,7 +69,7 @@ export const ROLE_CONFIGS: Record<UserRole, RolePortalConfig> = {
     roleBadgeText: "Physician Clearance (MD)",
     icon: Stethoscope,
     defaultEmail: "doctor@metro-general.invalid",
-    defaultPassword: "DemoPassword123!",
+    defaultPassword: "DoctorSecure2026!",
     identifierLabel: "Medical Staff ID or Hospital Email",
     identifierPlaceholder: "doctor@metro-general.invalid or Dr. Arvind Patel",
     contextualLabel: "Clinical Ward / Specialty",
@@ -108,7 +108,7 @@ export const ROLE_CONFIGS: Record<UserRole, RolePortalConfig> = {
     roleBadgeText: "Registered Pharmacist (RPh)",
     icon: Pill,
     defaultEmail: "pharma@metro-general.invalid",
-    defaultPassword: "DemoPassword123!",
+    defaultPassword: "PharmaSecure2026!",
     identifierLabel: "Pharmacist License ID or Email",
     identifierPlaceholder: "pharma@metro-general.invalid or Priya Sharma, RPh",
     contextualLabel: "Dispensing Workstation",
@@ -146,7 +146,7 @@ export const ROLE_CONFIGS: Record<UserRole, RolePortalConfig> = {
     roleBadgeText: "Patient Outpatient Access",
     icon: UserCheck,
     defaultEmail: "patient@metro-general.invalid",
-    defaultPassword: "DemoPassword123!",
+    defaultPassword: "PatientSecure2026!",
     identifierLabel: "Patient MRN / Hospital ID or Email",
     identifierPlaceholder: "P-9021 or patient@metro-general.invalid",
     contextualLabel: "Birth Date Verification",
@@ -180,7 +180,7 @@ export const ROLE_CONFIGS: Record<UserRole, RolePortalConfig> = {
     roleBadgeText: "Executive Governance",
     icon: ShieldAlert,
     defaultEmail: "admin@metro-general.invalid",
-    defaultPassword: "DemoPassword123!",
+    defaultPassword: "AdminSecure2026!",
     identifierLabel: "Administrator Corporate Email",
     identifierPlaceholder: "admin@metro-general.invalid or Sunita Verma",
     contextualLabel: "Hospital Tenancy Scope",
@@ -265,6 +265,7 @@ export const RoleLoginForm: React.FC<RoleLoginFormProps> = ({
     setError(null);
     try {
       await login(identifier.trim(), password);
+      toast.success("Signed in successfully. Session active for 2 days.");
     } catch (err) {
       setError(err as Error);
     }
@@ -273,10 +274,11 @@ export const RoleLoginForm: React.FC<RoleLoginFormProps> = ({
   const handleInstantSignIn = async (email: string) => {
     setError(null);
     setIdentifier(email);
-    setPassword("DemoPassword123!");
+    setPassword(config.defaultPassword);
     setInstantSigningEmail(email);
     try {
-      await login(email, "DemoPassword123!");
+      await login(email, config.defaultPassword);
+      toast.success("Authenticated successfully. Session active for 2 days.");
     } catch (err) {
       setError(err as Error);
     } finally {
@@ -444,7 +446,7 @@ export const RoleLoginForm: React.FC<RoleLoginFormProps> = ({
                       type="button"
                       onClick={() => {
                         setIdentifier(persona.email);
-                        setPassword("DemoPassword123!");
+                        setPassword(config.defaultPassword);
                         toast.info(`Filled credentials for ${persona.name}`);
                       }}
                       title="Fill into form"
@@ -456,6 +458,68 @@ export const RoleLoginForm: React.FC<RoleLoginFormProps> = ({
                 </div>
               );
             })}
+          </div>
+        </div>
+
+        {/* 4. Assigned Individual Portal Credentials Card */}
+        <div className="p-3.5 rounded-xl bg-teal-50/80 border border-teal-200/90 space-y-2.5">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-teal-950 flex items-center gap-1.5">
+              <ShieldCheck className="size-4 text-teal-700" />
+              <span>Assigned Hospital Login Credentials:</span>
+            </span>
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-100 text-teal-900 border border-teal-200/80 flex items-center gap-1">
+              <Clock className="size-3 text-teal-700" />
+              <span>Valid 2 Days (Auto-Logout)</span>
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-teal-200/70 font-mono">
+              <div className="min-w-0 pr-1">
+                <span className="text-[10px] text-slate-400 block font-sans font-medium uppercase tracking-wider">
+                  Assigned Email / ID
+                </span>
+                <span className="text-slate-900 font-bold truncate block">
+                  {config.defaultEmail}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleCopy(config.defaultEmail, "email")}
+                className="p-1.5 hover:bg-slate-100 rounded-md text-slate-500 hover:text-slate-900 transition-colors shrink-0 cursor-pointer"
+                title="Copy Email"
+              >
+                {copiedKey === "email" ? (
+                  <Check className="size-3.5 text-emerald-600" />
+                ) : (
+                  <Copy className="size-3.5" />
+                )}
+              </button>
+            </div>
+
+            <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-teal-200/70 font-mono">
+              <div className="min-w-0 pr-1">
+                <span className="text-[10px] text-slate-400 block font-sans font-medium uppercase tracking-wider">
+                  Portal Password
+                </span>
+                <span className="text-slate-900 font-bold truncate block">
+                  {config.defaultPassword}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleCopy(config.defaultPassword, "password")}
+                className="p-1.5 hover:bg-slate-100 rounded-md text-slate-500 hover:text-slate-900 transition-colors shrink-0 cursor-pointer"
+                title="Copy Password"
+              >
+                {copiedKey === "password" ? (
+                  <Check className="size-3.5 text-emerald-600" />
+                ) : (
+                  <Copy className="size-3.5" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -571,9 +635,16 @@ export const RoleLoginForm: React.FC<RoleLoginFormProps> = ({
                 className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-700 focus:border-transparent transition-all font-mono"
               />
             </div>
-            <p className="mt-1 text-[11px] text-slate-400">
-              Default demo credential key:{" "}
-              <code className="text-slate-700 font-bold font-mono">DemoPassword123!</code>
+            <p className="mt-1 text-[11px] text-slate-500 flex items-center justify-between">
+              <span>
+                Default portal password:{" "}
+                <code className="text-slate-800 font-bold font-mono">
+                  {config.defaultPassword}
+                </code>
+              </span>
+              <span className="text-[10px] text-teal-800 font-semibold">
+                48h Session Lock
+              </span>
             </p>
           </div>
 

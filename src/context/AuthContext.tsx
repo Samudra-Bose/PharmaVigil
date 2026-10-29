@@ -7,7 +7,13 @@ import React, {
   useState,
   useCallback,
 } from "react";
-import { api, ApiClientError } from "@/lib/api-client";
+import {
+  api,
+  ApiClientError,
+  clearStoredSession,
+  isSessionExpired,
+  setSessionExpiration,
+} from "@/lib/api-client";
 import type {
   CurrentUserResponse,
   Membership,
@@ -30,21 +36,22 @@ interface AuthContextType {
   refreshSession: () => Promise<void>;
 }
 
-const DEFAULT_DEMO_USER: CurrentUserResponse["user"] = {
-  id: "usr_pharma_01",
-  displayName: "Priya Sharma, RPh",
-  accountStatus: "ACTIVE",
-};
+export const PROTECTED_PREFIXES = ["/doctor", "/pharmacist", "/patient", "/admin"];
 
-const DEFAULT_DEMO_MEMBERSHIP: Membership = {
-  id: "mem_usr_pharma_01",
-  hospitalId: "Metro General Hospital",
-  userId: "usr_pharma_01",
-  assignedRole: "PHARMACIST",
-  requestedRole: "PHARMACIST",
-  status: "ACTIVE",
-  version: 1,
-};
+export function isProtectedPath(pathname: string | null | undefined): boolean {
+  if (!pathname) return false;
+  return PROTECTED_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(prefix + "/")
+  );
+}
+
+export function getLoginRedirectForPath(pathname: string | null | undefined): string {
+  if (pathname?.startsWith("/doctor")) return "/auth/login/doctor";
+  if (pathname?.startsWith("/pharmacist")) return "/auth/login/pharmacist";
+  if (pathname?.startsWith("/patient")) return "/auth/login/patient";
+  if (pathname?.startsWith("/admin")) return "/auth/login/admin";
+  return "/auth/login";
+}
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -83,6 +90,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     let hasToken: string | null = null;
     let cachedUser: CurrentUserResponse["user"] | null = null;
     let cachedMem: Membership | null = null;
+
     try {
       if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
         hasToken = localStorage.getItem("pharmavigil_session_token");
@@ -93,45 +101,76 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     } catch {
       hasToken = null;
+      cachedUser = null;
+      cachedMem = null;
     }
 
-    if (!hasToken && !isMockMode && pathname?.startsWith("/auth")) {
-      setIsLoading(false);
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      const res = await api.getCurrentUser();
-      setUser(res.user);
-      const activeMem =
-        res.memberships?.[0] || (res as any).membership || null;
-      setMembership(activeMem);
-      const assigned = (activeMem?.assignedRole ||
-        activeMem?.requestedRole ||
-        (activeMem as any)?.role) as UserRole | undefined;
-      setRole(assigned || (isMockMode ? "PHARMACIST" : null));
-      await resolveHospital(activeMem);
-    } catch (err) {
-      if (isMockMode && !pathname?.startsWith("/auth")) {
-        setUser(cachedUser || DEFAULT_DEMO_USER);
-        setMembership(cachedMem || DEFAULT_DEMO_MEMBERSHIP);
-        const assigned = (cachedMem?.assignedRole ||
-          cachedMem?.requestedRole ||
-          (cachedMem as any)?.role) as UserRole | undefined;
-        setRole(assigned || "PHARMACIST");
-      } else {
+    // 1. Session Expiration Policy: Auto-logout after 2 days (48 hours)
+    if (hasToken || cachedUser) {
+      if (isSessionExpired()) {
+        clearStoredSession();
         setUser(null);
         setMembership(null);
         setRole(null);
         setHospital(null);
-        if (
-          err instanceof ApiClientError &&
-          err.code === "UNAUTHENTICATED" &&
-          !pathname?.startsWith("/auth")
-        ) {
-          router.push("/auth/login");
+        setIsLoading(false);
+        try {
+          await api.logout();
+        } catch {
+          // ignore
         }
+        if (isProtectedPath(pathname)) {
+          router.push(getLoginRedirectForPath(pathname));
+        }
+        return;
+      }
+    }
+
+    // 2. Default: NO user is logged in. User MUST log in to access protected portals.
+    if (!cachedUser && !hasToken) {
+      setUser(null);
+      setMembership(null);
+      setRole(null);
+      setHospital(null);
+      setIsLoading(false);
+      if (isProtectedPath(pathname)) {
+        router.push(getLoginRedirectForPath(pathname));
+      }
+      return;
+    }
+
+    // 3. User is actively logged in within 2 days -> Restore session and stay logged in
+    try {
+      setIsLoading(true);
+      if (isMockMode && cachedUser) {
+        setUser(cachedUser);
+        setMembership(cachedMem);
+        const assigned = (cachedMem?.assignedRole ||
+          cachedMem?.requestedRole ||
+          (cachedMem as any)?.role) as UserRole | undefined;
+        setRole(assigned || null);
+        api.restoreMockSession(cachedUser.id, assigned);
+        await resolveHospital(cachedMem);
+      } else {
+        const res = await api.getCurrentUser();
+        setUser(res.user);
+        const activeMem =
+          res.memberships?.[0] || (res as any).membership || null;
+        setMembership(activeMem);
+        const assigned = (activeMem?.assignedRole ||
+          activeMem?.requestedRole ||
+          (activeMem as any)?.role) as UserRole | undefined;
+        setRole(assigned || null);
+        await resolveHospital(activeMem);
+      }
+    } catch (err) {
+      clearStoredSession();
+      setUser(null);
+      setMembership(null);
+      setRole(null);
+      setHospital(null);
+      if (isProtectedPath(pathname)) {
+        router.push(getLoginRedirectForPath(pathname));
       }
     } finally {
       setIsLoading(false);
@@ -177,6 +216,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       await api.logout();
     } finally {
+      clearStoredSession();
       setUser(null);
       setMembership(null);
       setRole(null);
@@ -187,12 +227,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const switchRole = async (targetRole: UserRole) => {
     if (isMockMode) {
-      api.switchDemoRole(targetRole);
-      await refreshSession();
-      if (targetRole === "PHARMACIST") router.push("/pharmacist");
-      if (targetRole === "DOCTOR") router.push("/doctor");
-      if (targetRole === "PATIENT") router.push("/patient");
-      if (targetRole === "HOSPITAL_ADMIN") router.push("/admin");
+      const emailMap: Record<UserRole, string> = {
+        PHARMACIST: "pharma@metro-general.invalid",
+        DOCTOR: "doctor@metro-general.invalid",
+        PATIENT: "patient@metro-general.invalid",
+        HOSPITAL_ADMIN: "admin@metro-general.invalid",
+      };
+      await login(emailMap[targetRole]);
     } else {
       console.warn("Role switching is disabled in live authenticated mode.");
     }

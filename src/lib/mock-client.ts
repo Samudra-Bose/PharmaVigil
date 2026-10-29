@@ -36,6 +36,7 @@ import type {
   PatientAllergy,
   PatientMedicationHistoryItem,
   MedicationOrderStatus,
+  UserRole,
 } from "@/types";
 
 const STORAGE_KEY = "pharmavigil_demo_state";
@@ -60,8 +61,7 @@ interface PersistedState {
 }
 
 class MockEngine {
-  private currentUser: FixtureUser | null =
-    FIXTURE_USERS["pharma@metro-general.invalid"];
+  private currentUser: FixtureUser | null = null;
   private hospital: Hospital = { ...FIXTURE_HOSPITAL };
   private patient: PatientRecord = { ...FIXTURE_PATIENT };
   private patients: PatientRecord[] = [...FIXTURE_PATIENTS];
@@ -189,18 +189,22 @@ class MockEngine {
   }
 
   // Auth Operations
-  async login(email: string): Promise<CurrentUserResponse> {
+  async login(email: string, password?: string): Promise<CurrentUserResponse> {
     const raw = email.trim().toLowerCase();
     const aliasMap: Record<string, string> = {
       doctor: "doctor@metro-general.invalid",
+      "doctor@pharmavigil.health": "doctor@metro-general.invalid",
       "dr. arvind patel": "doctor@metro-general.invalid",
       pharmacist: "pharma@metro-general.invalid",
       pharma: "pharma@metro-general.invalid",
+      "pharmacist@pharmavigil.health": "pharma@metro-general.invalid",
       "priya sharma": "pharma@metro-general.invalid",
       patient: "patient@metro-general.invalid",
+      "patient@pharmavigil.health": "patient@metro-general.invalid",
       "rajan sharma": "patient@metro-general.invalid",
       "p-9021": "patient@metro-general.invalid",
       admin: "admin@metro-general.invalid",
+      "admin@pharmavigil.health": "admin@metro-general.invalid",
       "sunita verma": "admin@metro-general.invalid",
     };
     const targetEmail = aliasMap[raw] || raw;
@@ -229,12 +233,44 @@ class MockEngine {
         "req_mock_auth_fail";
       throw err;
     }
+
+    // Password validation guardrail
+    if (password !== undefined) {
+      const validPasswords = [
+        "DemoPassword123!",
+        "Password123!",
+        "DoctorSecure2026!",
+        "PharmaSecure2026!",
+        "PatientSecure2026!",
+        "AdminSecure2026!",
+      ];
+      if (!validPasswords.includes(password)) {
+        const err = new Error("Invalid email or password");
+        (err as unknown as { code: string; requestId: string }).code =
+          "UNAUTHENTICATED";
+        (err as unknown as { code: string; requestId: string }).requestId =
+          "req_mock_bad_password";
+        throw err;
+      }
+    }
+
     this.currentUser = user;
     return this.getCurrentUser();
   }
 
   async logout(): Promise<void> {
     this.currentUser = null;
+  }
+
+  restoreSession(userId: string, role?: UserRole): void {
+    const found = Object.values(FIXTURE_USERS).find((u) => u.id === userId);
+    if (found) {
+      this.currentUser = found;
+      return;
+    }
+    if (role) {
+      this.switchPersona(role);
+    }
   }
 
   async getCurrentUser(): Promise<CurrentUserResponse> {

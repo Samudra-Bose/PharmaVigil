@@ -21,6 +21,7 @@ import type {
   PatientAllergy,
   PatientMedicationHistoryItem,
   MedicationOrderStatus,
+  UserRole,
 } from "@/types";
 import type {
   FixtureCase,
@@ -171,6 +172,8 @@ export function normalizeAxiosError(error: unknown): ApiClientError {
 export const SESSION_TOKEN_KEY = "pharmavigil_session_token";
 export const SESSION_USER_KEY = "pharmavigil_user";
 export const SESSION_MEMBERSHIP_KEY = "pharmavigil_membership";
+export const SESSION_EXPIRES_AT_KEY = "pharmavigil_session_expires_at";
+export const SESSION_DURATION_MS = 2 * 24 * 60 * 60 * 1000; // 2 days (48 hours)
 
 export function getStoredSessionToken(): string | null {
   if (typeof window === "undefined") return null;
@@ -190,12 +193,34 @@ export function setStoredSessionToken(token: string): void {
   }
 }
 
+export function setSessionExpiration(): void {
+  if (typeof window === "undefined") return;
+  try {
+    const expiresAt = Date.now() + SESSION_DURATION_MS;
+    localStorage.setItem(SESSION_EXPIRES_AT_KEY, String(expiresAt));
+  } catch {
+    // Ignore
+  }
+}
+
+export function isSessionExpired(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const expiresAt = localStorage.getItem(SESSION_EXPIRES_AT_KEY);
+    if (!expiresAt) return true;
+    return Date.now() > Number(expiresAt);
+  } catch {
+    return true;
+  }
+}
+
 export function clearStoredSession(): void {
   if (typeof window === "undefined") return;
   try {
     localStorage.removeItem(SESSION_TOKEN_KEY);
     localStorage.removeItem(SESSION_USER_KEY);
     localStorage.removeItem(SESSION_MEMBERSHIP_KEY);
+    localStorage.removeItem(SESSION_EXPIRES_AT_KEY);
   } catch {
     // Ignore
   }
@@ -311,7 +336,7 @@ export class ApiClient {
   // ==========================================
   async login(email: string, password?: string): Promise<CurrentUserResponse> {
     if (this.isMockMode) {
-      const res = await mockEngine.login(email);
+      const res = await mockEngine.login(email, password);
       if (typeof window !== "undefined" && res.user) {
         try {
           localStorage.setItem(SESSION_USER_KEY, JSON.stringify(res.user));
@@ -320,6 +345,8 @@ export class ApiClient {
           if (mem) {
             localStorage.setItem(SESSION_MEMBERSHIP_KEY, JSON.stringify(mem));
           }
+          localStorage.setItem(SESSION_TOKEN_KEY, "mock_token_" + Date.now());
+          setSessionExpiration();
         } catch {
           // Ignore
         }
@@ -334,6 +361,7 @@ export class ApiClient {
     if (token) {
       setStoredSessionToken(token);
     }
+    setSessionExpiration();
     if (typeof window !== "undefined" && res.user) {
       try {
         localStorage.setItem(SESSION_USER_KEY, JSON.stringify(res.user));
@@ -347,6 +375,12 @@ export class ApiClient {
       }
     }
     return res;
+  }
+
+  restoreMockSession(userId: string, role?: UserRole): void {
+    if (this.isMockMode) {
+      mockEngine.restoreSession(userId, role);
+    }
   }
 
   async logout(): Promise<void> {
