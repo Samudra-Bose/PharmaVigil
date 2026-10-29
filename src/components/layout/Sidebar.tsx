@@ -85,46 +85,14 @@ export const Sidebar: React.FC = () => {
   let items: NavItem[] = [];
   let roleTitle = "Portal";
 
-  const roleTheme = (() => {
-    switch (effectiveRole) {
-      case "DOCTOR":
-        return {
-          activeBg: "bg-blue-50 text-blue-900 font-semibold border border-blue-200/90 shadow-2xs",
-          activeIcon: "text-blue-700 stroke-[2.2]",
-          activePip: "bg-blue-600",
-          tag: "bg-blue-50 text-blue-800 border-blue-200/80",
-          logoColor: "text-blue-400",
-          statusDot: "bg-blue-500",
-        };
-      case "PATIENT":
-        return {
-          activeBg: "bg-violet-50 text-violet-900 font-semibold border border-violet-200/90 shadow-2xs",
-          activeIcon: "text-violet-700 stroke-[2.2]",
-          activePip: "bg-violet-600",
-          tag: "bg-violet-50 text-violet-800 border-violet-200/80",
-          logoColor: "text-violet-400",
-          statusDot: "bg-violet-500",
-        };
-      case "HOSPITAL_ADMIN":
-        return {
-          activeBg: "bg-indigo-50 text-indigo-900 font-semibold border border-indigo-200/90 shadow-2xs",
-          activeIcon: "text-indigo-700 stroke-[2.2]",
-          activePip: "bg-indigo-600",
-          tag: "bg-indigo-50 text-indigo-800 border-indigo-200/80",
-          logoColor: "text-indigo-400",
-          statusDot: "bg-indigo-500",
-        };
-      default:
-        return {
-          activeBg: "bg-emerald-50 text-emerald-900 font-semibold border border-emerald-200/90 shadow-2xs",
-          activeIcon: "text-emerald-700 stroke-[2.2]",
-          activePip: "bg-emerald-600",
-          tag: "bg-emerald-50 text-emerald-800 border-emerald-200/80",
-          logoColor: "text-emerald-400",
-          statusDot: "bg-emerald-500",
-        };
-    }
-  })();
+  const roleTheme = {
+    activeBg: "bg-teal-50 text-teal-950 font-bold border border-teal-200/90 shadow-2xs",
+    activeIcon: "text-teal-700 stroke-[2.2]",
+    activePip: "bg-teal-600",
+    tag: "bg-teal-50 text-teal-800 border-teal-200/80",
+    logoColor: "text-teal-400",
+    statusDot: "bg-teal-600",
+  };
 
   if (effectiveRole === "PHARMACIST") {
     roleTitle = "Pharmacy CDS";

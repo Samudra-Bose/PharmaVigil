@@ -188,19 +188,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
                 </div>
               </div>
               {role && (
-                <span
-                  className={cn(
-                    "inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase border",
-                    role === "DOCTOR" &&
-                      "bg-teal-50 text-teal-800 border-teal-200/80",
-                    role === "PHARMACIST" &&
-                      "bg-emerald-50 text-emerald-800 border-emerald-200/80",
-                    role === "PATIENT" &&
-                      "bg-sky-50 text-sky-800 border-sky-200/80",
-                    role === "HOSPITAL_ADMIN" &&
-                      "bg-purple-50 text-purple-800 border-purple-200/80",
-                  )}
-                >
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase border bg-teal-50 text-teal-900 border-teal-200/80">
                   {role === "HOSPITAL_ADMIN" ? "Admin" : role}
                 </span>
               )}
