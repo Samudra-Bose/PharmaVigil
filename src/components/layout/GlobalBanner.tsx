@@ -1,11 +1,14 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, X } from "lucide-react";
 
 export const GlobalBanner: React.FC = () => {
   const { isMockMode } = useAuth();
+  const [dismissed, setDismissed] = useState(false);
+
+  if (dismissed) return null;
 
   return (
     <aside
@@ -33,6 +36,15 @@ export const GlobalBanner: React.FC = () => {
             Mock Mode
           </span>
         )}
+        <button
+          type="button"
+          onClick={() => setDismissed(true)}
+          className="p-0.5 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors ml-1 cursor-pointer"
+          title="Dismiss banner"
+          aria-label="Dismiss banner"
+        >
+          <X className="size-3" />
+        </button>
       </div>
     </aside>
   );
